@@ -47,8 +47,8 @@ const projects = [
   },
   {
     title: "Parlay",
-    subtitle: "Fintech product design and branding",
-    tags: ["Product Design", "Branding"],
+    subtitle: "AI-powered sales coaching platform",
+    tags: ["Product Design", "AI Integration", "Branding"],
     image: "/images/portfolio/parlay.jpg",
     image2: "/images/portfolio/parlay-2.jpg",
   },

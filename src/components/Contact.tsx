@@ -37,7 +37,7 @@ export default function Contact() {
               <AnimateIn delay={0.2}>
                 <div className="space-y-6">
                   <a
-                    href="mailto:hello@barronandfolly.com"
+                    href="mailto:start@barronfolly.com"
                     className="flex items-center gap-4 text-white hover:text-[#FF8400] transition-colors group"
                   >
                     <span className="w-12 h-12 rounded-full border border-[#2A2A26] flex items-center justify-center group-hover:border-[#FF8400] transition-colors">
@@ -46,19 +46,7 @@ export default function Contact() {
                         <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </span>
-                    hello@barronandfolly.com
-                  </a>
-
-                  <a
-                    href="tel:+18012442118"
-                    className="flex items-center gap-4 text-white hover:text-[#FF8400] transition-colors group"
-                  >
-                    <span className="w-12 h-12 rounded-full border border-[#2A2A26] flex items-center justify-center group-hover:border-[#FF8400] transition-colors">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M22 16.92V19.92C22 20.48 21.56 20.93 21 20.97C20.74 20.99 20.48 21 20.22 21C10.96 21 3 13.04 3 3.78C3 3.52 3.01 3.26 3.03 3C3.07 2.44 3.52 2 4.08 2H7.08C7.56 2 7.97 2.34 8.05 2.81C8.14 3.4 8.3 3.97 8.52 4.51L7.02 6.01C8.27 8.38 10.15 10.26 12.52 11.51L14.02 10.01C14.56 10.23 15.13 10.39 15.72 10.48C16.19 10.56 16.53 10.97 16.53 11.45V14.45" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                      </svg>
-                    </span>
-                    (801) 244-2118
+                    start@barronfolly.com
                   </a>
 
                   <div className="flex items-center gap-4 text-[#9E9E98]">

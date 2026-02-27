@@ -4,20 +4,36 @@ import AnimateIn from "./AnimateIn";
 
 const tiers = [
   {
+    name: "Copper",
+    price: "$500",
+    desc: "Solo founders and small projects that need quality design and development on a lean budget.",
+    features: [
+      "Unlimited Design Requests",
+      "Basic UX/UI Design",
+      "Landing Page Development",
+      "One Active Request at a Time",
+      "Dedicated Slack Channel",
+      "72-Hour Turnarounds",
+    ],
+    cta: "Get Started",
+    popular: false,
+    href: "https://buy.stripe.com/fZe16leej8jv08MfYY",
+  },
+  {
     name: "Steel",
     price: "$2,500",
     desc: "Lean teams and early-stage products that need core design & AI muscle without the fluff.",
     features: [
+      "Everything in Copper, plus:",
       "Product Discovery & Research",
-      "Unlimited UX/UI Design",
       "Flow Mapping & User Journeys",
       "Rapid Prototyping",
       "Basic AI Agent Setup",
-      "Dedicated Slack Channel",
       "48-Hour Turnarounds",
     ],
     cta: "Get Started",
     popular: false,
+    href: "https://buy.stripe.com/cN2aGV3zF43fbRu4gm",
   },
   {
     name: "Titanium",
@@ -34,6 +50,7 @@ const tiers = [
     ],
     cta: "Get Started",
     popular: true,
+    href: "https://buy.stripe.com/5kAdT7eejarDaNq6ox",
   },
   {
     name: "Tungsten",
@@ -50,6 +67,7 @@ const tiers = [
     ],
     cta: "Get Started",
     popular: false,
+    href: "https://buy.stripe.com/cN27uJ7PV7frbRu5ks",
   },
 ];
 
@@ -87,7 +105,7 @@ export default function Pricing() {
           </AnimateIn>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {tiers.map((tier, i) => (
             <AnimateIn key={tier.name} delay={i * 0.15}>
               <div
@@ -144,7 +162,9 @@ export default function Pricing() {
                 </ul>
 
                 <a
-                  href="#contact"
+                  href={tier.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`block text-center py-4 rounded-full font-medium text-sm transition-all duration-300 ${
                     tier.popular
                       ? "bg-[#FF8400] text-[#0A0A08] hover:bg-[#FFB366]"

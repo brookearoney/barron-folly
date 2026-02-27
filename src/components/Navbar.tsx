@@ -2,24 +2,30 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-
-const navLinks = [
-  { href: "#services", label: "Services" },
-  { href: "#work", label: "Work" },
-  { href: "#about", label: "About" },
-  { href: "#pricing", label: "Pricing" },
-  { href: "#contact", label: "Contact" },
-];
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { mainNav } from "@/data/navigation";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
@@ -31,7 +37,7 @@ export default function Navbar() {
         }`}
       >
         <div className="w-[90%] mx-auto flex items-center justify-between h-20">
-          <a href="#" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <Image
               src="/images/brand/fox-icon.svg"
               alt="Barron & Folly"
@@ -45,7 +51,7 @@ export default function Navbar() {
               height={24}
               className="hidden sm:block"
             />
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center">
             <div
@@ -55,20 +61,24 @@ export default function Navbar() {
                   : "bg-[#171614]/40 border border-[#2A2A26]/20"
               }`}
             >
-              {navLinks.map((link) => (
-                <a
+              {mainNav.map((link) => (
+                <Link
                   key={link.href}
                   href={link.href}
-                  className="px-5 py-2 text-sm text-[#9E9E98] hover:text-white transition-colors rounded-full hover:bg-[#2A2A26]/40"
+                  className={`px-5 py-2 text-sm transition-colors rounded-full ${
+                    isActive(link.href)
+                      ? "text-white bg-[#2A2A26]/50"
+                      : "text-[#9E9E98] hover:text-white hover:bg-[#2A2A26]/40"
+                  }`}
                 >
                   {link.label}
-                </a>
+                </Link>
               ))}
             </div>
           </nav>
 
-          <a
-            href="#contact"
+          <Link
+            href="/contact"
             className="hidden md:flex items-center gap-2 px-6 py-3 bg-white text-[#0A0A08] rounded-full text-sm font-medium hover:bg-[#FF8400] hover:text-[#0A0A08] transition-all duration-300"
           >
             Let&apos;s Chat!
@@ -87,7 +97,7 @@ export default function Navbar() {
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </Link>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -120,23 +130,25 @@ export default function Navbar() {
         }`}
       >
         <nav className="flex flex-col gap-6">
-          {navLinks.map((link) => (
-            <a
+          {mainNav.map((link) => (
+            <Link
               key={link.href}
               href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="text-3xl font-light text-white hover:text-[#FF8400] transition-colors"
+              className={`text-3xl font-light transition-colors ${
+                isActive(link.href)
+                  ? "text-[#FF8400]"
+                  : "text-white hover:text-[#FF8400]"
+              }`}
             >
               {link.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#contact"
-            onClick={() => setMobileOpen(false)}
+          <Link
+            href="/contact"
             className="mt-4 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF8400] text-[#0A0A08] rounded-full text-lg font-semibold"
           >
             Let&apos;s Chat!
-          </a>
+          </Link>
         </nav>
       </div>
     </>

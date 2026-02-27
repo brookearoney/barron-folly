@@ -34,11 +34,11 @@ export default function Hero() {
           <div className="lg:pt-8 xl:pt-12 animate-fade-up-delay">
             <p className="text-base md:text-lg leading-relaxed max-w-md">
               <span className="text-white">
-                We build brands, products, and AI systems
+                We design products, build mobile and web apps, and automate with AI
               </span>{" "}
               <span className="text-[#6E6E6A]">
-                that move fast and hit hard. Subscription-based design and
-                automation with zero contracts and 48-hour turnarounds.
+                — all under one roof. Subscription-based design and development
+                with zero contracts and 48-hour turnarounds.
               </span>
             </p>
 
@@ -46,7 +46,7 @@ export default function Hero() {
 
             <div className="mt-5 flex items-center justify-between">
               <a
-                href="#contact"
+                href="/contact"
                 className="inline-flex items-center gap-3 text-white font-medium hover:text-[#FF8400] transition-colors group"
               >
                 Contact Us
@@ -105,21 +105,21 @@ export default function Hero() {
             </span>
             <div className="mt-3 w-8 h-px bg-[#2A2A26]" />
             <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#6E6E6A]">
-              <a href="#services" className="hover:text-[#9E9E98] transition-colors">
+              <a href="/services/product-design" className="hover:text-[#9E9E98] transition-colors">
                 Product Design
               </a>
               <span className="text-[#FF8400]">/</span>
-              <a href="#services" className="hover:text-[#9E9E98] transition-colors">
+              <a href="/services/ai-automation" className="hover:text-[#9E9E98] transition-colors">
                 AI Automation
               </a>
             </div>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#6E6E6A]">
-              <a href="#services" className="hover:text-[#9E9E98] transition-colors">
-                Branding
+              <a href="/services/mobile-app-development" className="hover:text-[#9E9E98] transition-colors">
+                Mobile Apps
               </a>
               <span className="text-[#FF8400]">/</span>
-              <a href="#services" className="hover:text-[#9E9E98] transition-colors">
-                UX/UI
+              <a href="/services/web-app-development" className="hover:text-[#9E9E98] transition-colors">
+                Web Apps
               </a>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function Hero() {
               <span className="text-sm text-[#6E6E6A]">(02)</span>
             </div>
             <a
-              href="#work"
+              href="/work"
               className="relative w-full max-w-[200px] aspect-[16/10] rounded-xl overflow-hidden border border-[#2A2A26]/50 group block"
             >
               <Image
