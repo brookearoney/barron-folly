@@ -1,6 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import sphereData from "../../public/animations/floating-dark-sphere.json";
+
+const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 const logos = [
   "BooHoo", "DYO", "Dime", "Hyper", "Mad-Bison", "Mvmt", "Norris",
@@ -11,67 +15,21 @@ const logos = [
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* ── Animated background effects ── */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating gradient orbs */}
-        <div className="absolute -top-32 left-[15%] w-[600px] h-[600px] bg-[#FF8400]/[0.07] rounded-full blur-[150px] animate-float-1" />
-        <div className="absolute top-[20%] -right-32 w-[500px] h-[500px] bg-[#FF8400]/[0.05] rounded-full blur-[130px] animate-float-2" />
-        <div className="absolute bottom-[10%] left-[40%] w-[700px] h-[350px] bg-[#FF8400]/[0.04] rounded-full blur-[160px] animate-float-3" />
-
-        {/* Top edge warm glow line */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#FF8400]/30 to-transparent" />
-
-        {/* Subtle dot grid overlay */}
-        <div className="absolute inset-0 hero-dot-grid opacity-40" />
-
-        {/* Animated wave / smoke shapes */}
-        <svg
-          className="absolute top-[15%] left-0 w-[200%] h-[200px] opacity-[0.03] animate-wave"
-          viewBox="0 0 2400 200"
-          fill="none"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0 100C200 60 400 140 600 100C800 60 1000 140 1200 100C1400 60 1600 140 1800 100C2000 60 2200 140 2400 100V200H0Z"
-            fill="white"
+      {/* ── Lottie dark chrome sphere — centerpiece background ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="relative w-[80%] max-w-[900px] aspect-square opacity-80 -translate-y-[5%]">
+          <Lottie
+            animationData={sphereData}
+            loop
+            autoplay
+            style={{ width: "100%", height: "100%" }}
           />
-        </svg>
-        <svg
-          className="absolute top-[25%] left-0 w-[200%] h-[160px] opacity-[0.02] animate-wave"
-          style={{ animationDuration: "35s", animationDirection: "reverse" }}
-          viewBox="0 0 2400 160"
-          fill="none"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0 80C300 40 500 120 800 80C1100 40 1300 120 1600 80C1900 40 2100 120 2400 80V160H0Z"
-            fill="white"
-          />
-        </svg>
-      </div>
-
-      {/* ── Hero image — absolutely positioned as background centerpiece ── */}
-      <div className="absolute inset-0 flex items-end justify-center pointer-events-none">
-        {/* Animated glow behind image */}
-        <div className="absolute bottom-[5%] left-1/2 -translate-x-1/2 w-[60%] h-[50%] bg-[#FF8400]/[0.06] rounded-full blur-[100px] animate-pulse-glow" />
-
-        <div className="relative w-[65%] max-w-[950px] aspect-[16/9] mb-[12%] rounded-2xl overflow-hidden border border-[#2A2A26]/20">
-          <Image
-            src="/images/portfolio/bf-hero-1.jpg"
-            alt="Barron & Folly — Design & Automation"
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Gradient overlays — heavy fading into background on all edges */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A08] via-[#0A0A08]/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A08]/60 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-l from-[#0A0A08]/50 via-transparent to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0A0A08]/50 via-transparent to-transparent" />
+          {/* Warm orange glow behind the sphere */}
+          <div className="absolute inset-[15%] bg-[#FF8400]/[0.10] rounded-full blur-[100px] animate-pulse-glow" />
         </div>
       </div>
 
-      {/* ── Content layer (on top of image) ── */}
+      {/* ── Content layer (on top of sphere) ── */}
       <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20 w-full pt-28 md:pt-36 relative z-10 flex-1 flex flex-col">
         {/* Top row: Headline left, Description right */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
