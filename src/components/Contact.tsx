@@ -10,7 +10,7 @@ export default function Contact() {
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#FF8400]/5 rounded-full blur-[150px]" />
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20">
+      <div className="w-[90%] mx-auto">
         <div className="rounded-2xl border border-[#2A2A26]/50 bg-[#141412] p-10 md:p-16 lg:p-20 relative overflow-hidden">
           {/* Dot grid background */}
           <div className="absolute inset-0 dot-grid opacity-50" />

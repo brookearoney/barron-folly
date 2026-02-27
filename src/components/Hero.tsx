@@ -30,7 +30,7 @@ export default function Hero() {
       </div>
 
       {/* ── Content layer (on top of sphere) ── */}
-      <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20 w-full pt-28 md:pt-36 relative z-10 flex-1 flex flex-col">
+      <div className="w-[90%] mx-auto pt-28 md:pt-36 relative z-10 flex-1 flex flex-col">
         {/* Top row: Headline left, Description right */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left: Big headline */}

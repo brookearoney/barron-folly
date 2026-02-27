@@ -30,7 +30,7 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20 flex items-center justify-between h-20">
+        <div className="w-[90%] mx-auto flex items-center justify-between h-20">
           <a href="#" className="flex items-center gap-3">
             <Image
               src="/images/brand/fox-icon.svg"

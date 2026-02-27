@@ -60,7 +60,7 @@ export default function Pricing() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#FF8400]/5 rounded-full blur-[200px]" />
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-8 md:px-16 lg:px-20">
+      <div className="w-[90%] mx-auto">
         <AnimateIn>
           <div className="flex items-center gap-3 mb-6">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2A2A26] text-sm text-[#9E9E98]">
