@@ -18,7 +18,7 @@ export default function Contact() {
           <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <AnimateIn>
-                <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight mb-6">
+                <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight mb-8">
                   Let&apos;s{" "}
                   <span className="font-display text-[#FF8400]">
                     Build
@@ -87,9 +87,9 @@ export default function Contact() {
                   <span className="text-sm text-[#6E6E6A]">Start your subscription</span>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <div>
-                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2 block">
+                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2.5 block">
                       Name
                     </label>
                     <input
@@ -99,7 +99,7 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2 block">
+                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2.5 block">
                       Email
                     </label>
                     <input
@@ -109,7 +109,7 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2 block">
+                    <label className="text-xs text-[#6E6E6A] uppercase tracking-wider mb-2.5 block">
                       What do you need?
                     </label>
                     <textarea

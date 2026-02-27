@@ -58,7 +58,7 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <AnimateIn>
-              <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight mb-8">
+              <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight mb-8">
                 Built to{" "}
                 <span className="font-display text-[#FF8400]">
                   Outperform
@@ -102,8 +102,8 @@ export default function About() {
 
           {/* Stats card - matching inspiration's stats section */}
           <AnimateIn direction="right">
-            <div className="rounded-2xl border border-[#2A2A26]/50 bg-[#141412] p-10 md:p-12 dot-grid">
-              <div className="grid grid-cols-1 gap-12">
+            <div className="rounded-2xl border border-[#2A2A26]/50 bg-[#141412] p-8 md:p-10 dot-grid">
+              <div className="grid grid-cols-1 gap-10">
                 {[
                   { label: "Projects Launched", value: 50 },
                   { label: "Brands Built", value: 20 },
@@ -122,7 +122,7 @@ export default function About() {
                         className="flex-1 mx-4 h-px bg-gradient-to-r from-[#2A2A26] to-[#FF8400]/40"
                       />
                     </div>
-                    <p className="text-6xl md:text-7xl font-light text-[#2A2A26] hover:text-[#FF8400] transition-colors duration-700 cursor-default">
+                    <p className="text-5xl md:text-6xl font-light leading-[1.15] text-[#2A2A26] hover:text-[#FF8400] transition-colors duration-700 cursor-default">
                       <Counter target={stat.value} />
                     </p>
                   </div>

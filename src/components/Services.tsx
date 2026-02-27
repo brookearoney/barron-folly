@@ -58,7 +58,7 @@ export default function Services() {
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
           <AnimateIn>
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight">
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight">
               <span className="font-display text-[#6E6E6A]">What</span>{" "}
               We Do
             </h2>
@@ -77,13 +77,13 @@ export default function Services() {
             {services.map((service, i) => (
               <AnimateIn key={service.num} delay={i * 0.1}>
                 <div className="group p-8 md:p-10 border-b border-r border-[#2A2A26]/30 hover:bg-[#171614]/60 transition-all duration-500 h-full">
-                  <div className="mb-8 w-16 h-16 rounded-xl bg-[#171614] border border-[#2A2A26]/50 flex items-center justify-center group-hover:border-[#FF8400]/30 transition-colors">
-                    <span className="text-[#FF8400] text-lg font-light">{service.num}</span>
+                  <div className="mb-6 w-14 h-14 rounded-xl bg-[#171614] border border-[#2A2A26]/50 flex items-center justify-center group-hover:border-[#FF8400]/30 transition-colors">
+                    <span className="text-[#FF8400] text-base font-light">{service.num}</span>
                   </div>
-                  <h3 className="text-xl font-semibold mb-3 group-hover:text-[#FF8400] transition-colors">
+                  <h3 className="text-xl font-semibold mb-3 leading-snug group-hover:text-[#FF8400] transition-colors">
                     {service.title}
                   </h3>
-                  <p className="text-[#6E6E6A] text-sm leading-relaxed mb-6">
+                  <p className="text-[#6E6E6A] text-sm leading-relaxed mb-5">
                     {service.desc}
                   </p>
                   <div className="flex flex-wrap gap-2">

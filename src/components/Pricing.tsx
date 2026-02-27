@@ -74,7 +74,7 @@ export default function Pricing() {
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
           <AnimateIn>
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight">
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight">
               <span className="font-display text-[#6E6E6A]">Pick</span>{" "}
               Your Tier
             </h2>
@@ -103,22 +103,22 @@ export default function Pricing() {
                   </span>
                 )}
 
-                <h3 className="text-lg font-semibold text-[#9E9E98] mb-2 uppercase tracking-wider">
+                <h3 className="text-lg font-semibold text-[#9E9E98] mb-3 uppercase tracking-wider">
                   {tier.name}
                 </h3>
 
-                <div className="flex items-baseline gap-1 mb-4">
-                  <span className="text-5xl font-light text-white">{tier.price}</span>
+                <div className="flex items-baseline gap-1 mb-5">
+                  <span className="text-5xl font-light leading-[1.15] text-white">{tier.price}</span>
                   <span className="text-[#6E6E6A]">/month</span>
                 </div>
 
-                <p className="text-[#6E6E6A] text-sm leading-relaxed mb-8">
+                <p className="text-[#6E6E6A] text-sm leading-relaxed mb-7">
                   {tier.desc}
                 </p>
 
-                <div className="h-px bg-[#2A2A26]/50 mb-8" />
+                <div className="h-px bg-[#2A2A26]/50 mb-7" />
 
-                <ul className="flex-1 space-y-4 mb-10">
+                <ul className="flex-1 space-y-3.5 mb-10">
                   {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm">
                       <svg

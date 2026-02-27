@@ -80,7 +80,7 @@ export default function Portfolio() {
 
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
           <AnimateIn>
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light tracking-tight">
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight">
               <span className="font-display text-[#6E6E6A]">Our</span>{" "}
               Projects
             </h2>

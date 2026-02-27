@@ -11,7 +11,7 @@ const logos = [
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-20">
+    <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-36 pb-12">
       {/* Background gradient orbs — constrained to prevent overflow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#FF8400]/8 rounded-full blur-[150px]" />
@@ -26,7 +26,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 60 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] font-light leading-[0.95] tracking-tight"
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] font-light leading-[1.1] tracking-tight"
             >
               Design,
               <br />
@@ -39,7 +39,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+              className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-4"
             >
               <span className="text-sm text-[#6E6E6A] uppercase tracking-widest">
                 We do
@@ -64,7 +64,7 @@ export default function Hero() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="lg:pl-12"
           >
-            <p className="text-lg md:text-xl text-[#9E9E98] leading-relaxed max-w-lg">
+            <p className="text-lg md:text-xl text-[#9E9E98] leading-relaxed max-w-lg mb-2">
               We build brands, products, and AI systems that move fast and hit
               hard. Subscription-based design and automation with zero
               contracts and 48-hour turnarounds.
