@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import sphereData from "../../public/animations/floating-dark-sphere.json";
 
-const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
+const HalftoneWave = dynamic(() => import("./HalftoneWave"), { ssr: false });
 
 const logos = [
   "BooHoo", "DYO", "Dime", "Hyper", "Mad-Bison", "Mvmt", "Norris",
@@ -15,19 +14,8 @@ const logos = [
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* ── Lottie dark chrome sphere — centerpiece background ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="relative w-[80%] max-w-[900px] aspect-square opacity-80 -translate-y-[5%]">
-          <Lottie
-            animationData={sphereData}
-            loop
-            autoplay
-            style={{ width: "100%", height: "100%" }}
-          />
-          {/* Warm orange glow behind the sphere */}
-          <div className="absolute inset-[15%] bg-[#FF8400]/[0.10] rounded-full blur-[100px] animate-pulse-glow" />
-        </div>
-      </div>
+      {/* ── Halftone dot waveform background ── */}
+      <HalftoneWave />
 
       {/* ── Content layer (on top of sphere) ── */}
       <div className="w-[90%] mx-auto pt-28 md:pt-36 relative z-10 flex-1 flex flex-col">
