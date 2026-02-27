@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 const navLinks = [
@@ -18,17 +17,14 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
     <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 animate-fade-up ${
           scrolled
             ? "bg-[#0A0A08]/80 backdrop-blur-xl border-b border-[#2A2A26]/50"
             : "bg-transparent"
@@ -115,41 +111,34 @@ export default function Navbar() {
             />
           </button>
         </div>
-      </motion.header>
+      </header>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 z-40 bg-[#0A0A08]/95 backdrop-blur-xl pt-24 px-8"
+      {/* Mobile menu */}
+      <div
+        className={`fixed inset-0 z-40 bg-[#0A0A08]/95 backdrop-blur-xl pt-24 px-8 transition-all duration-300 ${
+          mobileOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        <nav className="flex flex-col gap-6">
+          {navLinks.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              className="text-3xl font-light text-white hover:text-[#FF8400] transition-colors"
+            >
+              {link.label}
+            </a>
+          ))}
+          <a
+            href="#contact"
+            onClick={() => setMobileOpen(false)}
+            className="mt-4 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF8400] text-[#0A0A08] rounded-full text-lg font-semibold"
           >
-            <nav className="flex flex-col gap-6">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="text-3xl font-light text-white hover:text-[#FF8400] transition-colors"
-                >
-                  {link.label}
-                </motion.a>
-              ))}
-              <a
-                href="#contact"
-                onClick={() => setMobileOpen(false)}
-                className="mt-4 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF8400] text-[#0A0A08] rounded-full text-lg font-semibold"
-              >
-                Let&apos;s Chat!
-              </a>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Let&apos;s Chat!
+          </a>
+        </nav>
+      </div>
     </>
   );
 }

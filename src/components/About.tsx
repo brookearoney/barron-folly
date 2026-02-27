@@ -1,31 +1,41 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import AnimateIn from "./AnimateIn";
 import Image from "next/image";
 
 function Counter({ target, suffix = "+" }: { target: number; suffix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isInView) return;
-    let start = 0;
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [isInView, target]);
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          observer.unobserve(el);
+          let start = 0;
+          const duration = 2000;
+          const increment = target / (duration / 16);
+          const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+              setCount(target);
+              clearInterval(timer);
+            } else {
+              setCount(Math.floor(start));
+            }
+          }, 16);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target]);
 
   return (
     <span ref={ref} className="tabular-nums">
@@ -100,7 +110,7 @@ export default function About() {
             </AnimateIn>
           </div>
 
-          {/* Stats card - matching inspiration's stats section */}
+          {/* Stats card */}
           <AnimateIn direction="right">
             <div className="rounded-2xl border border-[#2A2A26]/50 bg-[#141412] p-8 md:p-10 dot-grid">
               <div className="grid grid-cols-1 gap-10">
@@ -108,19 +118,13 @@ export default function About() {
                   { label: "Projects Launched", value: 50 },
                   { label: "Brands Built", value: 20 },
                   { label: "Happy Clients", value: 30 },
-                ].map((stat, i) => (
+                ].map((stat) => (
                   <div key={stat.label}>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-sm text-[#6E6E6A] uppercase tracking-wider">
                         {stat.label}
                       </span>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: "100%" }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.5, delay: i * 0.2 }}
-                        className="flex-1 mx-4 h-px bg-gradient-to-r from-[#2A2A26] to-[#FF8400]/40"
-                      />
+                      <div className="flex-1 mx-4 h-px bg-gradient-to-r from-[#2A2A26] to-[#FF8400]/40" />
                     </div>
                     <p className="text-5xl md:text-6xl font-light leading-[1.15] text-[#2A2A26] hover:text-[#FF8400] transition-colors duration-700 cursor-default">
                       <Counter target={stat.value} />

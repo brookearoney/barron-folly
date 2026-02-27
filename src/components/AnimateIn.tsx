@@ -1,14 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { useRef, useEffect, useState, ReactNode } from "react";
 
 interface AnimateInProps {
   children: ReactNode;
   className?: string;
   delay?: number;
   direction?: "up" | "down" | "left" | "right" | "none";
-  duration?: number;
 }
 
 export default function AnimateIn({
@@ -16,36 +14,48 @@ export default function AnimateIn({
   className = "",
   delay = 0,
   direction = "up",
-  duration = 0.6,
 }: AnimateInProps) {
-  const directionOffset = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { x: 40, y: 0 },
-    right: { x: -40, y: 0 },
-    none: { x: 0, y: 0 },
+  const ref = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1, rootMargin: "-40px" }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const translateMap = {
+    up: "translateY(24px)",
+    down: "translateY(-24px)",
+    left: "translateX(24px)",
+    right: "translateX(-24px)",
+    none: "translate(0)",
   };
 
   return (
-    <motion.div
+    <div
+      ref={ref}
       className={className}
-      initial={{
-        opacity: 0,
-        ...directionOffset[direction],
-      }}
-      whileInView={{
-        opacity: 1,
-        x: 0,
-        y: 0,
-      }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{
-        duration,
-        delay,
-        ease: [0.25, 0.1, 0.25, 1],
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? "translate(0)" : translateMap[direction],
+        transition: `opacity 0.5s ease ${delay}s, transform 0.5s ease ${delay}s`,
+        willChange: isVisible ? "auto" : "opacity, transform",
       }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

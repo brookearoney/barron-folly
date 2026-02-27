@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 
 const logos = [
@@ -12,7 +11,7 @@ const logos = [
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden pt-36 pb-12">
-      {/* Background gradient orbs — constrained to prevent overflow */}
+      {/* Background gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-[#FF8400]/8 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#FF8400]/5 rounded-full blur-[120px]" />
@@ -22,24 +21,18 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-12 items-center">
           {/* Left: Big headline */}
           <div>
-            <motion.h1
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] font-light leading-[1.1] tracking-tight"
+            <h1
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-[7rem] font-light leading-[1.1] tracking-tight animate-fade-up"
             >
               Design,
               <br />
               <span className="font-display text-[#FF8400]">
                 Automate
               </span>
-            </motion.h1>
+            </h1>
 
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+            <div
+              className="mt-12 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-up-delay"
             >
               <span className="text-sm text-[#6E6E6A] uppercase tracking-widest">
                 We do
@@ -54,16 +47,11 @@ export default function Hero() {
                 <span className="text-[#FF8400]">/</span>
                 <span>UX/UI</span>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Right: Description + CTA */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="lg:pl-12"
-          >
+          <div className="lg:pl-12 animate-fade-up-delay-2">
             <p className="text-lg md:text-xl text-[#9E9E98] leading-relaxed max-w-lg mb-2">
               We build brands, products, and AI systems that move fast and hit
               hard. Subscription-based design and automation with zero
@@ -92,34 +80,25 @@ export default function Hero() {
                 </a>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* Featured work preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-20 lg:mt-28 relative"
-        >
+        <div className="mt-20 lg:mt-28 relative animate-fade-up-delay-3">
           <div className="relative rounded-2xl overflow-hidden border border-[#2A2A26]/50 aspect-[21/9]">
-            <Image src="/images/portfolio/bf-hero-1.png" alt="Barron & Folly Featured Work" fill className="object-cover" priority />
+            <Image src="/images/portfolio/bf-hero-1.jpg" alt="Barron & Folly Featured Work" fill className="object-cover" priority />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A08] via-transparent to-transparent" />
           </div>
 
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border border-[#2A2A26] flex items-center justify-center"
-          >
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full border border-[#2A2A26] flex items-center justify-center animate-bounce-slow">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-[#6E6E6A]">
               <path d="M8 3V13M8 13L4 9M8 13L12 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
-      {/* Logo slider — overflow hidden wrapper prevents horizontal scroll */}
+      {/* Logo slider */}
       <div className="mt-20 lg:mt-28 border-t border-b border-[#2A2A26]/30 py-8 overflow-hidden w-full">
         <div className="flex logo-slider" style={{ width: "max-content" }}>
           {[0, 1].map((setIndex) => (
