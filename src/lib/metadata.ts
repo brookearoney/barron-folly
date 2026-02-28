@@ -29,10 +29,10 @@ export function localBusinessJsonLd() {
     "@type": "LocalBusiness",
     name: SITE_NAME,
     description:
-      "Product design, mobile app development, web app development, and AI automation agency. Subscription-based with 48-hour turnarounds.",
+      "Subscription-based agentic product agency that builds and deploys scalable digital systems for companies moving faster than their infrastructure.",
     url: SITE_URL,
     email: CONTACT.email,
-    priceRange: "$2500-$7500/month",
+    priceRange: "$500-$10000/month",
     address: {
       "@type": "PostalAddress",
       addressLocality: CONTACT.city,

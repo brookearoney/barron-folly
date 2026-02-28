@@ -1,75 +1,7 @@
 "use client";
 
 import AnimateIn from "./AnimateIn";
-
-const tiers = [
-  {
-    name: "Copper",
-    price: "$500",
-    desc: "Solo founders and small projects that need quality design and development on a lean budget.",
-    features: [
-      "Unlimited Design Requests",
-      "Basic UX/UI Design",
-      "Landing Page Development",
-      "One Active Request at a Time",
-      "Dedicated Slack Channel",
-      "72-Hour Turnarounds",
-    ],
-    cta: "Get Started",
-    popular: false,
-    href: "https://buy.stripe.com/fZe16leej8jv08MfYY",
-  },
-  {
-    name: "Steel",
-    price: "$2,500",
-    desc: "Lean teams and early-stage products that need core design & AI muscle without the fluff.",
-    features: [
-      "Everything in Copper, plus:",
-      "Product Discovery & Research",
-      "Flow Mapping & User Journeys",
-      "Rapid Prototyping",
-      "Basic AI Agent Setup",
-      "48-Hour Turnarounds",
-    ],
-    cta: "Get Started",
-    popular: false,
-    href: "https://buy.stripe.com/cN2aGV3zF43fbRu4gm",
-  },
-  {
-    name: "Titanium",
-    price: "$5,000",
-    desc: "Growing products that need priority treatment, strategic depth, and advanced AI chops.",
-    features: [
-      "Everything in Steel, plus:",
-      "Advanced Brand & Market Strategy",
-      "AI Architecture & Prompt Engineering",
-      "Weekly Strategy Huddle",
-      "AI-Powered User Testing",
-      "Priority Request Handling",
-      "Go-to-Market Gameplans",
-    ],
-    cta: "Get Started",
-    popular: true,
-    href: "https://buy.stripe.com/5kAdT7eejarDaNq6ox",
-  },
-  {
-    name: "Tungsten",
-    price: "$7,500",
-    desc: "High-stakes products that demand the ultimate design + AI arsenal and zero downtime.",
-    features: [
-      "Everything in Titanium, plus:",
-      "End-to-End Branding & Packaging",
-      "Custom AI Model Development",
-      "In-Depth User Testing & Analytics",
-      "On-Demand Design & AI Emergencies",
-      "Midnight Tweaks & Crisis Pivots",
-      "Dedicated Creative Director",
-    ],
-    cta: "Get Started",
-    popular: false,
-    href: "https://buy.stripe.com/cN27uJ7PV7frbRu5ks",
-  },
-];
+import { tiers, perks } from "@/data/pricing";
 
 export default function Pricing() {
   return (
@@ -99,8 +31,8 @@ export default function Pricing() {
           </AnimateIn>
           <AnimateIn delay={0.2}>
             <p className="text-[#6E6E6A] max-w-md text-lg">
-              No contracts. Cancel anytime. Most requests done within 48 hours.
-              Unlimited design requests on every plan.
+              From execution to command. Each tier scales your access to AI agents,
+              senior oversight, and strategic depth. No contracts. Cancel anytime.
             </p>
           </AnimateIn>
         </div>
@@ -181,12 +113,7 @@ export default function Pricing() {
         {/* Common perks */}
         <AnimateIn>
           <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: "M3 8H13", label: "No Contracts" },
-              { icon: "M8 2V14M2 8H14", label: "Unlimited Requests" },
-              { icon: "M12 6L8 10L4 6", label: "48hr Turnaround" },
-              { icon: "M2 4H14V12H2V4Z", label: "Dedicated Slack" },
-            ].map((perk) => (
+            {perks.map((perk) => (
               <div
                 key={perk.label}
                 className="text-center py-6 px-4 rounded-xl border border-[#2A2A26]/30 bg-[#141412]/50"

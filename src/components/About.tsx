@@ -60,7 +60,7 @@ export default function About() {
                 <circle cx="8" cy="8" r="3" stroke="#FF8400" strokeWidth="1.2"/>
                 <path d="M8 1V3M8 13V15M1 8H3M13 8H15" stroke="#FF8400" strokeWidth="1.2" strokeLinecap="round"/>
               </svg>
-              About Us
+              The Problem
             </span>
           </div>
         </AnimateIn>
@@ -69,27 +69,25 @@ export default function About() {
           <div>
             <AnimateIn>
               <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight mb-8">
-                Built to{" "}
+                Growth Creates{" "}
                 <span className="font-display text-[#FF8400]">
-                  Outperform
+                  Complexity
                 </span>
               </h2>
             </AnimateIn>
 
             <AnimateIn delay={0.1}>
               <p className="text-lg text-[#9E9E98] leading-relaxed mb-6">
-                Barron & Folly is a product design and AI automation agency that
-                operates on a subscription model. No bloated contracts. No scope
-                creep negotiations. Just a dedicated design + AI crew working on
-                your product every single day.
+                Every scaling company hits the same wall: too many tools, too many
+                vendors, too many disconnected systems. Growth creates operational
+                drag. Most companies try to solve it by hiring more humans.
               </p>
             </AnimateIn>
             <AnimateIn delay={0.2}>
               <p className="text-lg text-[#6E6E6A] leading-relaxed mb-10">
-                Based in American Fork, Utah — we&apos;ve shipped brands, apps, packaging,
-                and AI systems for startups, CPG brands, and tech companies alike.
-                From Beef Cakes to blockchain, Temple to XETA — we build whatever
-                needs building, fast.
+                You solve it by deploying coordinated AI operators and senior
+                oversight. One execution engine replaces your dev agency, marketing
+                ops, design firm, and internal bottlenecks.
               </p>
             </AnimateIn>
 
@@ -115,9 +113,9 @@ export default function About() {
             <div className="rounded-2xl border border-[#2A2A26]/50 bg-[#141412] p-8 md:p-10 dot-grid">
               <div className="grid grid-cols-1 gap-10">
                 {[
-                  { label: "Projects Launched", value: 50 },
-                  { label: "Brands Built", value: 20 },
-                  { label: "Happy Clients", value: 30 },
+                  { label: "Systems Deployed", value: 50 },
+                  { label: "Companies Served", value: 30 },
+                  { label: "Vendors Replaced", value: 5 },
                 ].map((stat) => (
                   <div key={stat.label}>
                     <div className="flex items-center justify-between mb-3">

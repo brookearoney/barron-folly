@@ -54,15 +54,15 @@ export default function Contact() {
               <AnimateIn>
                 <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight mb-8">
                   Let&apos;s{" "}
-                  <span className="font-display text-[#FF8400]">Build</span>
+                  <span className="font-display text-[#FF8400]">Deploy</span>
                 </h2>
               </AnimateIn>
 
               <AnimateIn delay={0.1}>
                 <p className="text-lg text-[#9E9E98] leading-relaxed mb-10 max-w-lg">
-                  Ready to lock in your tier and start shipping? Drop us a line
-                  and we&apos;ll get you set up within 24 hours. No pitch decks.
-                  No discovery calls that waste your time. Just results.
+                  Ready to deploy your execution engine? Drop us a line
+                  and we&apos;ll have you shipping within 48 hours. No pitch decks.
+                  No discovery calls. Just infrastructure that moves.
                 </p>
               </AnimateIn>
 
@@ -105,7 +105,7 @@ export default function Contact() {
                     height={32}
                   />
                   <span className="text-sm text-[#6E6E6A]">
-                    Start your subscription
+                    Deploy your infrastructure
                   </span>
                 </div>
 
@@ -178,7 +178,7 @@ export default function Contact() {
                           required
                           value={form.message}
                           onChange={handleChange}
-                          placeholder="Tell us about your project..."
+                          placeholder="Tell us about your business and what you need built..."
                           rows={3}
                           className="w-full bg-transparent border-b border-[#2A2A26] py-3 text-white placeholder:text-[#2A2A26] focus:border-[#FF8400] outline-none transition-colors resize-none"
                         />

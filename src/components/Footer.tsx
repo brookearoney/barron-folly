@@ -27,8 +27,8 @@ export default function Footer() {
               />
             </Link>
             <p className="text-[#6E6E6A] max-w-sm text-sm leading-relaxed">
-              Product Design, App Development & AI Automation Agency. We design
-              products, build mobile and web apps, and automate with AI.
+              Agentic product agency that builds and deploys scalable digital
+              systems for companies moving faster than their infrastructure.
               Subscription-based, no contracts, 48-hour turnarounds.
             </p>
           </div>

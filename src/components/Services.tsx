@@ -5,39 +5,21 @@ import AnimateIn from "./AnimateIn";
 const services = [
   {
     num: "/01",
-    title: "Product Design",
-    desc: "End-to-end UX/UI from wireframes to high-fidelity screens. We build interfaces that convert and experiences users actually love.",
-    tags: ["UX Research", "UI Design", "Prototyping", "Design Systems"],
+    title: "Agentic Execution",
+    desc: "Autonomous AI agents deploy web platforms, applications, automations, internal tools, dashboards, integrations, and reporting infrastructure. Code-heavy tasks are no longer the bottleneck.",
+    tags: ["Web Platforms", "Applications", "CRM Systems", "Automations", "Dashboards", "Technical SEO"],
   },
   {
     num: "/02",
-    title: "AI Automation",
-    desc: "Custom AI agents, prompt engineering, and intelligent automations that eliminate busywork and scale your operations.",
-    tags: ["AI Agents", "Prompt Engineering", "Workflow Automation", "Custom Models"],
+    title: "Systems Architecture",
+    desc: "We don\u2019t just build pages. We design workflow logic, information architecture, scalable frameworks, internal operational tooling, and data visibility layers. Infrastructure before aesthetics.",
+    tags: ["Workflow Logic", "Information Architecture", "Scalable Frameworks", "Data Visibility"],
   },
   {
     num: "/03",
-    title: "Brand Identity",
-    desc: "Logos, visual systems, and brand strategy that positions you to dominate your market. From concept to launch-ready assets.",
-    tags: ["Logo Design", "Brand Strategy", "Visual Identity", "Guidelines"],
-  },
-  {
-    num: "/04",
-    title: "Packaging Design",
-    desc: "Product packaging that pops off the shelf and sells itself. Dyelines, mockups, and retail-ready artwork.",
-    tags: ["Package Design", "Dyelines", "Mockups", "Retail Ready"],
-  },
-  {
-    num: "/05",
-    title: "Marketing & Content",
-    desc: "Social media graphics, ad creatives, video content, and campaigns that drive real engagement and conversions.",
-    tags: ["Social Media", "Ad Creative", "Video", "Campaigns"],
-  },
-  {
-    num: "/06",
-    title: "Web Development",
-    desc: "High-performance websites and landing pages built to convert. Fast, responsive, and designed to grow with you.",
-    tags: ["Next.js", "Webflow", "Landing Pages", "E-Commerce"],
+    title: "Brand & Experience",
+    desc: "When speed is handled, we refine precision. Identity systems, design systems, UX strategy, multi-product cohesion, and portfolio brand consolidation for companies that need nuance at scale.",
+    tags: ["Identity Systems", "Design Systems", "UX Strategy", "Brand Consolidation"],
   },
 ];
 
@@ -51,7 +33,7 @@ export default function Services() {
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                 <path d="M8 2L10 6L14 6.5L11 9.5L12 14L8 12L4 14L5 9.5L2 6.5L6 6L8 2Z" stroke="#FF8400" strokeWidth="1.2" strokeLinejoin="round"/>
               </svg>
-              Our Services
+              What We Deploy
             </span>
           </div>
         </AnimateIn>
@@ -59,14 +41,14 @@ export default function Services() {
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-16">
           <AnimateIn>
             <h2 className="text-5xl sm:text-6xl md:text-7xl font-light leading-[1.1] tracking-tight">
-              <span className="font-display text-[#6E6E6A]">What</span>{" "}
-              We Do
+              <span className="font-display text-[#6E6E6A]">Deploy</span>{" "}
+              an Execution Engine
             </h2>
           </AnimateIn>
           <AnimateIn delay={0.2}>
             <p className="text-[#6E6E6A] max-w-md text-lg">
-              We craft products, brands, and AI systems from idea to launch — blending
-              strategy, design, and engineering to build things that perform.
+              You don&apos;t need more vendors. You need infrastructure. Three pillars
+              that replace fragmented teams with scalable systems.
             </p>
           </AnimateIn>
         </div>

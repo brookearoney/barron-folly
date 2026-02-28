@@ -8,38 +8,38 @@ import { SITE_URL, SITE_NAME } from "@/lib/constants";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} | Product Design, App Development & AI Automation Agency`,
+    default: `${SITE_NAME} | Agentic Product Agency for Growing Companies`,
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "We design products, build mobile and web apps, and automate with AI. Subscription-based agency with 48-hour turnarounds. No contracts. Based in Utah.",
+    "Subscription-based agentic product agency that builds and deploys scalable digital systems — software, AI automation, and brand infrastructure. No contracts. 48-hour turnarounds.",
   keywords: [
-    "product design agency",
+    "agentic product agency",
     "AI automation agency",
-    "mobile app development",
-    "web app development",
-    "subscription design service",
-    "48-hour design turnaround",
-    "UX/UI design agency",
-    "branding agency Utah",
+    "subscription product agency",
+    "systems architecture",
+    "brand infrastructure",
+    "AI-led execution",
+    "product development subscription",
+    "scalable digital systems",
   ],
   icons: {
     icon: "/images/brand/favicon.svg",
     apple: "/images/brand/webclip.svg",
   },
   openGraph: {
-    title: `${SITE_NAME} | Product Design, App Development & AI Automation`,
+    title: `${SITE_NAME} | Agentic Product Agency for Growing Companies`,
     description:
-      "Subscription-based product design, app development, and AI automation agency. No contracts. 48-hour turnarounds. Unlimited requests.",
+      "Subscription-based agentic product agency. We deploy AI agents and senior product oversight to build software, systems, and brand infrastructure. No contracts.",
     type: "website",
     siteName: SITE_NAME,
     url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} | Design, Build, Automate`,
+    title: `${SITE_NAME} | Idea to Infrastructure`,
     description:
-      "Subscription-based product design, app development, and AI automation. 48-hour turnarounds.",
+      "Agentic product agency that builds and deploys scalable digital systems. Subscription-based. 48-hour turnarounds.",
   },
   robots: {
     index: true,

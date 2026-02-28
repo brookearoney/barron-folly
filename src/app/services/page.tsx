@@ -5,16 +5,16 @@ import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 
 export const metadata: Metadata = {
-  title: "Services | Design, Development & AI Automation",
+  title: "Services | Agentic Execution, Systems & Brand Infrastructure",
   description:
-    "Full-service product design, mobile app development, web app development, AI automation, branding, and packaging. 48-hour turnarounds, unlimited requests.",
+    "Three deployment pillars: Agentic Execution, Systems Architecture, and Brand & Experience. AI-led velocity with senior product oversight. 48-hour turnarounds.",
   keywords: [
-    "product design services",
-    "mobile app development",
-    "web app development",
-    "AI automation services",
-    "brand identity design",
-    "packaging design agency",
+    "agentic execution",
+    "systems architecture",
+    "brand infrastructure",
+    "AI product development",
+    "subscription product agency services",
+    "scalable digital systems",
   ],
   alternates: { canonical: "/services" },
 };
@@ -23,10 +23,10 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
-        badge="Our Services"
-        title="We Do"
-        titleAccent="What"
-        subtitle="We craft products, brands, apps, and AI systems from idea to launch — blending strategy, design, and engineering to build things that perform. 48-hour turnarounds on every deliverable."
+        badge="What We Deploy"
+        title="an Execution Engine"
+        titleAccent="Deploy"
+        subtitle="You don't need more vendors. You need infrastructure that ships. Three pillars — Agentic Execution, Systems Architecture, and Brand & Experience — deployed as a single, continuous operation."
         breadcrumbs={[{ label: "Services" }]}
       />
 
@@ -42,7 +42,11 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <CTABanner />
+      <CTABanner
+        title="Your backlog isn't a strategy."
+        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        cta="Deploy Your Infrastructure"
+      />
     </>
   );
 }

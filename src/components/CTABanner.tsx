@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 export default function CTABanner({
-  title = "Ready to build something great?",
-  subtitle = "No contracts. 48-hour turnarounds. Unlimited design and development requests.",
-  cta = "Get Started",
+  title = "Your backlog isn\u2019t a strategy.",
+  subtitle = "Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously.",
+  cta = "Deploy Your Infrastructure",
   href = "/contact",
 }: {
   title?: string;

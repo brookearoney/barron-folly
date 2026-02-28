@@ -24,9 +24,9 @@ export default function Hero() {
           {/* Left: Big headline */}
           <div className="animate-fade-up">
             <h1 className="text-[3.5rem] sm:text-7xl md:text-8xl lg:text-[8.5rem] font-light leading-[1.05] tracking-tight">
-              Design,
+              Idea to
               <br />
-              <span className="font-display text-[#FF8400]">Automate</span>
+              <span className="font-display text-[#FF8400]">Infrastructure</span>
             </h1>
           </div>
 
@@ -34,11 +34,11 @@ export default function Hero() {
           <div className="lg:pt-8 xl:pt-12 animate-fade-up-delay">
             <p className="text-base md:text-lg leading-relaxed max-w-md">
               <span className="text-white">
-                We design products, build mobile and web apps, and automate with AI
+                We turn complexity into deployable systems — fast.
               </span>{" "}
               <span className="text-[#6E6E6A]">
-                — all under one roof. Subscription-based design and development
-                with zero contracts and 48-hour turnarounds.
+                AI agents and senior product oversight to build, standardize, and
+                scale the systems behind modern businesses.
               </span>
             </p>
 
@@ -49,7 +49,7 @@ export default function Hero() {
                 href="/contact"
                 className="inline-flex items-center gap-3 text-white font-medium hover:text-[#FF8400] transition-colors group"
               >
-                Contact Us
+                Deploy Your Infrastructure
                 <svg
                   width="20"
                   height="20"
@@ -98,28 +98,24 @@ export default function Hero() {
 
         {/* Bottom row: We do / Scroll indicator / Featured */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 pb-6 animate-fade-up-delay-3">
-          {/* Left: We do + services */}
+          {/* Left: We deploy + services */}
           <div>
             <span className="text-sm text-white uppercase tracking-widest">
-              We do
+              We deploy
             </span>
             <div className="mt-3 w-8 h-px bg-[#2A2A26]" />
             <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#6E6E6A]">
-              <a href="/services/product-design" className="hover:text-[#9E9E98] transition-colors">
-                Product Design
+              <a href="/services/agentic-execution" className="hover:text-[#9E9E98] transition-colors">
+                Agentic Execution
               </a>
               <span className="text-[#FF8400]">/</span>
-              <a href="/services/ai-automation" className="hover:text-[#9E9E98] transition-colors">
-                AI Automation
+              <a href="/services/systems-architecture" className="hover:text-[#9E9E98] transition-colors">
+                Systems Architecture
               </a>
             </div>
             <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm text-[#6E6E6A]">
-              <a href="/services/mobile-app-development" className="hover:text-[#9E9E98] transition-colors">
-                Mobile Apps
-              </a>
-              <span className="text-[#FF8400]">/</span>
-              <a href="/services/web-app-development" className="hover:text-[#9E9E98] transition-colors">
-                Web Apps
+              <a href="/services/brand-experience" className="hover:text-[#9E9E98] transition-colors">
+                Brand & Experience
               </a>
             </div>
           </div>

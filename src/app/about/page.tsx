@@ -7,41 +7,41 @@ import JsonLd from "@/components/JsonLd";
 import { localBusinessJsonLd } from "@/lib/metadata";
 
 export const metadata: Metadata = {
-  title: "About | Product Design & AI Automation Agency",
+  title: "About | Agentic Product Agency",
   description:
-    "Barron & Folly is a subscription-based product design, app development, and AI automation agency based in American Fork, Utah. No contracts, 48-hour turnarounds.",
+    "Barron & Folly is a subscription-based agentic product agency that deploys AI agents and senior product oversight to build scalable digital systems. Based in American Fork, Utah.",
   keywords: [
-    "design agency Utah",
-    "product design agency American Fork",
-    "subscription design agency",
-    "AI automation agency Utah",
+    "agentic product agency",
+    "AI product agency Utah",
+    "subscription product agency",
+    "scalable digital systems",
   ],
   alternates: { canonical: "/about" },
 };
 
 const stats = [
-  { label: "Projects Launched", value: "50+" },
-  { label: "Brands Built", value: "20+" },
-  { label: "Happy Clients", value: "30+" },
+  { label: "Systems Deployed", value: "50+" },
+  { label: "Companies Served", value: "30+" },
+  { label: "Vendors Replaced", value: "5+" },
   { label: "Avg Turnaround", value: "48hr" },
 ];
 
 const values = [
   {
-    title: "Speed Over Bureaucracy",
-    desc: "48-hour turnarounds aren't a marketing gimmick. It's how we operate. We move fast because your product can't wait.",
+    title: "Execution Over Meetings",
+    desc: "48-hour turnarounds aren't a marketing gimmick. We ship continuously because your growth can't wait for another discovery call.",
   },
   {
-    title: "Design With Intent",
-    desc: "Every pixel, interaction, and line of code serves a purpose. We don't do decoration — we do design that drives results.",
+    title: "Systems Over Silos",
+    desc: "We don't hand off between departments. AI agents and senior oversight work in a single execution loop — design, code, and automation together.",
   },
   {
-    title: "AI-First Thinking",
-    desc: "We integrate AI into everything we build. Not as a buzzword, but as a force multiplier that makes products smarter and faster.",
+    title: "AI-Led, Human-Guided",
+    desc: "AI handles velocity — research, generation, iteration. Humans handle nuance — strategy, architecture, creative direction. Both run in parallel.",
   },
   {
-    title: "No BS Partnerships",
-    desc: "No contracts, no scope creep negotiations, no bloated proposals. Just a team that ships great work, every single day.",
+    title: "Built for Operators",
+    desc: "No contracts, no scope creep, no bloated proposals. Subscribe, deploy, ship. That's it.",
   },
 ];
 
@@ -58,9 +58,9 @@ export default function AboutPage() {
             <path d="M8 1V3M8 13V15M1 8H3M13 8H15" stroke="#FF8400" strokeWidth="1.2" strokeLinecap="round" />
           </svg>
         }
-        title="Outperform"
-        titleAccent="Built to"
-        subtitle="Barron & Folly is a product design, app development, and AI automation agency that operates on a subscription model. No bloated contracts. No scope creep. Just a dedicated crew shipping your product every single day."
+        title="Complexity"
+        titleAccent="Growth Creates"
+        subtitle="Barron & Folly is an agentic product agency that replaces fragmented vendor stacks with a single execution engine. AI agents handle velocity. Senior oversight handles nuance. You get infrastructure that scales with your business."
         breadcrumbs={[{ label: "About" }]}
       />
 
@@ -85,14 +85,15 @@ export default function AboutPage() {
                 </div>
 
                 <p className="text-lg text-[#9E9E98] leading-relaxed mb-6">
-                  Based in American Fork, Utah — we&apos;ve shipped brands, apps,
-                  packaging, and AI systems for startups, CPG brands, and tech
-                  companies alike.
+                  Based in American Fork, Utah — we&apos;ve deployed systems,
+                  products, and brand infrastructure for growth-stage companies
+                  across industries.
                 </p>
                 <p className="text-lg text-[#6E6E6A] leading-relaxed">
-                  We design products, build mobile and web apps, and automate with AI.
-                  From concept to launch, design to deployment — everything happens
-                  under one roof with one team, moving at the speed your business demands.
+                  We built Barron & Folly because growing companies deserve better
+                  than fragmented agencies and overloaded freelancers. AI agents
+                  handle the velocity. Senior product oversight handles the nuance.
+                  Everything ships under one roof.
                 </p>
               </div>
             </AnimateIn>
@@ -144,8 +145,9 @@ export default function AboutPage() {
       </section>
 
       <CTABanner
-        title="Ready to work with us?"
-        subtitle="No contracts. No discovery calls. Just a team that ships great work, fast."
+        title="Your backlog isn't a strategy."
+        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        cta="Deploy Your Infrastructure"
       />
     </>
   );

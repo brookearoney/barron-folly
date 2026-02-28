@@ -6,22 +6,22 @@ const steps = [
   {
     num: "01",
     title: "Subscribe",
-    desc: "Pick your tier — Steel, Titanium, or Tungsten. No contracts, cancel anytime. You're in within 24 hours.",
+    desc: "Pick your tier — Copper, Steel, Titanium, or Tungsten. No contracts, cancel anytime. You're deployed within 48 hours.",
   },
   {
     num: "02",
-    title: "Request",
-    desc: "Drop your design or AI requests into our Trello board. As many as you need — we'll handle them one by one, fast.",
+    title: "Deploy",
+    desc: "AI agents spin up immediately on your task queue. We prioritize, execute, and ship — asynchronously and continuously.",
   },
   {
     num: "03",
-    title: "Create",
-    desc: "We get to work immediately. Most requests delivered within 48 hours. Revisions until you're grinning.",
+    title: "Ship",
+    desc: "Most deliverables land within days, not months. Complex builds are broken into sprint cycles with weekly shipping cadence.",
   },
   {
     num: "04",
-    title: "Launch",
-    desc: "Ship your product, brand, or AI system. We stay on as your dedicated creative + AI arm for as long as you need.",
+    title: "Scale",
+    desc: "As your business grows, your execution engine grows with it. Move up tiers to unlock architecture, brand strategy, and command-level oversight.",
   },
 ];
 
@@ -36,7 +36,7 @@ export default function Process() {
                 <path d="M2 8C2 8 4 4 8 4C12 4 14 8 14 8C14 8 12 12 8 12C4 12 2 8 2 8Z" stroke="#FF8400" strokeWidth="1.2" strokeLinejoin="round"/>
                 <circle cx="8" cy="8" r="2" stroke="#FF8400" strokeWidth="1.2"/>
               </svg>
-              Our Process
+              How It Works
             </span>
           </div>
         </AnimateIn>
@@ -50,8 +50,7 @@ export default function Process() {
 
         <AnimateIn delay={0.1}>
           <p className="text-[#6E6E6A] max-w-2xl text-lg mb-16">
-            No lengthy onboarding. No scope negotiations. Subscribe, request, and watch
-            your product come to life in days, not months.
+            Subscribe to an execution engine. Deploy AI agents instantly. Ship weekly. Standardize continuously.
           </p>
         </AnimateIn>
 

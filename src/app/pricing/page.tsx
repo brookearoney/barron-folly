@@ -6,15 +6,15 @@ import AnimateIn from "@/components/AnimateIn";
 import FaqAccordion from "@/components/FaqAccordion";
 
 export const metadata: Metadata = {
-  title: "Pricing | Subscription Design & Development Plans",
+  title: "Pricing | Subscription Tiers for Agentic Execution",
   description:
-    "Subscription-based product design, app development, and AI automation. Plans from $2,500/mo. No contracts, unlimited requests, 48-hour turnarounds.",
+    "Subscription-based agentic product agency. Tiers from $500/mo to $10,000/mo. AI-led execution, systems architecture, and brand infrastructure. No contracts.",
   keywords: [
-    "subscription design pricing",
-    "unlimited design service",
-    "design subscription plans",
-    "flat rate design agency",
-    "app development subscription",
+    "agentic product agency pricing",
+    "subscription product agency",
+    "AI execution subscription",
+    "scalable digital systems pricing",
+    "product development subscription",
   ],
   alternates: { canonical: "/pricing" },
 };
@@ -37,7 +37,7 @@ export default function PricingPage() {
         }
         title="Your Tier"
         titleAccent="Pick"
-        subtitle="No contracts. Cancel anytime. Most requests done within 48 hours. Unlimited design and development requests on every plan."
+        subtitle="From execution to command. Each tier scales your access to AI agents, senior oversight, and strategic depth. No contracts. Cancel anytime."
         breadcrumbs={[{ label: "Pricing" }]}
       />
 
@@ -175,8 +175,9 @@ export default function PricingPage() {
       </section>
 
       <CTABanner
-        title="Ready to lock in your tier?"
-        subtitle="Pick a plan and start shipping within 24 hours. No pitch decks, no discovery calls."
+        title="Your backlog isn't a strategy."
+        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        cta="Deploy Your Infrastructure"
       />
     </>
   );
