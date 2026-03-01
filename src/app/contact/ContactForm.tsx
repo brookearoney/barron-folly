@@ -52,7 +52,7 @@ export default function ContactForm() {
             <div>
               <h2 className="text-3xl md:text-4xl font-light mb-8">
                 No pitch decks. No discovery calls.{" "}
-                <span className="text-[#6E6E6A]">Just results.</span>
+                <span className="text-[#6E6E6A]">Just infrastructure that moves.</span>
               </h2>
 
               <div className="space-y-6 mb-12">
@@ -131,7 +131,7 @@ export default function ContactForm() {
                   height={32}
                 />
                 <span className="text-sm text-[#6E6E6A]">
-                  Start your subscription
+                  Deploy your infrastructure
                 </span>
               </div>
 
@@ -204,7 +204,7 @@ export default function ContactForm() {
                         required
                         value={form.message}
                         onChange={handleChange}
-                        placeholder="Tell us about your project..."
+                        placeholder="Tell us about your business and what you need built..."
                         rows={4}
                         className="w-full bg-transparent border-b border-[#2A2A26] py-3 text-white placeholder:text-[#2A2A26] focus:border-[#FF8400] outline-none transition-colors resize-none"
                       />

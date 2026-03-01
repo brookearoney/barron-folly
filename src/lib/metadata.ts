@@ -29,7 +29,7 @@ export function localBusinessJsonLd() {
     "@type": "LocalBusiness",
     name: SITE_NAME,
     description:
-      "Subscription-based agentic product agency that builds and deploys scalable digital systems for companies moving faster than their infrastructure.",
+      "Agentic product agency that replaces fragmented teams with an autonomous execution engine for software, systems, and brand infrastructure. Subscription-based, no contracts.",
     url: SITE_URL,
     email: CONTACT.email,
     priceRange: "$500-$10000/month",

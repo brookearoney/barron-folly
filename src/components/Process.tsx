@@ -50,7 +50,7 @@ export default function Process() {
 
         <AnimateIn delay={0.1}>
           <p className="text-[#6E6E6A] max-w-2xl text-lg mb-16">
-            Subscribe to an execution engine. Deploy AI agents instantly. Ship weekly. Standardize continuously.
+            Subscribe to an execution engine. Deploy AI agents instantly. Ship weekly. Standardize continuously. Build. Standardize. Scale. On demand.
           </p>
         </AnimateIn>
 

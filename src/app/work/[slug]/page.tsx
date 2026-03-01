@@ -262,7 +262,7 @@ export default async function ProjectDetailPage({
 
       <CTABanner
         title="Want results like this?"
-        subtitle="Subscribe and start getting deliverables within 48 hours. No contracts, cancel anytime."
+        subtitle="Subscribe to an execution engine and start shipping within 48 hours. No contracts, cancel anytime."
       />
     </>
   );

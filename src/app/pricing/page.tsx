@@ -6,15 +6,15 @@ import AnimateIn from "@/components/AnimateIn";
 import FaqAccordion from "@/components/FaqAccordion";
 
 export const metadata: Metadata = {
-  title: "Pricing | Subscription Tiers for Agentic Execution",
+  title: "Pricing | From Execution to Command",
   description:
-    "Subscription-based agentic product agency. Tiers from $500/mo to $10,000/mo. AI-led execution, systems architecture, and brand infrastructure. No contracts.",
+    "Subscription tiers from $500/mo to $10,000/mo. Lower tiers are AI-dominant execution, upper tiers add human nuance and architecture. No contracts. Cancel anytime.",
   keywords: [
-    "agentic product agency pricing",
-    "subscription product agency",
-    "AI execution subscription",
-    "scalable digital systems pricing",
-    "product development subscription",
+    "agentic execution pricing",
+    "subscription execution engine",
+    "AI-led product development pricing",
+    "autonomous execution subscription",
+    "digital infrastructure pricing",
   ],
   alternates: { canonical: "/pricing" },
 };
@@ -37,7 +37,7 @@ export default function PricingPage() {
         }
         title="Your Tier"
         titleAccent="Pick"
-        subtitle="From execution to command. Each tier scales your access to AI agents, senior oversight, and strategic depth. No contracts. Cancel anytime."
+        subtitle="From execution to command — deploy the layer your business requires. Lower tiers are AI-dominant execution. Upper tiers add human nuance, architecture, and strategic oversight. No contracts. Cancel anytime."
         breadcrumbs={[{ label: "Pricing" }]}
       />
 
@@ -175,8 +175,8 @@ export default function PricingPage() {
       </section>
 
       <CTABanner
-        title="Your backlog isn't a strategy."
-        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        title="Still waiting months for development?"
+        subtitle="Subscribe to an execution engine that deploys software, systems, and brand infrastructure — continuously. No contracts."
         cta="Deploy Your Infrastructure"
       />
     </>

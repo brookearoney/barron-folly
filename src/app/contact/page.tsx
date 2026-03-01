@@ -3,14 +3,14 @@ import PageHero from "@/components/PageHero";
 import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact | Get Started With Your Subscription",
+  title: "Contact | Deploy Your Execution Engine",
   description:
-    "Ready to start shipping? Contact Barron & Folly to subscribe and start receiving unlimited design and development requests with 48-hour turnarounds.",
+    "Ready to deploy your infrastructure? Contact Barron & Folly to subscribe and start shipping software, systems, and brand infrastructure within 48 hours.",
   keywords: [
-    "hire design agency",
-    "contact design agency",
-    "start design subscription",
-    "design agency contact",
+    "deploy execution engine",
+    "agentic product agency contact",
+    "start infrastructure subscription",
+    "AI-led development agency",
   ],
   alternates: { canonical: "/contact" },
 };
@@ -40,9 +40,9 @@ export default function ContactPage() {
             />
           </svg>
         }
-        title="Build"
+        title="Deploy"
         titleAccent="Let's"
-        subtitle="Ready to lock in your tier and start shipping? Drop us a line and we'll get you set up within 24 hours."
+        subtitle="Ready to deploy your execution engine? Drop us a line and we'll have you shipping within 48 hours. No pitch decks. No discovery calls. Just infrastructure."
         breadcrumbs={[{ label: "Contact" }]}
       />
 

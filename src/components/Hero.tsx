@@ -24,7 +24,7 @@ export default function Hero() {
           {/* Left: Big headline */}
           <div className="animate-fade-up">
             <h1 className="text-[3.5rem] sm:text-7xl md:text-8xl lg:text-[8.5rem] font-light leading-[1.05] tracking-tight">
-              Idea to
+              Deploy Digital
               <br />
               <span className="font-display text-[#FF8400]">Infrastructure</span>
             </h1>
@@ -37,8 +37,8 @@ export default function Hero() {
                 We turn complexity into deployable systems — fast.
               </span>{" "}
               <span className="text-[#6E6E6A]">
-                AI agents and senior product oversight to build, standardize, and
-                scale the systems behind modern businesses.
+                Barron & Folly combines AI agents and senior product oversight to
+                build, standardize, and scale the systems behind modern businesses.
               </span>
             </p>
 

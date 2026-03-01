@@ -81,7 +81,7 @@ export default function Navbar() {
             href="/contact"
             className="hidden md:flex items-center gap-2 px-6 py-3 bg-white text-[#0A0A08] rounded-full text-sm font-medium hover:bg-[#FF8400] hover:text-[#0A0A08] transition-all duration-300"
           >
-            Let&apos;s Chat!
+            Deploy Now
             <svg
               width="16"
               height="16"
@@ -147,7 +147,7 @@ export default function Navbar() {
             href="/contact"
             className="mt-4 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF8400] text-[#0A0A08] rounded-full text-lg font-semibold"
           >
-            Let&apos;s Chat!
+            Deploy Now
           </Link>
         </nav>
       </div>

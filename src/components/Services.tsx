@@ -6,20 +6,20 @@ const services = [
   {
     num: "/01",
     title: "Agentic Execution",
-    desc: "Autonomous AI agents deploy web platforms, applications, automations, internal tools, dashboards, integrations, and reporting infrastructure. Code-heavy tasks are no longer the bottleneck.",
-    tags: ["Web Platforms", "Applications", "CRM Systems", "Automations", "Dashboards", "Technical SEO"],
+    desc: "Autonomous AI agents deploy web platforms, applications, automations, internal tools, dashboards, integrations, CRM systems, conversion systems, technical SEO, and reporting infrastructure. Code-heavy tasks are no longer the bottleneck.",
+    tags: ["Web Platforms", "Applications", "CRM Systems", "Automations", "Dashboards", "Technical SEO", "Integrations"],
   },
   {
     num: "/02",
     title: "Systems Architecture",
     desc: "We don\u2019t just build pages. We design workflow logic, information architecture, scalable frameworks, internal operational tooling, and data visibility layers. Infrastructure before aesthetics.",
-    tags: ["Workflow Logic", "Information Architecture", "Scalable Frameworks", "Data Visibility"],
+    tags: ["Workflow Logic", "Information Architecture", "Scalable Frameworks", "Data Visibility", "Operational Tooling"],
   },
   {
     num: "/03",
     title: "Brand & Experience",
     desc: "When speed is handled, we refine precision. Identity systems, design systems, UX strategy, multi-product cohesion, and portfolio brand consolidation for companies that need nuance at scale.",
-    tags: ["Identity Systems", "Design Systems", "UX Strategy", "Brand Consolidation"],
+    tags: ["Identity Systems", "Design Systems", "UX Strategy", "Brand Consolidation", "Multi-Product Cohesion"],
   },
 ];
 
@@ -47,8 +47,8 @@ export default function Services() {
           </AnimateIn>
           <AnimateIn delay={0.2}>
             <p className="text-[#6E6E6A] max-w-md text-lg">
-              You don&apos;t need more vendors. You need infrastructure. Three pillars
-              that replace fragmented teams with scalable systems.
+              You don&apos;t need more people. You need coordinated execution. Three
+              pillars that replace fragmented teams with scalable systems.
             </p>
           </AnimateIn>
         </div>

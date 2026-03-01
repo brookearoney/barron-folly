@@ -5,16 +5,16 @@ import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 
 export const metadata: Metadata = {
-  title: "Services | Agentic Execution, Systems & Brand Infrastructure",
+  title: "Services | Software, Systems & Brand Infrastructure",
   description:
-    "Three deployment pillars: Agentic Execution, Systems Architecture, and Brand & Experience. AI-led velocity with senior product oversight. 48-hour turnarounds.",
+    "Three deployment pillars: Agentic Execution, Systems Architecture, and Brand & Experience. AI agents deploy software, systems, and brand infrastructure on demand.",
   keywords: [
     "agentic execution",
     "systems architecture",
     "brand infrastructure",
-    "AI product development",
-    "subscription product agency services",
-    "scalable digital systems",
+    "AI-led product development",
+    "autonomous execution engine",
+    "digital infrastructure deployment",
   ],
   alternates: { canonical: "/services" },
 };
@@ -26,7 +26,7 @@ export default function ServicesPage() {
         badge="What We Deploy"
         title="an Execution Engine"
         titleAccent="Deploy"
-        subtitle="You don't need more vendors. You need infrastructure that ships. Three pillars — Agentic Execution, Systems Architecture, and Brand & Experience — deployed as a single, continuous operation."
+        subtitle="You don't need more people. You need coordinated execution. Three pillars — Agentic Execution, Systems Architecture, and Brand & Experience — deployed as a single, continuous operation."
         breadcrumbs={[{ label: "Services" }]}
       />
 
@@ -43,8 +43,8 @@ export default function ServicesPage() {
       </section>
 
       <CTABanner
-        title="Your backlog isn't a strategy."
-        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        title="What would shipping weekly feel like?"
+        subtitle="Subscribe to an execution engine that deploys software, systems, and brand infrastructure — continuously. No contracts."
         cta="Deploy Your Infrastructure"
       />
     </>

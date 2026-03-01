@@ -78,8 +78,9 @@ export default function About() {
 
             <AnimateIn delay={0.1}>
               <p className="text-lg text-[#9E9E98] leading-relaxed mb-6">
-                Every scaling company hits the same wall: too many tools, too many
-                vendors, too many disconnected systems. Growth creates operational
+                Every scaling company eventually hits this wall: too many tools,
+                too many vendors, too many disconnected systems. Brand inconsistency,
+                internal bottlenecks, slow product cycles. Growth creates operational
                 drag. Most companies try to solve it by hiring more humans.
               </p>
             </AnimateIn>
@@ -87,7 +88,7 @@ export default function About() {
               <p className="text-lg text-[#6E6E6A] leading-relaxed mb-10">
                 You solve it by deploying coordinated AI operators and senior
                 oversight. One execution engine replaces your dev agency, marketing
-                ops, design firm, and internal bottlenecks.
+                ops, design firm, consultant, and internal bottlenecks.
               </p>
             </AnimateIn>
 

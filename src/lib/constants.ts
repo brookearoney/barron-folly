@@ -1,7 +1,7 @@
 export const SITE_URL = "https://barronfolly.com";
 export const SITE_NAME = "Barron & Folly";
 export const SITE_LEGAL_NAME = "Barron & Folly LC";
-export const SITE_TAGLINE = "Agentic Product Agency for Growing Companies";
+export const SITE_TAGLINE = "Build. Standardize. Scale. On Demand.";
 
 export const CONTACT = {
   email: "start@barronfolly.com",

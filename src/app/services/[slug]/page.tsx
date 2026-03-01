@@ -243,7 +243,7 @@ export default async function ServiceDetailPage({
 
       <CTABanner
         title={`Need ${service.title.toLowerCase()}?`}
-        subtitle="Subscribe and start getting deliverables within 48 hours. No contracts, cancel anytime."
+        subtitle="Subscribe to an execution engine and start shipping within 48 hours. No contracts, cancel anytime."
       />
     </>
   );

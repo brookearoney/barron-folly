@@ -3,9 +3,9 @@ import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 
 export const metadata: Metadata = {
-  title: "Blog | Insights on Design, Development & AI",
+  title: "Blog | Insights on Agentic Execution, Systems & AI",
   description:
-    "Insights, case studies, and thoughts on product design, mobile and web app development, AI automation, and building great products.",
+    "Insights, case studies, and perspectives on agentic execution, systems architecture, AI-led development, and building scalable digital infrastructure.",
   alternates: { canonical: "/blog" },
 };
 
@@ -26,7 +26,7 @@ export default function BlogPage() {
         }
         title="Soon"
         titleAccent="Coming"
-        subtitle="We're putting together insights on product design, app development, AI automation, and building great products. Check back soon."
+        subtitle="We're putting together insights on agentic execution, systems architecture, AI-led development, and deploying scalable infrastructure. Check back soon."
         breadcrumbs={[{ label: "Blog" }]}
       />
 

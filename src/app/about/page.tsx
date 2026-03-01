@@ -7,14 +7,15 @@ import JsonLd from "@/components/JsonLd";
 import { localBusinessJsonLd } from "@/lib/metadata";
 
 export const metadata: Metadata = {
-  title: "About | Agentic Product Agency",
+  title: "About | Autonomous Execution Engine for Growing Companies",
   description:
-    "Barron & Folly is a subscription-based agentic product agency that deploys AI agents and senior product oversight to build scalable digital systems. Based in American Fork, Utah.",
+    "Barron & Folly is an agentic product agency that replaces fragmented teams with an autonomous execution engine for software, systems, and brand infrastructure. Based in American Fork, Utah.",
   keywords: [
     "agentic product agency",
+    "autonomous execution engine",
     "AI product agency Utah",
-    "subscription product agency",
-    "scalable digital systems",
+    "subscription execution engine",
+    "replace dev agency with AI",
   ],
   alternates: { canonical: "/about" },
 };
@@ -60,7 +61,7 @@ export default function AboutPage() {
         }
         title="Complexity"
         titleAccent="Growth Creates"
-        subtitle="Barron & Folly is an agentic product agency that replaces fragmented vendor stacks with a single execution engine. AI agents handle velocity. Senior oversight handles nuance. You get infrastructure that scales with your business."
+        subtitle="Barron & Folly is an agentic product agency that replaces fragmented teams with an autonomous execution engine for software, systems, and brand infrastructure. AI agents handle velocity. Senior oversight handles nuance. You get infrastructure that scales."
         breadcrumbs={[{ label: "About" }]}
       />
 
@@ -86,14 +87,15 @@ export default function AboutPage() {
 
                 <p className="text-lg text-[#9E9E98] leading-relaxed mb-6">
                   Based in American Fork, Utah — we&apos;ve deployed systems,
-                  products, and brand infrastructure for growth-stage companies
-                  across industries.
+                  products, and brand infrastructure for growth-stage companies,
+                  multi-location operators, PE-backed portfolios, and SaaS
+                  companies across industries.
                 </p>
                 <p className="text-lg text-[#6E6E6A] leading-relaxed">
                   We built Barron & Folly because growing companies deserve better
-                  than fragmented agencies and overloaded freelancers. AI agents
-                  handle the velocity. Senior product oversight handles the nuance.
-                  Everything ships under one roof.
+                  than fragmented agencies, overloaded freelancers, and months of
+                  waiting. AI agents handle the velocity. Senior product oversight
+                  handles the nuance. Everything ships under one roof.
                 </p>
               </div>
             </AnimateIn>
@@ -145,8 +147,8 @@ export default function AboutPage() {
       </section>
 
       <CTABanner
-        title="Your backlog isn't a strategy."
-        subtitle="Subscribe to an execution engine that ships software, systems, and brand infrastructure — continuously."
+        title="Replace five vendors with one execution engine."
+        subtitle="Subscribe and start deploying software, systems, and brand infrastructure — continuously. No contracts. Cancel anytime."
         cta="Deploy Your Infrastructure"
       />
     </>

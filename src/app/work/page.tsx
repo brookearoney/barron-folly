@@ -6,15 +6,15 @@ import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
 
 export const metadata: Metadata = {
-  title: "Work | Design & Development Portfolio",
+  title: "Work | Deployed Systems & Infrastructure Portfolio",
   description:
-    "Explore our portfolio of product design, mobile app development, web app development, branding, and packaging projects. Case studies from Barron & Folly.",
+    "Explore deployed systems, products, and brand infrastructure. Case studies in agentic execution, systems architecture, and brand design from Barron & Folly.",
   keywords: [
-    "design portfolio",
-    "app design case studies",
+    "deployed systems portfolio",
+    "agentic execution case studies",
     "product design portfolio",
-    "branding portfolio",
-    "mobile app development portfolio",
+    "AI-built infrastructure",
+    "digital systems portfolio",
   ],
   alternates: { canonical: "/work" },
 };
@@ -34,7 +34,7 @@ export default function WorkPage() {
         }
         title="Projects"
         titleAccent="Our"
-        subtitle="From fitness apps and fintech platforms to premium packaging and brand identities — here's what we've shipped."
+        subtitle="From AI-powered platforms and scalable systems to premium brand infrastructure — here's what we've deployed."
         breadcrumbs={[{ label: "Work" }]}
       />
 
