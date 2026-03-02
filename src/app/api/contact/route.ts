@@ -1,28 +1,6 @@
 import { NextResponse } from "next/server";
-
-const LINEAR_API_URL = "https://api.linear.app/graphql";
-
-async function linearRequest(query: string, variables: Record<string, unknown> = {}) {
-  const res = await fetch(LINEAR_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: process.env.LINEAR_API_KEY!,
-    },
-    body: JSON.stringify({ query, variables }),
-  });
-
-  if (!res.ok) {
-    throw new Error(`Linear API error: ${res.status}`);
-  }
-
-  const json = await res.json();
-  if (json.errors) {
-    throw new Error(json.errors[0]?.message || "Linear GraphQL error");
-  }
-
-  return json.data;
-}
+import { linearRequest } from "@/lib/linear/client";
+import { CREATE_ISSUE } from "@/lib/linear/queries";
 
 export async function POST(req: Request) {
   try {
@@ -52,21 +30,17 @@ export async function POST(req: Request) {
       message,
     ].join("\n");
 
-    await linearRequest(
-      `mutation CreateIssue($input: IssueCreateInput!) {
-        issueCreate(input: $input) {
-          success
-          issue { id identifier url }
-        }
-      }`,
-      {
-        input: {
-          teamId: process.env.LINEAR_TEAM_ID,
-          title: `New Lead: ${name}`,
-          description,
-        },
-      }
-    );
+    const input: Record<string, unknown> = {
+      teamId: process.env.LINEAR_TEAM_ID,
+      title: `New Lead: ${name}`,
+      description,
+    };
+
+    if (process.env.LINEAR_PROJECT_ID) {
+      input.projectId = process.env.LINEAR_PROJECT_ID;
+    }
+
+    await linearRequest(CREATE_ISSUE, { input });
 
     return NextResponse.json({ success: true });
   } catch (error) {

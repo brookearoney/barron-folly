@@ -12,13 +12,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link href="/" className="flex items-center gap-3 mb-6">
-              <Image
-                src="/images/brand/fox-icon.svg"
-                alt="Barron & Folly"
-                width={32}
-                height={32}
-              />
+            <Link href="/" className="inline-block mb-6">
               <Image
                 src="/images/brand/logo-full.svg"
                 alt="Barron & Folly"

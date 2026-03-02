@@ -37,12 +37,13 @@ export default function Navbar() {
         }`}
       >
         <div className="w-[90%] mx-auto flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center">
             <Image
-              src="/images/brand/fox-icon.svg"
+              src="/images/brand/fox-icon-cream.svg"
               alt="Barron & Folly"
               width={36}
               height={36}
+              className="sm:hidden"
             />
             <Image
               src="/images/brand/logo-full.svg"
