@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -37,13 +38,15 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-10">
-          <Image
-            src="/images/brand/fox-icon-cream.svg"
-            alt="Barron & Folly"
-            width={48}
-            height={48}
-            className="mx-auto mb-6"
-          />
+          <Link href="/" className="inline-block mb-6 hover:opacity-80 transition-opacity">
+            <Image
+              src="/images/brand/fox-icon-cream.svg"
+              alt="Barron & Folly"
+              width={48}
+              height={48}
+              className="mx-auto"
+            />
+          </Link>
           <h1 className="text-2xl font-semibold text-foreground mb-2">
             B&F Console
           </h1>
@@ -96,7 +99,11 @@ export default function LoginPage() {
         )}
 
         <p className="text-center text-muted text-xs mt-8">
-          Access is by invitation only.
+          Access is by invitation only.{" "}
+          <Link href="/contact" className="text-orange hover:underline">
+            Contact us
+          </Link>{" "}
+          to get started.
         </p>
       </div>
     </div>
