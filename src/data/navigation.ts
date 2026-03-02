@@ -17,4 +17,5 @@ export const footerNav: NavLink[] = [
   { href: "/about", label: "About" },
   { href: "/pricing", label: "Pricing" },
   { href: "/contact", label: "Contact" },
+  { href: "/console/login", label: "Client Portal" },
 ];

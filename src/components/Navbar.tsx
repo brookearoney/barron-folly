@@ -78,27 +78,35 @@ export default function Navbar() {
             </div>
           </nav>
 
-          <Link
-            href="/contact"
-            className="hidden md:flex items-center gap-2 px-6 py-3 bg-white text-[#0A0A08] rounded-full text-sm font-medium hover:bg-[#FF8400] hover:text-[#0A0A08] transition-all duration-300"
-          >
-            Deploy Now
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="none"
-              className="transition-transform group-hover:translate-x-1"
+          <div className="hidden md:flex items-center gap-4">
+            <Link
+              href="/console/login"
+              className="text-sm text-[#9E9E98] hover:text-white transition-colors"
             >
-              <path
-                d="M3 8H13M13 8L9 4M13 8L9 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+              Client Login
+            </Link>
+            <Link
+              href="/contact"
+              className="flex items-center gap-2 px-6 py-3 bg-white text-[#0A0A08] rounded-full text-sm font-medium hover:bg-[#FF8400] hover:text-[#0A0A08] transition-all duration-300"
+            >
+              Deploy Now
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="none"
+                className="transition-transform group-hover:translate-x-1"
+              >
+                <path
+                  d="M3 8H13M13 8L9 4M13 8L9 12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </div>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -149,6 +157,15 @@ export default function Navbar() {
             className="mt-4 inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#FF8400] text-[#0A0A08] rounded-full text-lg font-semibold"
           >
             Deploy Now
+          </Link>
+          <Link
+            href="/console/login"
+            className="mt-2 inline-flex items-center justify-center gap-2 text-[#9E9E98] hover:text-white transition-colors text-sm"
+          >
+            Client Login
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3" />
+            </svg>
           </Link>
         </nav>
       </div>
