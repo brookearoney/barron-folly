@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { requireAdmin } from "@/lib/console/admin-helpers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createLinearTeamAndProject } from "@/lib/linear/client";
 
 export async function GET(request: NextRequest) {
   const auth = await requireAdmin();
@@ -77,8 +78,6 @@ export async function POST(req: Request) {
       slug,
       tier,
       tier_price,
-      linear_team_id,
-      linear_project_id,
       max_concurrent_requests,
     } = await req.json();
 
@@ -89,6 +88,21 @@ export async function POST(req: Request) {
       );
     }
 
+    // Auto-create Linear team + project for this organization
+    let linearTeamId: string | null = null;
+    let linearProjectId: string | null = null;
+
+    if (process.env.LINEAR_API_KEY) {
+      try {
+        const linear = await createLinearTeamAndProject(name);
+        linearTeamId = linear.teamId;
+        linearProjectId = linear.projectId;
+      } catch (linearError) {
+        console.error("Linear team/project creation failed:", linearError);
+        // Continue creating the org without Linear — admin can link later
+      }
+    }
+
     const { data: org, error } = await admin
       .from("organizations")
       .insert({
@@ -96,8 +110,8 @@ export async function POST(req: Request) {
         slug,
         tier,
         tier_price: tier_price || 0,
-        linear_team_id: linear_team_id || null,
-        linear_project_id: linear_project_id || null,
+        linear_team_id: linearTeamId,
+        linear_project_id: linearProjectId,
         max_concurrent_requests: max_concurrent_requests || 2,
       })
       .select()
@@ -105,7 +119,13 @@ export async function POST(req: Request) {
 
     if (error) throw error;
 
-    return NextResponse.json({ organization: org }, { status: 201 });
+    return NextResponse.json(
+      {
+        organization: org,
+        linear_created: !!(linearTeamId && linearProjectId),
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Create org error:", error);
     return NextResponse.json(

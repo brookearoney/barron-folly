@@ -44,8 +44,6 @@ export default function OrganizationDetailPage() {
         slug: form.get("slug"),
         tier: form.get("tier"),
         max_concurrent_requests: parseInt(form.get("max_concurrent_requests") as string),
-        linear_team_id: form.get("linear_team_id") || null,
-        linear_project_id: form.get("linear_project_id") || null,
       }),
     });
 
@@ -149,12 +147,24 @@ export default function OrganizationDetailPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-muted-light mb-1.5">Linear Team ID</label>
-              <input name="linear_team_id" defaultValue={org.linear_team_id || ""} placeholder="UUID" className="w-full px-3 py-2.5 bg-background border border-dark-border rounded-lg text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-orange transition-colors" />
+              <label className="block text-sm text-muted-light mb-1.5">Linear Team</label>
+              {org.linear_team_id ? (
+                <p className="px-3 py-2.5 bg-background border border-dark-border rounded-lg text-foreground text-sm font-mono truncate">
+                  {org.linear_team_id}
+                </p>
+              ) : (
+                <p className="px-3 py-2.5 text-muted text-sm italic">Not linked</p>
+              )}
             </div>
             <div>
-              <label className="block text-sm text-muted-light mb-1.5">Linear Project ID</label>
-              <input name="linear_project_id" defaultValue={org.linear_project_id || ""} placeholder="UUID" className="w-full px-3 py-2.5 bg-background border border-dark-border rounded-lg text-foreground text-sm placeholder:text-muted focus:outline-none focus:border-orange transition-colors" />
+              <label className="block text-sm text-muted-light mb-1.5">Linear Project</label>
+              {org.linear_project_id ? (
+                <p className="px-3 py-2.5 bg-background border border-dark-border rounded-lg text-foreground text-sm font-mono truncate">
+                  {org.linear_project_id}
+                </p>
+              ) : (
+                <p className="px-3 py-2.5 text-muted text-sm italic">Not linked</p>
+              )}
             </div>
           </div>
 

@@ -47,8 +47,6 @@ export default function NewOrganizationPage() {
           max_concurrent_requests: parseInt(
             form.get("max_concurrent_requests") as string
           ) || TIER_CONFIG[tier].maxConcurrent,
-          linear_team_id: form.get("linear_team_id") || null,
-          linear_project_id: form.get("linear_project_id") || null,
         }),
       });
 
@@ -148,33 +146,18 @@ export default function NewOrganizationPage() {
         </div>
 
         <div className="border-t border-dark-border pt-6">
-          <p className="text-foreground text-sm font-medium mb-4">
-            Linear Integration (optional)
-          </p>
-          <div className="space-y-4">
+          <div className="flex items-start gap-3 p-4 bg-dark rounded-lg border border-dark-border">
+            <svg className="w-5 h-5 text-orange flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
             <div>
-              <label htmlFor="linear_team_id" className="block text-sm text-muted-light mb-2">
-                Linear Team ID
-              </label>
-              <input
-                id="linear_team_id"
-                name="linear_team_id"
-                type="text"
-                placeholder="UUID from Linear"
-                className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors"
-              />
-            </div>
-            <div>
-              <label htmlFor="linear_project_id" className="block text-sm text-muted-light mb-2">
-                Linear Project ID
-              </label>
-              <input
-                id="linear_project_id"
-                name="linear_project_id"
-                type="text"
-                placeholder="UUID from Linear"
-                className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors"
-              />
+              <p className="text-foreground text-sm font-medium">
+                Linear Integration
+              </p>
+              <p className="text-muted text-xs mt-1">
+                A Linear team and project will be created automatically for this
+                organization when you save.
+              </p>
             </div>
           </div>
         </div>
