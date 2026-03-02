@@ -10,7 +10,7 @@ export default async function AdminLayout({
   const ctx = await getAdminContext();
 
   if (!ctx) {
-    redirect("/console/dashboard");
+    redirect("/console/login");
   }
 
   return <AdminShell profile={ctx.profile}>{children}</AdminShell>;

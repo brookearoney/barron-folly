@@ -9,7 +9,7 @@ export const metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
   const ctx = await getConsoleContext();
-  if (!ctx) redirect("/console/login");
+  if (!ctx || !ctx.organization) redirect("/console/login");
 
   const supabase = await createServerClient();
 

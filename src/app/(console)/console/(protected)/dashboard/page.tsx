@@ -12,7 +12,7 @@ export const metadata = { title: "Dashboard" };
 
 export default async function DashboardPage() {
   const ctx = await getConsoleContext();
-  if (!ctx) redirect("/console/login");
+  if (!ctx || !ctx.organization) redirect("/console/login");
 
   const supabase = await createServerClient();
 
