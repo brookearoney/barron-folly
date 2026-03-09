@@ -84,7 +84,7 @@ export async function POST(req: Request) {
     try {
       const similar = await findSimilarTasks(
         request.organization_id,
-        `${request.title}\n${request.description}`,
+        request.description,
         5
       );
       similarTasksContext = buildSimilarTasksContext(similar);
@@ -94,7 +94,6 @@ export async function POST(req: Request) {
 
     // Generate clarifying questions (streaming)
     const { stream, getResult } = await generateClarifyingQuestions(
-      request.title,
       request.description,
       profile?.full_name || "Client",
       orgContext,

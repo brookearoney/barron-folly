@@ -2,21 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { CATEGORY_LABELS } from "@/lib/console/constants";
 import type {
-  RequestCategory,
-  RequestPriority,
   AiClarificationData,
   AiClarificationQuestion,
 } from "@/lib/console/types";
-
-const CATEGORIES = Object.entries(CATEGORY_LABELS) as [RequestCategory, string][];
-const PRIORITIES: { value: RequestPriority; label: string }[] = [
-  { value: "low", label: "Low" },
-  { value: "medium", label: "Medium" },
-  { value: "high", label: "High" },
-  { value: "urgent", label: "Urgent" },
-];
 
 type Phase = "form" | "clarifying" | "answering" | "constructing" | "complete";
 
@@ -36,9 +25,7 @@ export default function NewRequestPage() {
   const streamRef = useRef<HTMLDivElement>(null);
 
   // Pre-populate from suggestion URL params
-  const prefillTitle = searchParams.get("title") || "";
   const prefillDescription = searchParams.get("description") || "";
-  const prefillCategory = searchParams.get("category") || "";
 
   // Auto-scroll stream output
   useEffect(() => {
@@ -71,18 +58,13 @@ export default function NewRequestPage() {
     setLoading(true);
 
     const form = new FormData(e.currentTarget);
-    const body = {
-      title: form.get("title"),
-      description: form.get("description"),
-      category: form.get("category"),
-      priority: form.get("priority"),
-    };
+    const description = form.get("description") as string;
 
     try {
       const res = await fetch("/api/console/requests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ description }),
       });
 
       if (!res.ok) {
@@ -473,88 +455,25 @@ export default function NewRequestPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-semibold text-foreground">New Request</h1>
         <p className="text-muted text-sm mt-1">
-          Describe what you need and we&apos;ll get started.
+          Describe what you need and our AI will handle the rest.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label
-            htmlFor="title"
-            className="block text-sm text-muted-light mb-2"
-          >
-            Title
-          </label>
-          <input
-            id="title"
-            name="title"
-            type="text"
-            required
-            defaultValue={prefillTitle}
-            placeholder="e.g. Redesign landing page hero section"
-            className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors"
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="category"
-              className="block text-sm text-muted-light mb-2"
-            >
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              required
-              defaultValue={prefillCategory}
-              className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground focus:outline-none focus:border-orange transition-colors"
-            >
-              <option value="">Select...</option>
-              {CATEGORIES.map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="priority"
-              className="block text-sm text-muted-light mb-2"
-            >
-              Priority
-            </label>
-            <select
-              id="priority"
-              name="priority"
-              className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground focus:outline-none focus:border-orange transition-colors"
-            >
-              {PRIORITIES.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div>
-          <label
             htmlFor="description"
             className="block text-sm text-muted-light mb-2"
           >
-            Description
+            What do you need?
           </label>
           <textarea
             id="description"
             name="description"
             required
-            rows={8}
+            rows={6}
             defaultValue={prefillDescription}
-            placeholder="Describe what you need in detail. Include goals, context, references, and any constraints..."
+            placeholder="Describe your request in as much detail as possible. Include goals, context, references, and any constraints. Our AI will ask follow-up questions to fill in any gaps."
             className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors resize-y"
           />
         </div>

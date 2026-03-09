@@ -86,12 +86,15 @@ export async function POST(req: Request) {
 
     const { title, description, category, priority } = await req.json();
 
-    if (!title || !description || !category) {
+    if (!description) {
       return NextResponse.json(
-        { error: "Title, description, and category are required" },
+        { error: "Description is required" },
         { status: 400 }
       );
     }
+
+    // Auto-generate a title from the description if not provided
+    const requestTitle = title || description.slice(0, 80).trim() + (description.length > 80 ? "..." : "");
 
     // Create the request in Supabase first
     const { data: request, error: insertError } = await supabase
@@ -99,9 +102,9 @@ export async function POST(req: Request) {
       .insert({
         organization_id: profile.organization_id,
         created_by: user.id,
-        title,
+        title: requestTitle,
         description,
-        category,
+        category: category || "other",
         priority: priority || "medium",
         status: "submitted",
         ...(isAiEnabled ? { ai_phase: "clarifying" } : {}),

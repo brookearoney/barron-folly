@@ -137,9 +137,11 @@ export function buildClarificationUserMessage(
 ): string {
   return `New work request from ${clientName}:
 
-${request}
+"${request}"
 
-Analyze this request. Return this exact JSON:
+Analyze this request thoroughly. The client has only provided a free-form description — there is no pre-set title, category, or priority. Your clarifying questions should help fill in any gaps needed to build precise tasks.
+
+Return this exact JSON:
 {
   "request_summary": string,
   "complexity": "simple" | "moderate" | "complex",
@@ -167,8 +169,13 @@ export function buildTaskConstructionUserMessage(
 Clarification answers:
 ${qaThread}
 
-Now construct the complete task plan. Return this exact JSON:
+Now construct the complete task plan. You must also generate a concise request title, select the most appropriate category, and determine the priority level based on the user's description and clarification answers.
+
+Return this exact JSON:
 {
+  "request_title": string,
+  "request_category": "web_platform" | "automation" | "design_system" | "integration" | "internal_tool" | "seo" | "content" | "brand" | "ai_agent" | "other",
+  "request_priority": "urgent" | "high" | "medium" | "low",
   "session_summary": string,
   "session_tags": string[],
   "tasks": [
@@ -181,7 +188,12 @@ Now construct the complete task plan. Return this exact JSON:
       "dependencies": string[]
     }
   ]
-}`;
+}
+
+Guidelines for request-level fields:
+- request_title: A clear, concise title (max ~80 chars) summarizing the overall request. Write it like a ticket title — specific and actionable.
+- request_category: Choose the single best-fit category based on the work described. "web_platform" = websites/web apps, "automation" = workflows/scripts, "design_system" = UI kits/component libraries, "integration" = third-party API connections, "internal_tool" = dashboards/admin tools, "seo" = search optimization, "content" = copywriting/media, "brand" = identity/logo/guidelines, "ai_agent" = AI-powered features, "other" = anything else.
+- request_priority: Determine urgency from the user's language, deadlines mentioned, and business impact. Default to "medium" if unclear.`;
 }
 
 // ─── Flow 4: Proactive Suggestions ──────────────────────────────────────

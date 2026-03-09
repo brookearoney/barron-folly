@@ -65,7 +65,6 @@ export async function generateStyleGuide(
 // ─── Flow 2: Generate Clarifying Questions (streaming) ──────────────────
 
 export async function generateClarifyingQuestions(
-  requestTitle: string,
   requestDescription: string,
   clientName: string,
   orgDossier: string,
@@ -84,7 +83,7 @@ export async function generateClarifyingQuestions(
 
   const userMessage = buildClarificationUserMessage(
     clientName,
-    `Title: ${requestTitle}\nDescription: ${requestDescription}`
+    requestDescription
   );
 
   let accumulated = "";
@@ -109,14 +108,20 @@ export async function generateClarifyingQuestions(
   const readableStream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const encoder = new TextEncoder();
-      for await (const event of anthropicStream) {
-        if (
-          event.type === "content_block_delta" &&
-          event.delta.type === "text_delta"
-        ) {
-          accumulated += event.delta.text;
-          controller.enqueue(encoder.encode(event.delta.text));
+      try {
+        for await (const event of anthropicStream) {
+          if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+          ) {
+            accumulated += event.delta.text;
+            controller.enqueue(encoder.encode(event.delta.text));
+          }
         }
+      } catch (err) {
+        console.error("Clarification stream error:", err);
+        const errMsg = `\n\n{"error": "${err instanceof Error ? err.message.replace(/"/g, '\\"') : "Stream failed"}"}`;
+        controller.enqueue(encoder.encode(errMsg));
       }
       controller.close();
       try {
@@ -179,20 +184,26 @@ export async function constructTaskPlan(
   const readableStream = new ReadableStream<Uint8Array>({
     async start(controller) {
       const encoder = new TextEncoder();
-      for await (const event of anthropicStream) {
-        if (
-          event.type === "content_block_delta" &&
-          event.delta.type === "text_delta"
-        ) {
-          accumulated += event.delta.text;
-          controller.enqueue(encoder.encode(event.delta.text));
+      try {
+        for await (const event of anthropicStream) {
+          if (
+            event.type === "content_block_delta" &&
+            event.delta.type === "text_delta"
+          ) {
+            accumulated += event.delta.text;
+            controller.enqueue(encoder.encode(event.delta.text));
+          }
         }
+      } catch (err) {
+        console.error("Task construction stream error:", err);
+        const errMsg = `\n\n{"error": "${err instanceof Error ? err.message.replace(/"/g, '\\"') : "Stream failed"}"}`;
+        controller.enqueue(encoder.encode(errMsg));
       }
       controller.close();
       try {
         resolveResult(JSON.parse(accumulated) as AiTaskPlan);
       } catch {
-        resolveResult({ session_summary: "", session_tags: [], tasks: [] });
+        resolveResult({ request_title: "", request_category: "other", request_priority: "medium", session_summary: "", session_tags: [], tasks: [] });
       }
     },
   });

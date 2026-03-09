@@ -90,7 +90,7 @@ export async function POST(req: Request) {
     try {
       const similar = await findSimilarTasks(
         request.organization_id,
-        `${request.title}\n${request.description}`,
+        request.description,
         5
       );
       similarTasksContext = buildSimilarTasksContext(similar);
@@ -98,7 +98,7 @@ export async function POST(req: Request) {
       // RAG is non-critical
     }
 
-    const originalRequest = `Title: ${request.title}\nCategory: ${request.category}\nPriority: ${request.priority}\nDescription: ${request.description}`;
+    const originalRequest = request.description;
 
     // Generate task plan (streaming)
     const { stream, getResult } = await constructTaskPlan(
@@ -124,6 +124,8 @@ export async function POST(req: Request) {
         // Track title → issue ID for dependency resolution
         const titleToIssueId: Record<string, string> = {};
 
+        const aiTitle = taskPlan.request_title || request.title;
+
         if (teamId && process.env.LINEAR_API_KEY && taskPlan.tasks.length > 0) {
           for (const task of taskPlan.tasks) {
             try {
@@ -131,7 +133,7 @@ export async function POST(req: Request) {
                 teamId,
                 title: `[${org.name}] ${task.title}`,
                 description: [
-                  `**Original Request:** ${request.title}`,
+                  `**Original Request:** ${aiTitle}`,
                   `**Priority:** ${task.priority}`,
                   `**Estimate:** ${task.estimate} point(s)`,
                   `**Labels:** ${task.labels.join(", ")}`,
@@ -200,11 +202,22 @@ export async function POST(req: Request) {
           }
         }
 
-        // Update request with Linear info and mark as constructed
+        // Update request with AI-generated fields, Linear info, and mark as constructed
         const updateData: Record<string, unknown> = {
           ai_phase: "constructed",
           updated_at: new Date().toISOString(),
         };
+
+        // Apply AI-generated request metadata
+        if (taskPlan.request_title) {
+          updateData.title = taskPlan.request_title;
+        }
+        if (taskPlan.request_category) {
+          updateData.category = taskPlan.request_category;
+        }
+        if (taskPlan.request_priority) {
+          updateData.priority = taskPlan.request_priority;
+        }
 
         if (firstIssueId) {
           updateData.linear_issue_id = firstIssueId;
@@ -217,11 +230,12 @@ export async function POST(req: Request) {
           .update(updateData)
           .eq("id", request_id);
 
-        // Append memory log entry to org
+        // Append memory log entry to org (use AI-generated title)
+        const resolvedTitle = taskPlan.request_title || request.title;
         const memoryEntry: MemoryLogEntry = {
           timestamp: new Date().toISOString(),
           request_id: request_id,
-          request_title: request.title,
+          request_title: resolvedTitle,
           summary: taskPlan.session_summary,
           tags: taskPlan.session_tags,
           task_ids: linearIssueIds,
@@ -241,7 +255,7 @@ export async function POST(req: Request) {
         // Store task embeddings for RAG
         try {
           const embeddingContent = [
-            `Request: ${request.title}`,
+            `Request: ${resolvedTitle}`,
             `Description: ${request.description}`,
             `Summary: ${taskPlan.session_summary}`,
             `Tasks: ${taskPlan.tasks.map((t) => t.title).join(", ")}`,
@@ -253,8 +267,8 @@ export async function POST(req: Request) {
             request_id,
             embeddingContent,
             {
-              category: request.category,
-              priority: request.priority,
+              category: taskPlan.request_category || request.category,
+              priority: taskPlan.request_priority || request.priority,
               task_count: taskPlan.tasks.length,
             }
           );

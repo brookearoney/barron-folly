@@ -125,6 +125,9 @@ export interface AiPlannedTask {
 }
 
 export interface AiTaskPlan {
+  request_title: string;
+  request_category: RequestCategory;
+  request_priority: RequestPriority;
   session_summary: string;
   session_tags: string[];
   tasks: AiPlannedTask[];
