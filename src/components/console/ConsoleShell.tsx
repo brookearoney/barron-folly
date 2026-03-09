@@ -87,7 +87,7 @@ export default function ConsoleShell({
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -213,9 +213,9 @@ export default function ConsoleShell({
       </aside>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-dark-border px-4 lg:px-8 h-14 flex items-center gap-4">
+        <header className="shrink-0 z-30 bg-background/80 backdrop-blur-md border-b border-dark-border px-4 lg:px-8 h-14 flex items-center gap-4">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden text-muted-light hover:text-foreground"
@@ -237,7 +237,7 @@ export default function ConsoleShell({
           )}
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );

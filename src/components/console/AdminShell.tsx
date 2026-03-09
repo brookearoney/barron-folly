@@ -63,7 +63,7 @@ export default function AdminShell({ children, profile }: AdminShellProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="h-screen bg-background flex overflow-hidden">
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/60 z-40 lg:hidden"
@@ -153,8 +153,8 @@ export default function AdminShell({ children, profile }: AdminShellProps) {
         </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-dark-border px-4 lg:px-8 h-14 flex items-center gap-4">
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="shrink-0 z-30 bg-background/80 backdrop-blur-md border-b border-dark-border px-4 lg:px-8 h-14 flex items-center gap-4">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden text-muted-light hover:text-foreground"
@@ -166,7 +166,7 @@ export default function AdminShell({ children, profile }: AdminShellProps) {
           <div className="flex-1" />
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );
