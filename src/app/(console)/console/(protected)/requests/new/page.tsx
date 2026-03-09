@@ -34,10 +34,23 @@ export default function NewRequestPage() {
     }
   }, [streamText]);
 
+  // Extract JSON from AI response that may be wrapped in markdown code blocks
+  function extractJSON(text: string): string {
+    const trimmed = text.trim();
+    const fenceMatch = trimmed.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/);
+    if (fenceMatch) return fenceMatch[1].trim();
+    const jsonStart = trimmed.indexOf("{");
+    const jsonEnd = trimmed.lastIndexOf("}");
+    if (jsonStart !== -1 && jsonEnd > jsonStart) {
+      return trimmed.slice(jsonStart, jsonEnd + 1);
+    }
+    return trimmed;
+  }
+
   // Parse clarification data once streaming completes
   const parseClarificationData = useCallback((text: string) => {
     try {
-      const parsed = JSON.parse(text) as AiClarificationData;
+      const parsed = JSON.parse(extractJSON(text)) as AiClarificationData;
       setClarificationData(parsed);
       // Pre-populate answers object
       const initial: Record<string, string> = {};
@@ -177,6 +190,7 @@ export default function NewRequestPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
+      setPhase("form");
     }
   }
 
@@ -393,6 +407,25 @@ export default function NewRequestPage() {
           >
             {streamText || "Building task plan..."}
           </div>
+        </div>
+
+        {error && <p className="text-red-400 text-sm mt-4">{error}</p>}
+
+        <div className="pt-4">
+          <button
+            type="button"
+            onClick={() => {
+              setPhase("form");
+              setRequestId(null);
+              setClarificationData(null);
+              setStreamText("");
+              setError("");
+              setLoading(false);
+            }}
+            className="text-muted hover:text-foreground text-sm py-3 px-4 transition-colors"
+          >
+            Cancel and start over
+          </button>
         </div>
       </div>
     );

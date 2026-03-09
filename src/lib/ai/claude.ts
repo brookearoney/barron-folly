@@ -18,6 +18,27 @@ function getClient(): Anthropic {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 }
 
+/**
+ * Extract JSON from AI response that may be wrapped in markdown code blocks.
+ * Handles: ```json\n{...}\n```, ```\n{...}\n```, or raw JSON.
+ */
+function extractJSON(text: string): string {
+  const trimmed = text.trim();
+
+  // Strip markdown code fences if present
+  const fenceMatch = trimmed.match(/^```(?:json)?\s*\n?([\s\S]*?)\n?\s*```$/);
+  if (fenceMatch) return fenceMatch[1].trim();
+
+  // Try to find a JSON object/array in the response
+  const jsonStart = trimmed.indexOf("{");
+  const jsonEnd = trimmed.lastIndexOf("}");
+  if (jsonStart !== -1 && jsonEnd > jsonStart) {
+    return trimmed.slice(jsonStart, jsonEnd + 1);
+  }
+
+  return trimmed;
+}
+
 // ─── Flow 1a: Generate Business Dossier (non-streaming) ─────────────────
 
 export async function generateBusinessDossier(
@@ -125,7 +146,7 @@ export async function generateClarifyingQuestions(
       }
       controller.close();
       try {
-        resolveResult(JSON.parse(accumulated) as AiClarificationData);
+        resolveResult(JSON.parse(extractJSON(accumulated)) as AiClarificationData);
       } catch {
         resolveResult({
           request_summary: "",
@@ -201,8 +222,9 @@ export async function constructTaskPlan(
       }
       controller.close();
       try {
-        resolveResult(JSON.parse(accumulated) as AiTaskPlan);
-      } catch {
+        resolveResult(JSON.parse(extractJSON(accumulated)) as AiTaskPlan);
+      } catch (err) {
+        console.error("Failed to parse task plan JSON:", err, "Raw response:", accumulated.slice(0, 500));
         resolveResult({ request_title: "", request_category: "other", request_priority: "medium", session_summary: "", session_tags: [], tasks: [] });
       }
     },
