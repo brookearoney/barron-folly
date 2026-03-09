@@ -5,6 +5,10 @@ export const metadata: Metadata = {
     default: "B&F Console",
     template: "%s | B&F Console",
   },
+  icons: {
+    icon: "/images/brand/favicon.svg",
+    apple: "/images/brand/webclip.svg",
+  },
   robots: { index: false, follow: false },
 };
 

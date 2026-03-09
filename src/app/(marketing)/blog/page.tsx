@@ -6,7 +6,19 @@ export const metadata: Metadata = {
   title: "Blog | Insights on Agentic Execution, Systems & AI",
   description:
     "Insights, case studies, and perspectives on agentic execution, systems architecture, AI-led development, and building scalable digital infrastructure.",
+  keywords: [
+    "agentic execution insights",
+    "systems architecture blog",
+    "AI-led development",
+    "digital infrastructure insights",
+    "autonomous execution engine",
+  ],
   alternates: { canonical: "/blog" },
+  openGraph: {
+    title: "Blog | Insights on Agentic Execution, Systems & AI",
+    description:
+      "Insights, case studies, and perspectives on agentic execution, systems architecture, AI-led development, and building scalable digital infrastructure.",
+  },
 };
 
 export default function BlogPage() {

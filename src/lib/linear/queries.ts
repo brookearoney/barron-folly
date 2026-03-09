@@ -16,6 +16,15 @@ export const ADD_COMMENT = `
   }
 `;
 
+export const CREATE_ISSUE_RELATION = `
+  mutation CreateIssueRelation($issueId: String!, $relatedIssueId: String!, $type: IssueRelationType!) {
+    issueRelationCreate(input: { issueId: $issueId, relatedIssueId: $relatedIssueId, type: $type }) {
+      success
+      issueRelation { id type }
+    }
+  }
+`;
+
 export const UPDATE_ISSUE_LABELS = `
   mutation UpdateIssueLabels($issueId: String!, $labelIds: [String!]!) {
     issueUpdate(id: $issueId, input: { labelIds: $labelIds }) {

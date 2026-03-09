@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { TIER_CONFIG, STATUS_LABELS, STATUS_COLORS } from "@/lib/console/constants";
+import { TIER_CONFIG, STATUS_LABELS, STATUS_COLORS, AI_ONBOARDING_LABELS, AI_ONBOARDING_COLORS } from "@/lib/console/constants";
 import type { Organization, Profile, Request as Req, Tier } from "@/lib/console/types";
 
 const TIERS = Object.entries(TIER_CONFIG) as [Tier, typeof TIER_CONFIG[Tier]][];
@@ -23,6 +23,14 @@ export default function OrganizationDetailPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+  const [showDossier, setShowDossier] = useState(false);
+  const [showStyleGuide, setShowStyleGuide] = useState(false);
+  const [showMemory, setShowMemory] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<Array<{ id: string; title: string; description: string; category: string; estimated_effort: string; status: string }>>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     fetch(`/api/console/admin/organizations/${id}`)
@@ -53,6 +61,70 @@ export default function OrganizationDetailPage() {
     }
     setSaving(false);
   }
+
+  async function handleAiOnboard() {
+    const url = prompt("Enter client website URL:");
+    if (!url) return;
+    setAiLoading(true);
+    setAiError("");
+
+    try {
+      const res = await fetch(`/api/console/admin/organizations/${id}/ai-onboard`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+
+      if (!res.ok) {
+        const result = await res.json();
+        throw new Error(result.error || "AI analysis failed");
+      }
+
+      // Refresh data
+      const refreshRes = await fetch(`/api/console/admin/organizations/${id}`);
+      const refreshData = await refreshRes.json();
+      setData(refreshData);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : "AI analysis failed");
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
+  async function handleGenerateSuggestions() {
+    setSuggestionsLoading(true);
+    try {
+      const res = await fetch(`/api/console/admin/organizations/${id}/suggestions`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const result = await res.json();
+        throw new Error(result.error || "Failed to generate suggestions");
+      }
+      const { suggestions: newSuggestions } = await res.json();
+      setSuggestions(newSuggestions);
+      setShowSuggestions(true);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : "Failed to generate suggestions");
+    } finally {
+      setSuggestionsLoading(false);
+    }
+  }
+
+  async function loadSuggestions() {
+    const res = await fetch(`/api/console/admin/organizations/${id}/suggestions`);
+    if (res.ok) {
+      const { suggestions: existing } = await res.json();
+      setSuggestions(existing);
+    }
+  }
+
+  useEffect(() => {
+    if (data?.organization?.business_dossier) {
+      loadSuggestions();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data?.organization?.business_dossier]);
 
   async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
@@ -176,6 +248,235 @@ export default function OrganizationDetailPage() {
             {saving ? "Saving..." : "Save changes"}
           </button>
         </form>
+
+        {/* AI Intelligence */}
+        <div className="bg-dark rounded-lg border border-dark-border p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-foreground font-medium">AI Intelligence</h2>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${AI_ONBOARDING_COLORS[org.ai_onboarding_status]}`}>
+              {AI_ONBOARDING_LABELS[org.ai_onboarding_status]}
+            </span>
+          </div>
+
+          {org.website_url && (
+            <p className="text-muted text-sm">
+              Source: <span className="text-foreground">{org.website_url}</span>
+            </p>
+          )}
+
+          {org.ai_onboarding_status !== "completed" && (
+            <div>
+              <button
+                onClick={handleAiOnboard}
+                disabled={aiLoading}
+                className="bg-orange hover:bg-orange-dark text-dark font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors disabled:opacity-50"
+              >
+                {aiLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="w-4 h-4 border-2 border-dark border-t-transparent rounded-full animate-spin" />
+                    Analyzing website...
+                  </span>
+                ) : org.ai_onboarding_status === "failed" ? (
+                  "Retry AI Analysis"
+                ) : (
+                  "Run AI Analysis"
+                )}
+              </button>
+              {aiError && <p className="text-red-400 text-xs mt-2">{aiError}</p>}
+            </div>
+          )}
+
+          {org.business_dossier && (
+            <div>
+              <button
+                onClick={() => setShowDossier(!showDossier)}
+                className="text-sm text-orange hover:underline"
+              >
+                {showDossier ? "Hide" : "Show"} Business Dossier
+              </button>
+              {showDossier && (
+                <div className="mt-3 space-y-3 bg-background rounded-lg p-4 border border-dark-border">
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted">Industry:</span>{" "}
+                      <span className="text-foreground">{org.business_dossier.industry}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Model:</span>{" "}
+                      <span className="text-foreground">{org.business_dossier.business_model}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Size:</span>{" "}
+                      <span className="text-foreground">{org.business_dossier.company_size}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Tagline:</span>{" "}
+                      <span className="text-foreground">{org.business_dossier.tagline}</span>
+                    </div>
+                  </div>
+                  {org.business_dossier.tech_stack.length > 0 && (
+                    <div>
+                      <p className="text-muted text-xs mb-1">Tech Stack</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {org.business_dossier.tech_stack.map((t) => (
+                          <span key={t} className="bg-dark-border text-foreground text-xs px-2 py-0.5 rounded">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {org.business_dossier.likely_software_needs.length > 0 && (
+                    <div>
+                      <p className="text-muted text-xs mb-1">Likely Software Needs</p>
+                      <ul className="text-foreground text-sm space-y-1">
+                        {org.business_dossier.likely_software_needs.map((n, i) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-orange mt-0.5">-</span> {n}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-muted text-xs mb-1">Full Dossier</p>
+                    <p className="text-foreground text-sm whitespace-pre-wrap">{org.business_dossier.dossier}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {org.style_guide && (
+            <div>
+              <button
+                onClick={() => setShowStyleGuide(!showStyleGuide)}
+                className="text-sm text-orange hover:underline"
+              >
+                {showStyleGuide ? "Hide" : "Show"} Style Guide
+              </button>
+              {showStyleGuide && (
+                <div className="mt-3 space-y-3 bg-background rounded-lg p-4 border border-dark-border">
+                  <div>
+                    <p className="text-muted text-xs mb-1.5">Colors</p>
+                    <div className="flex gap-2">
+                      {Object.entries(org.style_guide.colors)
+                        .filter(([k]) => k !== "notes")
+                        .map(([key, val]) => (
+                          <div key={key} className="text-center">
+                            <div
+                              className="w-8 h-8 rounded border border-dark-border"
+                              style={{ backgroundColor: val.startsWith("#") ? val : undefined }}
+                            />
+                            <p className="text-muted text-[10px] mt-1 capitalize">{key}</p>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <span className="text-muted">Heading Font:</span>{" "}
+                      <span className="text-foreground">{org.style_guide.typography.heading_font}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Body Font:</span>{" "}
+                      <span className="text-foreground">{org.style_guide.typography.body_font}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Tone:</span>{" "}
+                      <span className="text-foreground">{org.style_guide.brand_voice.tone}</span>
+                    </div>
+                    <div>
+                      <span className="text-muted">Layout:</span>{" "}
+                      <span className="text-foreground">{org.style_guide.ui_patterns.layout}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-muted text-xs mb-1">Design Directive</p>
+                    <p className="text-foreground text-sm whitespace-pre-wrap">{org.style_guide.design_directive}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {org.memory_log && org.memory_log.length > 0 && (
+            <div>
+              <button
+                onClick={() => setShowMemory(!showMemory)}
+                className="text-sm text-orange hover:underline"
+              >
+                {showMemory ? "Hide" : "Show"} Memory Log ({org.memory_log.length} sessions)
+              </button>
+              {showMemory && (
+                <div className="mt-3 space-y-2">
+                  {org.memory_log.slice(-10).reverse().map((entry, i) => (
+                    <div key={i} className="bg-background rounded-lg p-3 border border-dark-border">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-foreground text-sm font-medium">{entry.request_title}</p>
+                        <p className="text-muted text-xs">{new Date(entry.timestamp).toLocaleDateString()}</p>
+                      </div>
+                      <p className="text-muted-light text-xs">{entry.summary}</p>
+                      {entry.tags.length > 0 && (
+                        <div className="flex gap-1 mt-1.5">
+                          {entry.tags.map((tag) => (
+                            <span key={tag} className="bg-dark-border text-muted-light text-[10px] px-1.5 py-0.5 rounded">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Suggestions */}
+          {org.business_dossier && (
+            <div className="border-t border-dark-border pt-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-foreground text-sm font-medium">
+                  AI Suggestions {suggestions.length > 0 && `(${suggestions.length})`}
+                </h3>
+                <button
+                  onClick={handleGenerateSuggestions}
+                  disabled={suggestionsLoading}
+                  className="text-xs text-orange hover:underline disabled:opacity-50"
+                >
+                  {suggestionsLoading ? "Generating..." : "Generate suggestions"}
+                </button>
+              </div>
+              {suggestions.length > 0 && (
+                <div className="space-y-2">
+                  {suggestions.slice(0, showSuggestions ? undefined : 3).map((s) => (
+                    <div key={s.id} className="bg-background rounded-lg p-3 border border-dark-border">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-foreground text-sm font-medium">{s.title}</p>
+                        <span className="text-muted text-[10px] uppercase bg-dark-border px-1.5 py-0.5 rounded">
+                          {s.category}
+                        </span>
+                      </div>
+                      <p className="text-muted-light text-xs line-clamp-2">{s.description}</p>
+                      {s.estimated_effort && (
+                        <p className="text-muted text-[10px] mt-1">Est. {s.estimated_effort}</p>
+                      )}
+                    </div>
+                  ))}
+                  {suggestions.length > 3 && (
+                    <button
+                      onClick={() => setShowSuggestions(!showSuggestions)}
+                      className="text-xs text-orange hover:underline"
+                    >
+                      {showSuggestions ? "Show less" : `Show all ${suggestions.length} suggestions`}
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/* Members */}
         <div className="bg-dark rounded-lg border border-dark-border">

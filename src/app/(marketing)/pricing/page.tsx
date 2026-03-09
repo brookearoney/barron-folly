@@ -17,6 +17,11 @@ export const metadata: Metadata = {
     "digital infrastructure pricing",
   ],
   alternates: { canonical: "/pricing" },
+  openGraph: {
+    title: "Pricing | From Execution to Command",
+    description:
+      "Subscription tiers from $500/mo to $10,000/mo. Lower tiers are AI-dominant execution, upper tiers add human nuance and architecture. No contracts.",
+  },
 };
 
 export default function PricingPage() {

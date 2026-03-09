@@ -1,4 +1,4 @@
-import type { RequestCategory, RequestStatus, RequestPriority, RiskLevel, Tier } from "./types";
+import type { RequestCategory, RequestStatus, RequestPriority, RiskLevel, Tier, AiPhase, AiOnboardingStatus } from "./types";
 
 export const CATEGORY_LABELS: Record<RequestCategory, string> = {
   web_platform: "Web Platform",
@@ -62,6 +62,38 @@ export const TIER_CONFIG: Record<Tier, { label: string; price: string; maxConcur
   steel: { label: "Steel", price: "$2,500/mo", maxConcurrent: 4 },
   titanium: { label: "Titanium", price: "$5,000/mo", maxConcurrent: 6 },
   tungsten: { label: "Tungsten", price: "$10,000/mo", maxConcurrent: 10 },
+};
+
+export const AI_PHASE_LABELS: Record<AiPhase, string> = {
+  none: "Standard",
+  clarifying: "AI Analyzing",
+  clarified: "Ready to Plan",
+  constructing: "Building Tasks",
+  constructed: "Tasks Created",
+  failed: "AI Error",
+};
+
+export const AI_PHASE_COLORS: Record<AiPhase, string> = {
+  none: "bg-[#2A2A26] text-[#9E9E98]",
+  clarifying: "bg-purple-500/10 text-purple-400",
+  clarified: "bg-blue-500/10 text-blue-400",
+  constructing: "bg-[#FF8400]/10 text-[#FF8400]",
+  constructed: "bg-emerald-500/10 text-emerald-400",
+  failed: "bg-red-500/10 text-red-400",
+};
+
+export const AI_ONBOARDING_LABELS: Record<AiOnboardingStatus, string> = {
+  pending: "Not Started",
+  processing: "Analyzing...",
+  completed: "Complete",
+  failed: "Failed",
+};
+
+export const AI_ONBOARDING_COLORS: Record<AiOnboardingStatus, string> = {
+  pending: "bg-[#2A2A26] text-[#9E9E98]",
+  processing: "bg-[#FF8400]/10 text-[#FF8400]",
+  completed: "bg-emerald-500/10 text-emerald-400",
+  failed: "bg-red-500/10 text-red-400",
 };
 
 export const LINEAR_STATE_TO_STATUS: Record<string, RequestStatus> = {

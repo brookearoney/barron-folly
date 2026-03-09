@@ -22,6 +22,8 @@ export default function NewOrganizationPage() {
   const [slug, setSlug] = useState("");
   const [tier, setTier] = useState<Tier>("copper");
   const [autoSlug, setAutoSlug] = useState(true);
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [aiStatus, setAiStatus] = useState<"" | "analyzing" | "done" | "error">("");
 
   function handleNameChange(value: string) {
     setName(value);
@@ -56,6 +58,29 @@ export default function NewOrganizationPage() {
       }
 
       const { organization } = await res.json();
+
+      // Trigger AI onboarding if URL provided
+      if (websiteUrl.trim()) {
+        setAiStatus("analyzing");
+        try {
+          const aiRes = await fetch(
+            `/api/console/admin/organizations/${organization.id}/ai-onboard`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ url: websiteUrl }),
+            }
+          );
+          if (aiRes.ok) {
+            setAiStatus("done");
+          } else {
+            setAiStatus("error");
+          }
+        } catch {
+          setAiStatus("error");
+        }
+      }
+
       router.push(`/console/admin/organizations/${organization.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
@@ -108,6 +133,24 @@ export default function NewOrganizationPage() {
             placeholder="acme-corp"
             className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors"
           />
+        </div>
+
+        <div>
+          <label htmlFor="website_url" className="block text-sm text-muted-light mb-2">
+            Client Website URL
+          </label>
+          <input
+            id="website_url"
+            name="website_url"
+            type="url"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            placeholder="https://example.com"
+            className="w-full px-4 py-3 bg-dark border border-dark-border rounded-lg text-foreground placeholder:text-muted focus:outline-none focus:border-orange transition-colors"
+          />
+          <p className="text-muted text-xs mt-1.5">
+            If provided, AI will analyze the site to generate a business dossier and style guide.
+          </p>
         </div>
 
         <div>
@@ -170,7 +213,11 @@ export default function NewOrganizationPage() {
             disabled={loading}
             className="bg-orange hover:bg-orange-dark text-dark font-semibold text-sm px-6 py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating..." : "Create organization"}
+            {loading
+              ? aiStatus === "analyzing"
+                ? "Analyzing website..."
+                : "Creating..."
+              : "Create organization"}
           </button>
           <button
             type="button"

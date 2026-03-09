@@ -33,6 +33,117 @@ export type ApprovalDecision = "approved" | "denied" | "revision_requested";
 
 export type RiskLevel = "low" | "medium" | "high";
 
+export type AiPhase = "none" | "clarifying" | "clarified" | "constructing" | "constructed" | "failed";
+
+export type AiOnboardingStatus = "pending" | "processing" | "completed" | "failed";
+
+export interface BusinessDossier {
+  name: string;
+  tagline: string;
+  business_model: string;
+  industry: string;
+  company_size: string;
+  tech_stack: string[];
+  key_products: string[];
+  operational_complexity: string;
+  likely_software_needs: string[];
+  dossier: string;
+}
+
+export interface StyleGuide {
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    neutral: string;
+    background: string;
+    text: string;
+    notes: string;
+  };
+  typography: {
+    heading_font: string;
+    body_font: string;
+    scale: string;
+    weight_usage: string;
+    notes: string;
+  };
+  brand_voice: {
+    tone: string;
+    style: string;
+    audience: string;
+    avoid: string[];
+  };
+  messaging: {
+    tagline: string;
+    value_prop: string;
+    key_themes: string[];
+  };
+  ui_patterns: {
+    layout: string;
+    components: string[];
+    density: string;
+    interaction: string;
+    mobile_first: boolean;
+  };
+  logo_url: string;
+  design_directive: string;
+}
+
+export interface MemoryLogEntry {
+  timestamp: string;
+  request_id: string;
+  request_title: string;
+  summary: string;
+  tags: string[];
+  task_ids: string[];
+}
+
+export interface AiClarificationQuestion {
+  id: string;
+  question: string;
+  why: string;
+  type: "text" | "choice" | "boolean";
+  options?: string[];
+  answer?: string | null;
+}
+
+export interface AiClarificationData {
+  request_summary: string;
+  complexity: "simple" | "moderate" | "complex";
+  estimated_tasks: number;
+  questions: AiClarificationQuestion[];
+  answered_at: string | null;
+}
+
+export interface AiPlannedTask {
+  title: string;
+  description: string;
+  priority: "urgent" | "high" | "medium" | "low";
+  estimate: number;
+  labels: string[];
+  dependencies: string[];
+}
+
+export interface AiTaskPlan {
+  session_summary: string;
+  session_tags: string[];
+  tasks: AiPlannedTask[];
+}
+
+export interface OrgSuggestion {
+  id: string;
+  organization_id: string;
+  title: string;
+  description: string;
+  category: string | null;
+  rationale: string | null;
+  estimated_effort: string | null;
+  status: "active" | "dismissed" | "requested";
+  request_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Organization {
   id: string;
   name: string;
@@ -43,6 +154,11 @@ export interface Organization {
   linear_team_id: string | null;
   linear_project_id: string | null;
   max_concurrent_requests: number;
+  website_url: string | null;
+  business_dossier: BusinessDossier | null;
+  style_guide: StyleGuide | null;
+  memory_log: MemoryLogEntry[];
+  ai_onboarding_status: AiOnboardingStatus;
   created_at: string;
 }
 
@@ -69,6 +185,8 @@ export interface Request {
   linear_issue_key: string | null;
   linear_issue_url: string | null;
   request_number: number;
+  ai_phase: AiPhase;
+  ai_clarification_data: AiClarificationData | null;
   created_at: string;
   updated_at: string;
 }

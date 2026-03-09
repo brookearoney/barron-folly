@@ -13,6 +13,11 @@ export const metadata: Metadata = {
     "AI-led development agency",
   ],
   alternates: { canonical: "/contact" },
+  openGraph: {
+    title: "Contact | Deploy Your Execution Engine",
+    description:
+      "Ready to deploy your infrastructure? Contact Barron & Folly to subscribe and start shipping software, systems, and brand infrastructure within 48 hours.",
+  },
 };
 
 export default function ContactPage() {

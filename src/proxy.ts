@@ -8,14 +8,15 @@ export async function proxy(request: NextRequest) {
   const isConsoleRoute = pathname.startsWith("/console");
   const isLoginPage = pathname === "/console/login";
   const isAuthCallback = pathname.startsWith("/api/console/auth/callback");
+  const isAuthRoute = pathname.startsWith("/api/console/auth/");
   const isWebhook = pathname.startsWith("/api/console/webhooks");
 
   if (!isConsoleRoute && !pathname.startsWith("/api/console")) {
     return NextResponse.next();
   }
 
-  // Don't protect webhooks or auth callback
-  if (isWebhook || isAuthCallback) {
+  // Don't protect webhooks or auth routes (callback, verify-email, invite)
+  if (isWebhook || isAuthRoute) {
     return NextResponse.next();
   }
 
@@ -53,6 +54,23 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/console/login";
     return NextResponse.redirect(url);
+  }
+
+  // If user is authenticated, verify they have a profile (invited users only)
+  if (user && isConsoleRoute && !isLoginPage) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile) {
+      // User authenticated but was never invited — sign them out and redirect
+      await supabase.auth.signOut();
+      const url = request.nextUrl.clone();
+      url.pathname = "/console/login";
+      return NextResponse.redirect(url);
+    }
   }
 
   // If user is logged in and on login page, redirect to dashboard

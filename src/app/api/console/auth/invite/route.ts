@@ -33,8 +33,10 @@ export async function POST(req: Request) {
     const admin = createAdminClient();
 
     // Invite user via Supabase Auth
+    const origin = new URL(req.url).origin;
     const { data: inviteData, error: inviteError } =
       await admin.auth.admin.inviteUserByEmail(email, {
+        redirectTo: `${origin}/api/console/auth/callback?next=/console/dashboard`,
         data: { organization_id, full_name: full_name || email },
       });
 

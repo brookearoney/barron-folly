@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import StatusBadge from "@/components/console/StatusBadge";
 import PriorityBadge from "@/components/console/PriorityBadge";
+import AiPhaseBadge from "@/components/console/AiPhaseBadge";
 import EmptyState from "@/components/console/EmptyState";
 import { CATEGORY_LABELS, RISK_COLORS } from "@/lib/console/constants";
 import type {
@@ -13,6 +14,7 @@ import type {
   Clarification,
   Approval,
   ActivityLog,
+  AiClarificationData,
 } from "@/lib/console/types";
 
 interface RequestDetail {
@@ -90,6 +92,9 @@ export default function RequestDetailPage() {
             <div className="flex items-center gap-3">
               <StatusBadge status={req.status} />
               <PriorityBadge priority={req.priority} />
+              {req.ai_phase && req.ai_phase !== "none" && (
+                <AiPhaseBadge phase={req.ai_phase} />
+              )}
               <span className="text-muted text-sm">
                 {CATEGORY_LABELS[req.category]}
               </span>
@@ -121,6 +126,60 @@ export default function RequestDetailPage() {
               {req.description}
             </div>
           </div>
+
+          {/* AI Clarification Q&A */}
+          {req.ai_clarification_data && (
+            (() => {
+              const aiData = req.ai_clarification_data as AiClarificationData;
+              return (
+                <div className="bg-dark rounded-lg border border-dark-border p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <h2 className="text-foreground font-medium">AI Clarification</h2>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        aiData.complexity === "simple"
+                          ? "bg-emerald-500/10 text-emerald-400"
+                          : aiData.complexity === "moderate"
+                          ? "bg-orange/10 text-orange"
+                          : "bg-red-500/10 text-red-400"
+                      }`}>
+                        {aiData.complexity}
+                      </span>
+                      <span className="text-muted text-xs">
+                        ~{aiData.estimated_tasks} tasks
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-muted-light text-sm mb-4">
+                    {aiData.request_summary}
+                  </p>
+                  <div className="space-y-3">
+                    {aiData.questions.map((q, i) => (
+                      <div key={q.id} className="border-l-2 border-orange/30 pl-4">
+                        <p className="text-foreground text-sm font-medium">
+                          Q{i + 1}: {q.question}
+                        </p>
+                        {q.answer ? (
+                          <p className="text-muted-light text-sm mt-1">
+                            A: {q.answer}
+                          </p>
+                        ) : (
+                          <p className="text-muted text-sm mt-1 italic">
+                            Not answered yet
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  {aiData.answered_at && (
+                    <p className="text-muted text-xs mt-3">
+                      Answered {new Date(aiData.answered_at).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              );
+            })()
+          )}
 
           {/* Attachments */}
           {attachments.length > 0 && (

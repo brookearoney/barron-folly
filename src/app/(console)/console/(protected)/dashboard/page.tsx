@@ -5,6 +5,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import StatusBadge from "@/components/console/StatusBadge";
 import PriorityBadge from "@/components/console/PriorityBadge";
 import EmptyState from "@/components/console/EmptyState";
+import SuggestionsSection from "@/components/console/SuggestionsSection";
 import { CATEGORY_LABELS } from "@/lib/console/constants";
 import type { Request, RequestStatus } from "@/lib/console/types";
 
@@ -70,6 +71,11 @@ export default async function DashboardPage() {
             {ctx.pendingCounts.approvals}
           </p>
         </div>
+      </div>
+
+      {/* AI Suggestions */}
+      <div className="mb-8">
+        <SuggestionsSection />
       </div>
 
       {/* Request list */}

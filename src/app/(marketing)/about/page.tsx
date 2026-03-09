@@ -18,6 +18,11 @@ export const metadata: Metadata = {
     "replace dev agency with AI",
   ],
   alternates: { canonical: "/about" },
+  openGraph: {
+    title: "About | Autonomous Execution Engine for Growing Companies",
+    description:
+      "Barron & Folly is an agentic product agency that replaces fragmented teams with an autonomous execution engine for software, systems, and brand infrastructure.",
+  },
 };
 
 const stats = [

@@ -78,9 +78,11 @@ export async function POST(req: Request) {
 
     const { data: org } = await supabase
       .from("organizations")
-      .select("linear_team_id, linear_project_id, name")
+      .select("linear_team_id, linear_project_id, name, business_dossier")
       .eq("id", profile.organization_id)
       .single();
+
+    const isAiEnabled = !!org?.business_dossier;
 
     const { title, description, category, priority } = await req.json();
 
@@ -102,15 +104,17 @@ export async function POST(req: Request) {
         category,
         priority: priority || "medium",
         status: "submitted",
+        ...(isAiEnabled ? { ai_phase: "clarifying" } : {}),
       })
       .select()
       .single();
 
     if (insertError) throw insertError;
 
-    // Create Linear issue if org has Linear configured
+    // Skip Linear issue creation for AI-enabled orgs — tasks will be created after AI clarification
+    // Create Linear issue only if org has Linear configured and is NOT AI-enabled
     const teamId = org?.linear_team_id || process.env.LINEAR_TEAM_ID;
-    if (teamId && process.env.LINEAR_API_KEY) {
+    if (!isAiEnabled && teamId && process.env.LINEAR_API_KEY) {
       try {
         const linearDesc = [
           `**Client:** ${org?.name || "Unknown"}`,
@@ -168,7 +172,7 @@ export async function POST(req: Request) {
       details: { title, category, priority: priority || "medium" },
     });
 
-    return NextResponse.json({ request }, { status: 201 });
+    return NextResponse.json({ request, ai_enabled: isAiEnabled }, { status: 201 });
   } catch (error) {
     console.error("Create request error:", error);
     return NextResponse.json(

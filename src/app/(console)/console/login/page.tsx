@@ -16,6 +16,20 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
+    // Verify the email belongs to an invited user before sending magic link
+    const verifyRes = await fetch("/api/console/auth/verify-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const { allowed } = await verifyRes.json();
+
+    if (!allowed) {
+      setLoading(false);
+      setError("No account found for this email. Access is by invitation only.");
+      return;
+    }
+
     const supabase = createClient();
     const { error: authError } = await supabase.auth.signInWithOtp({
       email,
