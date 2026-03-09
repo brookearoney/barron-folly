@@ -150,7 +150,11 @@ export default function NewRequestPage() {
       const res = await fetch("/api/console/ai/clarify/answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ request_id: requestId, answers: answerPayload }),
+        body: JSON.stringify({
+          request_id: requestId,
+          answers: answerPayload,
+          clarification_data: clarificationData,
+        }),
       });
 
       if (!res.ok) {

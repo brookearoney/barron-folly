@@ -12,7 +12,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { request_id, answers } = await req.json();
+    const { request_id, answers, clarification_data: clientClarData } = await req.json();
     if (!request_id || !answers || !Array.isArray(answers)) {
       return NextResponse.json(
         { error: "request_id and answers[] are required" },
@@ -41,7 +41,10 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!request.ai_clarification_data) {
+    // Use DB data if available, otherwise fall back to client-provided data
+    // (the clarify stream saves async and may not have completed yet)
+    const baseClarData = request.ai_clarification_data || clientClarData;
+    if (!baseClarData) {
       return NextResponse.json(
         { error: "No clarification data found. Run clarify first." },
         { status: 400 }
@@ -49,7 +52,7 @@ export async function POST(req: Request) {
     }
 
     // Merge answers into clarification data
-    const clarificationData = request.ai_clarification_data as AiClarificationData;
+    const clarificationData = baseClarData as AiClarificationData;
     const answersMap = new Map(
       answers.map((a: { id: string; answer: string }) => [a.id, a.answer])
     );
