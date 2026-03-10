@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { linearRequest } from "@/lib/linear/client";
-import { ADD_COMMENT } from "@/lib/linear/queries";
+import { syncCommentToLinear } from "@/lib/linear/sync";
 import type { ApprovalDecision } from "@/lib/console/types";
 
 export async function GET(
@@ -101,29 +100,22 @@ export async function PATCH(
       })
       .eq("id", id);
 
-    // Sync to Linear
+    // Sync to Linear (with automatic retry on failure)
     const request = approval.request as { id: string; organization_id: string; linear_issue_id: string | null } | null;
     if (request?.linear_issue_id && process.env.LINEAR_API_KEY) {
-      try {
-        const emoji =
-          decision === "approved" ? "✅" :
-          decision === "denied" ? "❌" : "🔄";
+      const emoji =
+        decision === "approved" ? "✅" :
+        decision === "denied" ? "❌" : "🔄";
 
-        const commentBody = [
-          `**${emoji} Client ${decision === "revision_requested" ? "requested revisions" : decision}**`,
-          `Decided by: ${profile.full_name}`,
-          decision_notes ? `\nNotes: ${decision_notes}` : "",
-        ]
-          .filter(Boolean)
-          .join("\n");
+      const commentBody = [
+        `**${emoji} Client ${decision === "revision_requested" ? "requested revisions" : decision}**`,
+        `Decided by: ${profile.full_name}`,
+        decision_notes ? `\nNotes: ${decision_notes}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
 
-        await linearRequest(ADD_COMMENT, {
-          issueId: request.linear_issue_id,
-          body: commentBody,
-        });
-      } catch (linearErr) {
-        console.error("Linear sync error (non-fatal):", linearErr);
-      }
+      await syncCommentToLinear(request.linear_issue_id, commentBody);
     }
 
     // Log activity

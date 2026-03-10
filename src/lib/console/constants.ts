@@ -1,4 +1,4 @@
-import type { RequestCategory, RequestStatus, RequestPriority, RiskLevel, Tier, AiPhase, AiOnboardingStatus } from "./types";
+import type { RequestCategory, RequestStatus, RequestPriority, RiskLevel, Tier, AiPhase, AiOnboardingStatus, NotificationType } from "./types";
 
 export const CATEGORY_LABELS: Record<RequestCategory, string> = {
   web_platform: "Web Platform",
@@ -94,6 +94,22 @@ export const AI_ONBOARDING_COLORS: Record<AiOnboardingStatus, string> = {
   processing: "bg-[#FF8400]/10 text-[#FF8400]",
   completed: "bg-emerald-500/10 text-emerald-400",
   failed: "bg-red-500/10 text-red-400",
+};
+
+export const NOTIFICATION_LABELS: Record<NotificationType, string> = {
+  clarification: "Clarification needed",
+  approval: "Approval needed",
+  status_change: "Status update",
+  comment: "New update",
+  completion: "Completed",
+};
+
+export const NOTIFICATION_COLORS: Record<NotificationType, string> = {
+  clarification: "text-orange",
+  approval: "text-purple-400",
+  status_change: "text-blue-400",
+  comment: "text-muted-light",
+  completion: "text-emerald-400",
 };
 
 export const LINEAR_STATE_TO_STATUS: Record<string, RequestStatus> = {

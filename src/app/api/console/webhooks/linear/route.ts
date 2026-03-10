@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { LINEAR_STATE_TO_STATUS } from "@/lib/console/constants";
+import { LINEAR_STATE_TO_STATUS, STATUS_LABELS } from "@/lib/console/constants";
+import { sendOrgNotificationEmails } from "@/lib/email/notify";
+import type { NotificationType } from "@/lib/console/types";
 import crypto from "crypto";
 
 function verifySignature(body: string, signature: string | null): boolean {
@@ -12,22 +14,63 @@ function verifySignature(body: string, signature: string | null): boolean {
   return crypto.timingSafeEqual(Buffer.from(digest), Buffer.from(signature));
 }
 
+async function createNotification(
+  supabase: ReturnType<typeof createAdminClient>,
+  params: {
+    organization_id: string;
+    type: NotificationType;
+    title: string;
+    body?: string | null;
+    request_id?: string | null;
+    reference_id?: string | null;
+  }
+) {
+  const { error } = await supabase.from("notifications").insert({
+    organization_id: params.organization_id,
+    type: params.type,
+    title: params.title,
+    body: params.body || null,
+    request_id: params.request_id || null,
+    reference_id: params.reference_id || null,
+  });
+  if (error) {
+    console.error("Failed to create notification:", error);
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
     const signature = req.headers.get("linear-signature");
 
-    // Verify webhook signature if secret is configured
-    if (process.env.LINEAR_WEBHOOK_SECRET) {
-      if (!verifySignature(rawBody, signature)) {
-        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-      }
+    // Enforce webhook signature verification
+    if (!process.env.LINEAR_WEBHOOK_SECRET) {
+      console.error("LINEAR_WEBHOOK_SECRET is not configured — rejecting webhook");
+      return NextResponse.json({ error: "Webhook secret not configured" }, { status: 500 });
+    }
+
+    if (!verifySignature(rawBody, signature)) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
     const payload = JSON.parse(rawBody);
     const { action, type, data } = payload;
 
     const supabase = createAdminClient();
+
+    // Idempotency: deduplicate using a composite event key
+    const eventKey = `${type}:${action}:${data.id}:${data.updatedAt || data.createdAt || ""}`;
+    const { error: dedupError } = await supabase
+      .from("webhook_events")
+      .insert({ id: eventKey });
+
+    if (dedupError) {
+      // Unique constraint violation = already processed
+      if (dedupError.code === "23505") {
+        return NextResponse.json({ ok: true, skipped: "duplicate event" });
+      }
+      console.error("Dedup check error:", dedupError);
+    }
 
     // Handle Issue updates
     if (type === "Issue") {
@@ -36,7 +79,7 @@ export async function POST(req: Request) {
       // Find the request linked to this Linear issue
       const { data: request } = await supabase
         .from("requests")
-        .select("id, organization_id, status")
+        .select("id, organization_id, status, title")
         .eq("linear_issue_id", linearIssueId)
         .single();
 
@@ -58,6 +101,37 @@ export async function POST(req: Request) {
             action: "status_changed",
             details: { from: request.status, to: newStatus, source: "linear" },
           });
+
+          // Create notification for status changes
+          const isCompletion = newStatus === "done" || newStatus === "shipped";
+          const fromLabel = STATUS_LABELS[request.status as keyof typeof STATUS_LABELS] || request.status;
+          const toLabel = STATUS_LABELS[newStatus as keyof typeof STATUS_LABELS] || newStatus;
+
+          const statusNotifType: NotificationType = isCompletion ? "completion" : "status_change";
+          const statusNotifTitle = isCompletion
+            ? `"${request.title}" is complete`
+            : `"${request.title}" moved to ${toLabel}`;
+          const statusNotifBody = isCompletion
+            ? `Your request has been marked as ${toLabel}.`
+            : `Status changed from ${fromLabel} to ${toLabel}.`;
+
+          await createNotification(supabase, {
+            organization_id: request.organization_id,
+            type: statusNotifType,
+            title: statusNotifTitle,
+            body: statusNotifBody,
+            request_id: request.id,
+          });
+
+          // Send email (fire-and-forget)
+          sendOrgNotificationEmails({
+            organization_id: request.organization_id,
+            type: statusNotifType,
+            title: statusNotifTitle,
+            body: statusNotifBody,
+            request_id: request.id,
+            new_status: newStatus,
+          }).catch(() => {});
         }
       }
     }
@@ -71,7 +145,7 @@ export async function POST(req: Request) {
 
       const { data: request } = await supabase
         .from("requests")
-        .select("id, organization_id")
+        .select("id, organization_id, title")
         .eq("linear_issue_id", issueId)
         .single();
 
@@ -81,16 +155,31 @@ export async function POST(req: Request) {
 
       const body = data.body || "";
 
-      // Check for [CLARIFICATION] tag
+      // Check for [CLARIFICATION] tag (supports threading: [CLARIFICATION:follow-up:<parent_id>])
       if (body.startsWith("[CLARIFICATION]")) {
-        const question = body.replace("[CLARIFICATION]", "").trim();
-        await supabase.from("clarifications").insert({
-          request_id: request.id,
-          organization_id: request.organization_id,
-          question,
-          linear_comment_id: data.id,
-          status: "pending",
-        });
+        let question: string;
+        let parentId: string | null = null;
+
+        const followUpMatch = body.match(/^\[CLARIFICATION:follow-up:([a-f0-9-]+)\]/);
+        if (followUpMatch) {
+          parentId = followUpMatch[1];
+          question = body.replace(followUpMatch[0], "").trim();
+        } else {
+          question = body.replace("[CLARIFICATION]", "").trim();
+        }
+
+        const { data: clarification } = await supabase
+          .from("clarifications")
+          .insert({
+            request_id: request.id,
+            organization_id: request.organization_id,
+            question,
+            linear_comment_id: data.id,
+            parent_id: parentId,
+            status: "pending",
+          })
+          .select("id")
+          .single();
 
         await supabase.from("activity_log").insert({
           request_id: request.id,
@@ -98,6 +187,25 @@ export async function POST(req: Request) {
           action: "clarification_asked",
           details: { question },
         });
+
+        // Create notification
+        const clarifNotifBody = question.length > 200 ? question.substring(0, 200) + "..." : question;
+        await createNotification(supabase, {
+          organization_id: request.organization_id,
+          type: "clarification",
+          title: `Question on "${request.title}"`,
+          body: clarifNotifBody,
+          request_id: request.id,
+          reference_id: clarification?.id || null,
+        });
+
+        // Send email (fire-and-forget)
+        sendOrgNotificationEmails({
+          organization_id: request.organization_id,
+          type: "clarification",
+          title: `Question on "${request.title}"`,
+          body: clarifNotifBody,
+        }).catch(() => {});
       }
       // Check for [APPROVAL] tag
       else if (body.startsWith("[APPROVAL]")) {
@@ -114,23 +222,50 @@ export async function POST(req: Request) {
           }
         }
 
-        await supabase.from("approvals").insert({
-          request_id: request.id,
-          organization_id: request.organization_id,
-          title: parsed.title || "Approval Required",
-          summary: parsed.summary || body,
-          impact: parsed.impact || null,
-          artifacts_url: parsed.artifacts_url || parsed.artifacts || null,
-          risk_level: (parsed.risk_level || "medium") as "low" | "medium" | "high",
-          rollback_plan: parsed.rollback_plan || null,
-        });
+        const approvalTitle = parsed.title || "Approval Required";
+        const riskLevel = (parsed.risk_level || "medium") as "low" | "medium" | "high";
+
+        const { data: approval } = await supabase
+          .from("approvals")
+          .insert({
+            request_id: request.id,
+            organization_id: request.organization_id,
+            title: approvalTitle,
+            summary: parsed.summary || body,
+            impact: parsed.impact || null,
+            artifacts_url: parsed.artifacts_url || parsed.artifacts || null,
+            risk_level: riskLevel,
+            rollback_plan: parsed.rollback_plan || null,
+          })
+          .select("id")
+          .single();
 
         await supabase.from("activity_log").insert({
           request_id: request.id,
           organization_id: request.organization_id,
           action: "approval_created",
-          details: { title: parsed.title || "Approval Required" },
+          details: { title: approvalTitle },
         });
+
+        // Create notification
+        const approvalNotifBody = `${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} risk — ${parsed.summary || "Review required"}`.substring(0, 300);
+        await createNotification(supabase, {
+          organization_id: request.organization_id,
+          type: "approval",
+          title: `Approval needed: ${approvalTitle}`,
+          body: approvalNotifBody,
+          request_id: request.id,
+          reference_id: approval?.id || null,
+        });
+
+        // Send email (fire-and-forget)
+        sendOrgNotificationEmails({
+          organization_id: request.organization_id,
+          type: "approval",
+          title: `Approval needed: ${approvalTitle}`,
+          body: approvalNotifBody,
+          reference_id: approval?.id || null,
+        }).catch(() => {});
       }
       // Regular comment
       else {
@@ -143,6 +278,15 @@ export async function POST(req: Request) {
             source: "linear",
             author: data.user?.name || "Unknown",
           },
+        });
+
+        // Create notification for comments
+        await createNotification(supabase, {
+          organization_id: request.organization_id,
+          type: "comment",
+          title: `New update on "${request.title}"`,
+          body: body.substring(0, 200),
+          request_id: request.id,
         });
       }
     }

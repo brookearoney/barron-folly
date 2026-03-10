@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
+import type { Clarification } from "@/lib/console/types";
 
 export async function GET() {
   try {
@@ -21,7 +22,7 @@ export async function GET() {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const { data: clarifications, error } = await supabase
+    const { data: allClarifications, error } = await supabase
       .from("clarifications")
       .select("*, request:requests(id, title, linear_issue_key)")
       .eq("organization_id", profile.organization_id)
@@ -29,7 +30,31 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ clarifications });
+    // Build threaded structure: group replies under their parent
+    const flat = (allClarifications || []) as (Clarification & {
+      request?: { id: string; title: string; linear_issue_key: string | null };
+    })[];
+
+    const parentMap = new Map<string, typeof flat>();
+    const roots: typeof flat = [];
+
+    for (const c of flat) {
+      if (c.parent_id) {
+        const siblings = parentMap.get(c.parent_id) || [];
+        siblings.push(c);
+        parentMap.set(c.parent_id, siblings);
+      } else {
+        roots.push(c);
+      }
+    }
+
+    // Attach replies to parents
+    const threaded = roots.map((root) => ({
+      ...root,
+      replies: parentMap.get(root.id) || [],
+    }));
+
+    return NextResponse.json({ clarifications: threaded });
   } catch (error) {
     console.error("List clarifications error:", error);
     return NextResponse.json(

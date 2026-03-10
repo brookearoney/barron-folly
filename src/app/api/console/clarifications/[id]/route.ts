@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { linearRequest } from "@/lib/linear/client";
-import { ADD_COMMENT } from "@/lib/linear/queries";
+import { syncCommentToLinear } from "@/lib/linear/sync";
 
 export async function PATCH(
   req: Request,
@@ -55,18 +54,11 @@ export async function PATCH(
       })
       .eq("id", id);
 
-    // Post answer as comment on Linear issue
+    // Post answer as comment on Linear issue (with automatic retry on failure)
     const request = clarification.request as { linear_issue_id: string | null; id: string; organization_id: string } | null;
     if (request?.linear_issue_id && process.env.LINEAR_API_KEY) {
-      try {
-        const commentBody = `**[CLIENT RESPONSE]** from ${profile.full_name}:\n\n> ${clarification.question}\n\n${answer}`;
-        await linearRequest(ADD_COMMENT, {
-          issueId: request.linear_issue_id,
-          body: commentBody,
-        });
-      } catch (linearErr) {
-        console.error("Linear comment sync error (non-fatal):", linearErr);
-      }
+      const commentBody = `**[CLIENT RESPONSE]** from ${profile.full_name}:\n\n> ${clarification.question}\n\n${answer}`;
+      await syncCommentToLinear(request.linear_issue_id, commentBody);
     }
 
     // Log activity

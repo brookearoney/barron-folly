@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import EmptyState from "@/components/console/EmptyState";
 import { RISK_COLORS } from "@/lib/console/constants";
+import { useRealtimeNotifications } from "@/hooks/useRealtimeNotifications";
 import type { Approval, Request as RequestType } from "@/lib/console/types";
 
 type ApprovalWithRequest = Approval & {
@@ -13,13 +14,33 @@ type ApprovalWithRequest = Approval & {
 export default function ApprovalsPage() {
   const [approvals, setApprovals] = useState<ApprovalWithRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [orgId, setOrgId] = useState("");
+
+  const fetchApprovals = useCallback(async () => {
+    try {
+      const res = await fetch("/api/console/approvals");
+      const data = await res.json();
+      const items = data.approvals || [];
+      setApprovals(items);
+      if (items[0]?.organization_id) {
+        setOrgId(items[0].organization_id);
+      }
+    } catch (err) {
+      console.error("Failed to fetch approvals:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetch("/api/console/approvals")
-      .then((res) => res.json())
-      .then((data) => setApprovals(data.approvals || []))
-      .finally(() => setLoading(false));
-  }, []);
+    fetchApprovals();
+  }, [fetchApprovals]);
+
+  // Subscribe to realtime updates for new approvals
+  useRealtimeNotifications({
+    organizationId: orgId,
+    onApproval: fetchApprovals,
+  });
 
   const pending = approvals.filter((a) => !a.decision);
   const decided = approvals.filter((a) => a.decision);
@@ -70,6 +91,8 @@ export default function ApprovalsPage() {
                         {a.request && (
                           <span>{a.request.linear_issue_key || a.request.title}</span>
                         )}
+                        <span>&middot;</span>
+                        <span>{formatRelativeTime(a.created_at)}</span>
                       </div>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${RISK_COLORS[a.risk_level]}`}>
                         {a.risk_level} risk
@@ -118,4 +141,22 @@ export default function ApprovalsPage() {
       )}
     </div>
   );
+}
+
+function formatRelativeTime(dateStr: string): string {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diff = now - then;
+
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes}m ago`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+
+  return new Date(dateStr).toLocaleDateString();
 }

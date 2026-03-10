@@ -214,10 +214,12 @@ export interface Clarification {
   asked_by: string | null;
   answered_by: string | null;
   linear_comment_id: string | null;
+  parent_id: string | null;
   status: ClarificationStatus;
   asked_at: string;
   answered_at: string | null;
   request?: Request;
+  replies?: Clarification[];
 }
 
 export interface Approval {
@@ -247,4 +249,20 @@ export interface ActivityLog {
   details: Record<string, unknown>;
   created_at: string;
   profile?: Profile;
+}
+
+export type NotificationType = "clarification" | "approval" | "status_change" | "comment" | "completion";
+
+export interface Notification {
+  id: string;
+  organization_id: string;
+  type: NotificationType;
+  title: string;
+  body: string | null;
+  request_id: string | null;
+  reference_id: string | null;
+  read: boolean;
+  read_at: string | null;
+  created_at: string;
+  request?: Pick<Request, "id" | "title" | "linear_issue_key" | "status">;
 }
