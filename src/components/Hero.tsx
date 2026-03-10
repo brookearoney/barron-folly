@@ -23,11 +23,32 @@ export default function Hero() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left: Big headline */}
           <div className="animate-fade-up">
-            <h1 className="text-[3.5rem] sm:text-7xl md:text-8xl lg:text-[8.5rem] font-light leading-[1.05] tracking-tight">
-              Deploy Digital
-              <br />
-              <span className="font-display text-[#FF8400]">Infrastructure</span>
+            <h1 className="flex flex-col text-[3.5rem] sm:text-7xl md:text-8xl lg:text-[7.5rem] tracking-tight">
+              <span className="block font-light leading-none">
+                Autonomous
+              </span>
+              <span
+                className="block font-display text-[#FF8400] leading-none"
+                style={{ marginTop: "0.18em" }}
+              >
+                Execution
+              </span>
+              <span
+                className="block font-light leading-none"
+                style={{ marginTop: "-0.46em" }}
+              >
+                Engine
+              </span>
             </h1>
+            <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#6E6E6A] tracking-wide uppercase">
+              <span>Software</span>
+              <span className="text-[#FF8400]">/</span>
+              <span>Systems</span>
+              <span className="text-[#FF8400]">/</span>
+              <span>Brand</span>
+              <span className="text-[#FF8400]">/</span>
+              <span>Infrastructure</span>
+            </div>
           </div>
 
           {/* Right: Description + CTA */}

@@ -112,7 +112,7 @@ export default function AdminRequestsPage() {
           {requests.map((req) => (
             <Link
               key={req.id}
-              href={`/console/requests/${req.id}`}
+              href={`/console/admin/requests/${req.id}`}
               className="flex items-center gap-4 px-5 py-4 hover:bg-dark-border/30 transition-colors"
             >
               <div className="flex-1 min-w-0">
