@@ -67,6 +67,45 @@ export function serviceJsonLd(service: {
   };
 }
 
+export function blogPostJsonLd(post: {
+  title: string;
+  description: string;
+  slug: string;
+  date: string;
+  keywords?: string[];
+  category?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    url: `${SITE_URL}/blog/${post.slug}`,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/images/brand/logo-full.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/blog/${post.slug}`,
+    },
+    ...(post.keywords ? { keywords: post.keywords.join(", ") } : {}),
+    ...(post.category ? { articleSection: post.category } : {}),
+  };
+}
+
 export function breadcrumbJsonLd(
   items: { name: string; href?: string }[]
 ) {
