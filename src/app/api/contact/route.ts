@@ -81,10 +81,10 @@ async function sendLeadEmail(lead: {
 
   try {
     await resend.emails.send({
-      from: "B&F Website <leads@barronfolly.com>",
+      from: "Barron & Folly <leads@barronfolly.com>",
       to: [to],
       replyTo: lead.email,
-      subject: `New Lead: ${lead.name}`,
+      subject: `New Barron & Folly Lead: ${lead.name}`,
       html: buildLeadEmailHtml(lead),
     });
     return true;
