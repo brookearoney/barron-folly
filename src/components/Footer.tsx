@@ -9,9 +9,9 @@ export default function Footer() {
   return (
     <footer className="border-t border-[#2A2A26]/30">
       <div className="w-[90%] mx-auto py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-10 mb-16">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="col-span-2">
             <Link href="/" className="inline-block mb-6">
               <Image
                 src="/images/brand/logo-full.svg"
@@ -27,24 +27,26 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Links */}
-          <div>
-            <h4 className="text-sm font-semibold text-[#9E9E98] uppercase tracking-wider mb-4">
-              Navigate
-            </h4>
-            <ul className="space-y-3">
-              {footerNav.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-[#6E6E6A] hover:text-[#FF8400] transition-colors"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Nav columns */}
+          {footerNav.map((section) => (
+            <div key={section.title}>
+              <h4 className="text-sm font-semibold text-[#9E9E98] uppercase tracking-wider mb-4">
+                {section.title}
+              </h4>
+              <ul className="space-y-3">
+                {section.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-sm text-[#6E6E6A] hover:text-[#FF8400] transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
           {/* Contact */}
           <div>
