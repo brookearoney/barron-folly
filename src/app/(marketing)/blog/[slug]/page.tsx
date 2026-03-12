@@ -7,15 +7,18 @@ import {
   getAllBlogSlugs,
   getRelatedPosts,
   getSortedPosts,
-} from "@/data/blog";
+} from "@/lib/blog";
 import AnimateIn from "@/components/AnimateIn";
 import CTABanner from "@/components/CTABanner";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import { breadcrumbJsonLd } from "@/lib/metadata";
 
-export function generateStaticParams() {
-  return getAllBlogSlugs().map((slug) => ({ slug }));
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const slugs = await getAllBlogSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -24,7 +27,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) return {};
 
   return {
@@ -71,13 +74,13 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
-  const relatedPosts = getRelatedPosts(post.relatedSlugs);
+  const relatedPosts = await getRelatedPosts(post.relatedSlugs);
 
   // Find adjacent posts for nav (sorted by date, newest first)
-  const sortedPosts = getSortedPosts();
+  const sortedPosts = await getSortedPosts();
   const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
   const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
   const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;

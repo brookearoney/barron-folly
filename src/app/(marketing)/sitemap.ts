@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
-import { blogPosts } from "@/data/blog";
 import { SITE_URL } from "@/lib/constants";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticPages: MetadataRoute.Sitemap = [
@@ -35,10 +35,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  const supabase = createAdminClient();
+  const { data: posts } = await supabase
+    .from("blog_posts")
+    .select("slug, date, updated_at")
+    .eq("published", true)
+    .order("date", { ascending: false });
+
+  const blogPages: MetadataRoute.Sitemap = (posts ?? []).map((post) => ({
     url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: new Date(post.date),
-    changeFrequency: "monthly",
+    lastModified: new Date(post.updated_at ?? post.date),
+    changeFrequency: "weekly",
     priority: 0.7,
   }));
 

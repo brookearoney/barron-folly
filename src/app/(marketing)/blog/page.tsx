@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { blogPosts, getSortedPosts, getFeaturedPosts, getAllCategories } from "@/data/blog";
+import { getSortedPosts, getFeaturedPosts, getAllCategories } from "@/lib/blog";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Blog | Insights on Agentic Execution, Systems & AI | Barron & Folly",
@@ -42,10 +44,10 @@ function formatDate(dateStr: string) {
   });
 }
 
-export default function BlogPage() {
-  const sortedPosts = getSortedPosts();
-  const featured = getFeaturedPosts();
-  const categories = getAllCategories();
+export default async function BlogPage() {
+  const sortedPosts = await getSortedPosts();
+  const featured = await getFeaturedPosts();
+  const categories = await getAllCategories();
   const latestPost = sortedPosts[0];
   const remainingPosts = sortedPosts.slice(1);
 
