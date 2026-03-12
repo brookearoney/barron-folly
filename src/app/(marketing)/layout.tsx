@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { organizationJsonLd } from "@/lib/metadata";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/metadata";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -55,6 +55,12 @@ export default function MarketingLayout({
 }>) {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd()),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

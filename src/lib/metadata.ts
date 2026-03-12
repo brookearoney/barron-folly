@@ -1,5 +1,33 @@
 import { SITE_URL, SITE_NAME, CONTACT, SOCIAL } from "./constants";
 
+export function websiteJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: SITE_URL,
+    description:
+      "Agentic product agency that replaces fragmented teams with an autonomous execution engine for software, systems, and brand infrastructure.",
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/images/brand/logo-full.svg`,
+      },
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/blog?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
 export function organizationJsonLd() {
   return {
     "@context": "https://schema.org",
