@@ -4,6 +4,8 @@ import Image from "next/image";
 import { getConsoleContext } from "@/lib/console/helpers";
 import ConsoleShell from "@/components/console/ConsoleShell";
 
+export const dynamic = "force-dynamic";
+
 export default async function ConsoleLayout({
   children,
 }: {

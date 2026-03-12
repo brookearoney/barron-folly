@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { getAdminContext } from "@/lib/console/admin-helpers";
 import AdminShell from "@/components/console/AdminShell";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
   children,
 }: {
