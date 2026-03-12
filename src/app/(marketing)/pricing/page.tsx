@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { tiers, perks, faqs } from "@/data/pricing";
+import { faqPageJsonLd } from "@/lib/metadata";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
@@ -27,6 +28,12 @@ export const metadata: Metadata = {
 export default function PricingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqPageJsonLd(faqs)),
+        }}
+      />
       <PageHero
         badge="Pricing"
         badgeIcon={
