@@ -8,6 +8,7 @@ import AnimateIn from "@/components/AnimateIn";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 export const metadata: Metadata = {
