@@ -25,6 +25,22 @@ Subscription tiers from $500/mo to $10,000/mo:
 
 Growth-stage companies, multi-location operators, PE-backed portfolios, SaaS companies scaling quickly, industrial and defense organizations, consumer brands expanding channels, and founders building internal tools.
 
+## Blog
+
+Insights on agentic execution, AI-led development, systems architecture, and deploying scalable infrastructure.
+
+### Recent Articles
+
+- **Claude Code Agent Teams: Multi-Agent Development Explained** — What Agent Teams are, how they differ from subagents, how to enable them, best use cases, and what they mean for software development. https://barronfolly.com/blog/claude-code-agent-teams-multi-agent-development
+- **Claude Code and AI Model Selection: A Practical Guide to Opus, Sonnet, and Haiku** — When to use each Claude model tier for different development tasks. https://barronfolly.com/blog/claude-code-model-guide-opus-sonnet-haiku
+- **What Is an Agentic Product Agency?** — How autonomous AI agents replace fragmented vendor teams with a single execution engine. https://barronfolly.com/blog/what-is-an-agentic-product-agency
+- **How AI Agents Are Replacing Traditional Dev Teams** — The shift from hiring developers to deploying agent-driven execution systems. https://barronfolly.com/blog/how-ai-agents-are-replacing-traditional-dev-teams
+- **Why Subscription Development Beats Project Pricing** — Continuous execution vs. one-off projects for growing companies. https://barronfolly.com/blog/why-subscription-development-beats-project-pricing
+- **The Real Cost of Fragmented Digital Infrastructure** — Hidden costs of cobbled-together tools, freelancers, and disconnected systems. https://barronfolly.com/blog/the-real-cost-of-fragmented-digital-infrastructure
+- **Design Systems: Why Your Brand Needs One Before Scaling** — How design systems create consistency and speed across products. https://barronfolly.com/blog/design-systems-why-your-brand-needs-one-before-scaling
+- **From Backlog to Deployment: How Autonomous Execution Works** — Inside the agentic execution pipeline from task intake to live deployment. https://barronfolly.com/blog/from-backlog-to-deployment-how-autonomous-execution-works
+- **Building Internal Tools Without Hiring a Dev Team** — Deploying dashboards, automations, and custom tools through agentic execution. https://barronfolly.com/blog/building-internal-tools-without-hiring-a-dev-team
+
 ## Key Pages
 
 - Homepage: https://barronfolly.com
@@ -36,6 +52,7 @@ Growth-stage companies, multi-location operators, PE-backed portfolios, SaaS com
 - Pricing: https://barronfolly.com/pricing
 - About: https://barronfolly.com/about
 - Blog: https://barronfolly.com/blog
+- FAQ: https://barronfolly.com/faq
 - Contact: https://barronfolly.com/contact
 
 ## Contact

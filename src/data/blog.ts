@@ -72,9 +72,9 @@ export const blogPosts: BlogPost[] = [
       },
     ],
     relatedSlugs: [
+      "claude-code-agent-teams-multi-agent-development",
       "how-ai-agents-are-replacing-traditional-dev-teams",
       "from-backlog-to-deployment-how-autonomous-execution-works",
-      "building-internal-tools-without-hiring-a-dev-team",
     ],
     seo: {
       title:
@@ -546,7 +546,88 @@ export const blogPosts: BlogPost[] = [
       ],
     },
   },
+  {
+    slug: "claude-code-agent-teams-multi-agent-development",
+    title:
+      "Claude Code Agent Teams: Multi-Agent Development Explained",
+    excerpt:
+      "Anthropic's new Agent Teams feature lets you orchestrate multiple Claude Code instances working together on a shared codebase — with independent context windows, direct inter-agent communication, and a shared task list. Here's what they are, how they work, and why they matter.",
+    category: "Technology",
+    date: "2026-03-12",
+    readTime: "9 min read",
+    featured: true,
+    author: "Barron & Folly",
+    heroImage: "/images/blog/claude-code-agent-teams.png",
+    sections: [
+      {
+        content:
+          '<p>For the past two years, AI coding assistants have operated as solo agents. One model, one conversation, one context window — working through tasks sequentially, no matter how large the project.</p><p>That constraint shaped everything about how teams use AI for development. You could send a single agent off to build a feature, but if the task spanned multiple layers of your stack — frontend, backend, tests, documentation — the agent had to work through each piece one at a time.</p><p>Subagents helped, but they were still tethered to the parent session and couldn\'t talk to each other.</p><p>In February 2026, Anthropic shipped something that changes this equation entirely: <strong>Agent Teams</strong> in Claude Code.</p><p>It\'s a multi-agent coordination system that lets you spin up a team of independent Claude Code instances, each with their own context window, working in parallel on a shared codebase. They communicate directly with each other, claim tasks from a shared list, and self-coordinate — without routing everything through a single bottleneck.</p><p>This isn\'t an incremental feature update. It\'s the beginning of a structural shift in how <a href="/services/agentic-execution">software gets built at scale</a>.</p>',
+      },
+      {
+        heading: "What Are Claude Code Agent Teams?",
+        content:
+          '<p>Agent Teams is an experimental feature in Claude Code that lets you orchestrate multiple Claude Code sessions working together on a shared project.</p><p>The architecture has four core components:</p><ul><li><strong>Team Lead</strong> — The main Claude Code session that creates the team, spawns teammates, assigns tasks, and synthesizes results</li><li><strong>Teammates</strong> — Fully independent Claude Code instances, each with their own context window, that can read/write files, run commands, and interact with your codebase</li><li><strong>Shared Task List</strong> — A coordinated list of work items with dependency tracking that teammates claim and complete autonomously</li><li><strong>Mailbox System</strong> — Built-in messaging that lets teammates communicate directly with each other and with the lead</li></ul><p>Here\'s what makes it powerful: the team lead creates tasks, teammates self-claim them, and when a blocking task completes, downstream tasks <strong>automatically unblock</strong>. Teammates pick up the next available task as soon as they finish their current one.</p><p>This is real multi-agent coordination — not a single model pretending to multitask.</p>',
+      },
+      {
+        heading: "How Agent Teams Differ from Traditional Subagents",
+        content:
+          '<img src="/images/blog/claude-code-agent-teams-inline.png" alt="A robotic AI agent typing code on a keyboard — representing Claude Code autonomous coding execution" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" /><p>If you\'ve used Claude Code before, you\'re probably familiar with <a href="/blog/claude-code-model-guide-opus-sonnet-haiku">subagents</a> — the lightweight worker sessions that Claude Code spawns to handle focused tasks in parallel.</p><p>Subagents are useful, but they have a fundamental limitation: <strong>they can only report results back to the parent agent.</strong> They can\'t communicate with each other, share discoveries mid-task, or coordinate without the main agent acting as intermediary.</p><p>Think of subagents as <strong>contractors</strong> who each do their job and submit a final report. Agent Teams are a <strong>coordinated squad</strong> that talks to each other in real time.</p><h3>The Key Differences</h3><ul><li><strong>Context:</strong> Subagents share the caller\'s context and return summarized results. Agent Teams members each have fully independent context windows.</li><li><strong>Communication:</strong> Subagents report back to the parent only. Agent Teams members message each other directly.</li><li><strong>Coordination:</strong> Subagents rely on the parent to manage everything. Agent Teams use a shared task list with self-coordination and dependency tracking.</li><li><strong>Best for:</strong> Subagents excel at focused tasks where only the result matters. Agent Teams handle complex work requiring discussion and collaboration.</li><li><strong>Token cost:</strong> Subagents are cheaper since results get summarized back. Agent Teams use more tokens because each teammate is a full Claude instance.</li></ul><blockquote>Use subagents when you need quick workers that report back. Use Agent Teams when the task demands that multiple agents share findings, challenge each other\'s assumptions, and coordinate autonomously.</blockquote>',
+      },
+      {
+        heading: "How to Enable and Set Up Agent Teams",
+        content:
+          '<p>Agent Teams are experimental and disabled by default. Enabling them takes one configuration change.</p><h3>Step 1: Enable the Feature</h3><p>Add the following to your <code>settings.json</code> file:</p><p>Set <code>CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS</code> to <code>"1"</code> inside the <code>env</code> object. Alternatively, set it as an environment variable in your shell.</p><h3>Step 2: Describe Your Team</h3><p>Once enabled, you start a team by describing the task and team structure in natural language. For example:</p><blockquote>Create an agent team with three teammates — one focused on frontend components, one on API endpoints, and one on test coverage.</blockquote><p>Claude creates the team, spawns the teammates, and begins coordinating work based on your prompt.</p><h3>Step 3: Configure Your Preferences</h3><p>You have several options to fine-tune how your team operates:</p><ul><li><strong>Model selection</strong> — Specify which model each teammate should use (e.g., Sonnet for speed, Opus for depth)</li><li><strong>Plan approval</strong> — Require teammates to outline their approach in read-only mode before writing any code</li><li><strong>Display mode</strong> — Choose in-process (all teammates in one terminal, navigate with Shift+Down) or split panes (each teammate in its own tmux/iTerm2 pane)</li></ul><p>For teams working on sensitive or complex codebases, the <strong>plan approval workflow</strong> is worth using. It adds a layer of architectural review that prevents wasted effort on the wrong approach before any code gets written.</p>',
+      },
+      {
+        heading: "Best Use Cases for Agent Teams",
+        content:
+          '<p>Agent Teams add coordination overhead, so they\'re not the right tool for every task. They deliver the most value when <strong>parallel exploration genuinely adds something</strong> that sequential work can\'t.</p><h3>Research and Review</h3><p>This is where Agent Teams shine immediately. Spin up three reviewers on a pull request:</p><ul><li>One focused on <strong>security implications</strong></li><li>One checking <strong>performance impact</strong></li><li>One validating <strong>test coverage</strong></li></ul><p>Each reviewer applies a different filter to the same code, and the lead synthesizes findings across all three. A single reviewer gravitates toward one issue type at a time. Three independent reviewers with distinct mandates catch what a solo pass misses.</p><h3>New Modules and Features</h3><p>Features with clear boundaries are ideal. If you\'re building something that spans frontend, backend, and tests — assign each layer to a different teammate. They work in parallel without stepping on each other\'s files.</p><h3>Debugging with Competing Hypotheses</h3><p>This is arguably the most powerful application. Instead of one agent chasing a single theory and anchoring to it, spawn five investigators with different hypotheses. Tell them to <strong>actively try to disprove each other\'s theories</strong>.</p><p>The hypothesis that survives genuine adversarial testing is far more likely to be the actual root cause.</p><h3>Cross-Layer Coordination</h3><p>Changes that span the full stack benefit from having each layer owned by a specialist teammate who communicates directly with the others as dependencies emerge.</p><blockquote>The practical sweet spot is <strong>3–5 teammates</strong> with 5–6 tasks per teammate. Start there and scale only when the work genuinely benefits from additional parallelism.</blockquote>',
+      },
+      {
+        heading: "What This Means for Software Development",
+        content:
+          '<p>Agent Teams represent more than a feature release. They signal a shift in the developer\'s role:</p><p><strong>From writing code → to orchestrating systems.</strong></p><p>When you can describe an architecture, define constraints, establish quality gates, and deploy a team of agents to execute — the bottleneck moves from implementation to strategy.</p><p>This is the same pattern emerging across the entire AI-assisted development ecosystem. Multiple companies are building toward multi-agent coordination because the single-agent model has a ceiling. Complex projects require:</p><ul><li>Parallel exploration across multiple domains</li><li>Adversarial review that challenges assumptions</li><li>Cross-domain coordination that a single context window can\'t handle</li></ul><p>The teams already seeing the most impact from Agent Teams are treating it like <strong>managing a real engineering squad</strong>:</p><ul><li>Clear task definitions with explicit ownership boundaries</li><li>Quality gates before merge</li><li>Regular check-ins to redirect approaches that aren\'t working</li><li>The developer as architect, reviewer, and project manager</li></ul><p>For <a href="/blog/how-ai-agents-are-replacing-traditional-dev-teams">organizations already running agentic workflows</a>, Agent Teams is the next logical step. For teams still debating whether AI coding tools are production-ready — this is the clearest signal yet that the answer is yes.</p>',
+      },
+      {
+        heading: "The Bigger Picture for Agentic Execution",
+        content:
+          '<p>Agent Teams inside Claude Code is one implementation of a broader pattern: <strong>coordinated autonomous execution</strong>.</p><p>The same principles — specialized agents, shared task coordination, inter-agent communication, human oversight at critical gates — apply far beyond coding:</p><ul><li>Content production</li><li><a href="/services/systems-architecture">Systems architecture</a></li><li>QA workflows</li><li>Data pipeline builds</li><li>CRM automation</li><li>Design system implementation</li></ul><p>An <a href="/blog/what-is-an-agentic-product-agency">agentic product agency</a> is essentially this pattern scaled to an entire business operation:</p><ul><li><strong>Specialized AI agents</strong> handle distinct domains of work</li><li><strong>An orchestration layer</strong> manages queues, enforces policies, and routes tasks by complexity and risk</li><li><strong>Senior human oversight</strong> governs strategy, approvals, and quality</li><li><strong>The whole system ships continuously</strong> rather than in fragmented project cycles</li></ul><p>Claude Code Agent Teams gives individual developers a taste of what full-scale agentic execution looks like.</p><p>The companies that internalize this model — whether through their own tooling or through <a href="/pricing">subscription-based execution partners</a> — will operate at a velocity that traditionally staffed teams simply cannot match.</p><p>The shift isn\'t coming. <a href="/contact">It\'s already here.</a></p>',
+      },
+    ],
+    relatedSlugs: [
+      "claude-code-model-guide-opus-sonnet-haiku",
+      "how-ai-agents-are-replacing-traditional-dev-teams",
+      "from-backlog-to-deployment-how-autonomous-execution-works",
+    ],
+    seo: {
+      title:
+        "Claude Code Agent Teams: Multi-Agent Development Explained | Barron & Folly",
+      description:
+        "Learn what Claude Code Agent Teams are, how they differ from subagents, how to set them up, and why multi-agent coordination is reshaping software development workflows.",
+      keywords: [
+        "Claude Code agent teams",
+        "Claude Code multi-agent",
+        "agent teams vs subagents",
+        "multi-agent development",
+        "Claude Code tutorial",
+        "AI coding tools",
+        "parallel AI agents",
+        "Claude Code setup",
+        "agentic coding",
+        "multi-agent coordination",
+        "Claude Code 2026",
+        "AI software development",
+      ],
+    },
+  },
 ];
+
+/** All posts sorted by date, newest first */
+export function getSortedPosts(): BlogPost[] {
+  return [...blogPosts].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+}
 
 export function getBlogPostBySlug(slug: string): BlogPost | undefined {
   return blogPosts.find((p) => p.slug === slug);
@@ -562,8 +643,18 @@ export function getRelatedPosts(slugs: string[]): BlogPost[] {
     .filter((p): p is BlogPost => p !== undefined);
 }
 
+/** Returns 3 featured posts: the most recent post + its 2 most related posts */
 export function getFeaturedPosts(): BlogPost[] {
-  return blogPosts.filter((p) => p.featured);
+  const sorted = getSortedPosts();
+  const latest = sorted[0];
+  if (!latest) return [];
+
+  const related = latest.relatedSlugs
+    .map((slug) => getBlogPostBySlug(slug))
+    .filter((p): p is BlogPost => p !== undefined)
+    .slice(0, 2);
+
+  return [latest, ...related];
 }
 
 export function getPostsByCategory(category: string): BlogPost[] {

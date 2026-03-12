@@ -3,10 +3,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
-  blogPosts,
   getBlogPostBySlug,
   getAllBlogSlugs,
   getRelatedPosts,
+  getSortedPosts,
 } from "@/data/blog";
 import AnimateIn from "@/components/AnimateIn";
 import CTABanner from "@/components/CTABanner";
@@ -76,10 +76,11 @@ export default async function BlogPostPage({
 
   const relatedPosts = getRelatedPosts(post.relatedSlugs);
 
-  // Find adjacent posts for nav
-  const currentIndex = blogPosts.findIndex((p) => p.slug === slug);
-  const prevPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null;
-  const nextPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null;
+  // Find adjacent posts for nav (sorted by date, newest first)
+  const sortedPosts = getSortedPosts();
+  const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
+  const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+  const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -215,7 +216,7 @@ export default async function BlogPostPage({
                       </h2>
                     )}
                     <div
-                      className="text-[#9E9E98] text-lg leading-[1.8] [&_strong]:text-[#F5F5F0] [&_strong]:font-medium [&_a]:text-[#FF8400] [&_a]:hover:underline [&_a]:transition-colors"
+                      className="text-[#9E9E98] text-lg leading-[1.8] [&_strong]:text-[#F5F5F0] [&_strong]:font-medium [&_a]:text-[#FF8400] [&_a]:hover:underline [&_a]:transition-colors [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4 [&_ul]:space-y-2 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:my-4 [&_ol]:space-y-2 [&_li]:leading-[1.7] [&_p]:mb-4 [&_p:last-child]:mb-0 [&_h3]:text-[#F5F5F0] [&_h3]:text-xl [&_h3]:font-medium [&_h3]:mt-8 [&_h3]:mb-3 [&_blockquote]:border-l-2 [&_blockquote]:border-[#FF8400]/40 [&_blockquote]:pl-5 [&_blockquote]:my-6 [&_blockquote]:italic [&_code]:bg-[#1A1A18] [&_code]:px-2 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[#FF8400] [&_code]:text-base"
                       dangerouslySetInnerHTML={{ __html: section.content }}
                     />
                   </div>

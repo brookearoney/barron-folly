@@ -72,6 +72,7 @@ export function blogPostJsonLd(post: {
   description: string;
   slug: string;
   date: string;
+  heroImage?: string;
   keywords?: string[];
   category?: string;
 }) {
@@ -101,6 +102,14 @@ export function blogPostJsonLd(post: {
       "@type": "WebPage",
       "@id": `${SITE_URL}/blog/${post.slug}`,
     },
+    ...(post.heroImage
+      ? {
+          image: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}${post.heroImage}`,
+          },
+        }
+      : {}),
     ...(post.keywords ? { keywords: post.keywords.join(", ") } : {}),
     ...(post.category ? { articleSection: post.category } : {}),
   };

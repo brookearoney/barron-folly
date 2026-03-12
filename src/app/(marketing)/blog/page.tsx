@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { blogPosts, getFeaturedPosts, getAllCategories } from "@/data/blog";
+import { blogPosts, getSortedPosts, getFeaturedPosts, getAllCategories } from "@/data/blog";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
@@ -43,10 +43,11 @@ function formatDate(dateStr: string) {
 }
 
 export default function BlogPage() {
+  const sortedPosts = getSortedPosts();
   const featured = getFeaturedPosts();
   const categories = getAllCategories();
-  const latestPost = blogPosts[0];
-  const remainingPosts = blogPosts.slice(1);
+  const latestPost = sortedPosts[0];
+  const remainingPosts = sortedPosts.slice(1);
 
   const blogListJsonLd = {
     "@context": "https://schema.org",
@@ -60,7 +61,7 @@ export default function BlogPage() {
       name: SITE_NAME,
       url: SITE_URL,
     },
-    blogPost: blogPosts.map((post) => ({
+    blogPost: sortedPosts.map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,
       description: post.excerpt,
