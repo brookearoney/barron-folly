@@ -20,7 +20,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/images/brand/webclip.svg",
         sizes: "180x180",
         type: "image/svg+xml",
-        purpose: "apple touch icon",
+        purpose: "any",
       },
     ],
   };
