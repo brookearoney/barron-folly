@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { services } from "@/data/services";
+import { servicesFaqs } from "@/data/faqs";
 import ServiceCard from "@/components/ServiceCard";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
+import FaqSection from "@/components/FaqSection";
 
 export const metadata: Metadata = {
   title: "Services | Software, Systems & Brand Infrastructure",
@@ -41,6 +43,8 @@ export default function ServicesPage() {
           </div>
         </div>
       </section>
+
+      <FaqSection faqs={servicesFaqs} headingAccent="Service" heading="Questions" />
 
       <CTABanner
         title="What would shipping weekly feel like?"

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { projects } from "@/data/projects";
+import { workFaqs } from "@/data/faqs";
 import ProjectCard from "@/components/ProjectCard";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
+import FaqSection from "@/components/FaqSection";
 
 export const metadata: Metadata = {
   title: "Work | Deployed Systems & Infrastructure Portfolio",
@@ -49,6 +51,8 @@ export default function WorkPage() {
           </div>
         </div>
       </section>
+
+      <FaqSection faqs={workFaqs} headingAccent="Project" heading="Questions" />
 
       <CTABanner />
     </>

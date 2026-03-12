@@ -23,13 +23,14 @@ export const footerNav: {
       { href: "/services", label: "Services" },
       { href: "/work", label: "Work" },
       { href: "/pricing", label: "Pricing" },
-      { href: "/contact", label: "Contact" },
-      { href: "/blog", label: "Blog" },
     ],
   },
   {
-    title: "Platform",
+    title: "Resources",
     links: [
+      { href: "/blog", label: "Blog" },
+      { href: "/faq", label: "FAQ" },
+      { href: "/contact", label: "Contact" },
       { href: "/console/login", label: "Client Portal" },
     ],
   },

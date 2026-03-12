@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { aboutFaqs } from "@/data/faqs";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
+import FaqSection from "@/components/FaqSection";
 import JsonLd from "@/components/JsonLd";
 import { localBusinessJsonLd } from "@/lib/metadata";
 
@@ -150,6 +152,8 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      <FaqSection faqs={aboutFaqs} headingAccent="About" heading="Us" />
 
       <CTABanner
         title="Replace five vendors with one execution engine."

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { tiers, perks, faqs } from "@/data/pricing";
+import { tiers, perks } from "@/data/pricing";
+import { pricingFaqs } from "@/data/faqs";
 import { faqPageJsonLd } from "@/lib/metadata";
 import PageHero from "@/components/PageHero";
 import CTABanner from "@/components/CTABanner";
 import AnimateIn from "@/components/AnimateIn";
-import FaqAccordion from "@/components/FaqAccordion";
+import FaqSection from "@/components/FaqSection";
 
 export const metadata: Metadata = {
   title: "Pricing | From Execution to Command",
@@ -31,7 +32,7 @@ export default function PricingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqPageJsonLd(faqs)),
+          __html: JSON.stringify(faqPageJsonLd(pricingFaqs)),
         }}
       />
       <PageHero
@@ -170,21 +171,7 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 md:py-28 border-t border-[#2A2A26]/30">
-        <div className="w-[90%] mx-auto">
-          <AnimateIn>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-light leading-[1.1] tracking-tight mb-16">
-              <span className="font-display text-[#6E6E6A]">Common</span>{" "}
-              Questions
-            </h2>
-          </AnimateIn>
-
-          <div className="max-w-3xl">
-            <FaqAccordion faqs={faqs} />
-          </div>
-        </div>
-      </section>
+      <FaqSection faqs={pricingFaqs} headingAccent="Pricing" heading="Questions" />
 
       <CTABanner
         title="Still waiting months for development?"
