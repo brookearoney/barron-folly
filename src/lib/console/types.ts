@@ -348,6 +348,38 @@ export interface ActivityLog {
   profile?: Profile;
 }
 
+export type DeployEnvironment = "preview" | "staging" | "production";
+export type DeployStatus = "pending" | "building" | "ready" | "deployed" | "failed" | "rolled_back";
+export type QAStatus = "pending" | "passed" | "failed" | "skipped";
+
+export interface Deployment {
+  id: string;
+  organization_id: string;
+  request_id: string | null;
+  approval_id: string | null;
+  vercel_deployment_id: string | null;
+  vercel_deployment_url: string | null;
+  vercel_project_id: string | null;
+  git_branch: string | null;
+  git_commit_sha: string | null;
+  git_pr_url: string | null;
+  git_pr_number: number | null;
+  environment: DeployEnvironment;
+  status: DeployStatus;
+  rollback_deployment_id: string | null;
+  rollback_available: boolean;
+  rolled_back_at: string | null;
+  rolled_back_by: string | null;
+  qa_status: QAStatus;
+  qa_notes: string | null;
+  client_approved: boolean | null;
+  client_approved_at: string | null;
+  client_approved_by: string | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
 export type NotificationType = "clarification" | "approval" | "status_change" | "comment" | "completion";
 
 export interface NotificationPreferences {

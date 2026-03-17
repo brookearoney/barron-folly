@@ -118,6 +118,23 @@ export async function PATCH(
       await syncCommentToLinear(request.linear_issue_id, commentBody);
     }
 
+    // When approved, update any associated deployments
+    if (decision === "approved") {
+      const { data: linkedDeployments } = await supabase
+        .from("deployments")
+        .select("id")
+        .eq("approval_id", id);
+
+      if (linkedDeployments && linkedDeployments.length > 0) {
+        for (const dep of linkedDeployments) {
+          await supabase
+            .from("deployments")
+            .update({ updated_at: new Date().toISOString() })
+            .eq("id", dep.id);
+        }
+      }
+    }
+
     // Log activity
     if (request) {
       await supabase.from("activity_log").insert({
