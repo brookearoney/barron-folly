@@ -225,6 +225,23 @@ export async function POST(req: Request) {
         const approvalTitle = parsed.title || "Approval Required";
         const riskLevel = (parsed.risk_level || "medium") as "low" | "medium" | "high";
 
+        // Require rollback_plan for high-risk approvals
+        if (riskLevel === "high" && !parsed.rollback_plan?.trim()) {
+          await supabase.from("activity_log").insert({
+            request_id: request.id,
+            organization_id: request.organization_id,
+            action: "approval_rejected",
+            details: {
+              reason: "High-risk approvals require a rollback_plan field",
+              title: approvalTitle,
+            },
+          });
+          return NextResponse.json({
+            ok: false,
+            error: "High-risk approvals require a rollback_plan",
+          }, { status: 400 });
+        }
+
         const { data: approval } = await supabase
           .from("approvals")
           .insert({
