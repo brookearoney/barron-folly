@@ -348,6 +348,20 @@ export interface ActivityLog {
   profile?: Profile;
 }
 
+export interface UsageRecord {
+  id: string;
+  organization_id: string;
+  period_start: string;
+  period_end: string;
+  requests_count: number;
+  tasks_completed: number;
+  agent_minutes: number;
+  api_calls: number;
+  tokens_used: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export type DeployEnvironment = "preview" | "staging" | "production";
 export type DeployStatus = "pending" | "building" | "ready" | "deployed" | "failed" | "rolled_back";
 export type QAStatus = "pending" | "passed" | "failed" | "skipped";

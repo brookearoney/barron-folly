@@ -2,6 +2,8 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { linearRequest } from "@/lib/linear/client";
 import { CREATE_ISSUE } from "@/lib/linear/queries";
+import { checkRequestEntitlement, checkCategoryEntitlement } from "@/lib/console/entitlements";
+import { trackRequestUsage } from "@/lib/console/usage";
 
 // GET /api/console/requests — list requests for user's org
 export async function GET(request: NextRequest) {
@@ -93,6 +95,26 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check entitlements before creating request
+    const entitlement = await checkRequestEntitlement(profile.organization_id);
+    if (!entitlement.allowed) {
+      return NextResponse.json(
+        { error: entitlement.reason, currentUsage: entitlement.currentUsage, limits: entitlement.limits },
+        { status: 403 }
+      );
+    }
+
+    // Check category entitlement if category is provided
+    if (category) {
+      const categoryEntitlement = await checkCategoryEntitlement(profile.organization_id, category);
+      if (!categoryEntitlement.allowed) {
+        return NextResponse.json(
+          { error: categoryEntitlement.reason },
+          { status: 403 }
+        );
+      }
+    }
+
     // Auto-generate a title from the description if not provided
     const requestTitle = title || description.slice(0, 80).trim() + (description.length > 80 ? "..." : "");
 
@@ -165,6 +187,9 @@ export async function POST(req: Request) {
         console.error("Linear sync error (non-fatal):", linearErr);
       }
     }
+
+    // Track usage
+    await trackRequestUsage(profile.organization_id);
 
     // Log activity
     await supabase.from("activity_log").insert({

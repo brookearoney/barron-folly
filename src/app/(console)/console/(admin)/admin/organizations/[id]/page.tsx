@@ -31,12 +31,32 @@ export default function OrganizationDetailPage() {
   const [suggestionsLoading, setSuggestionsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Array<{ id: string; title: string; description: string; category: string; estimated_effort: string; status: string }>>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [billingData, setBillingData] = useState<{
+    entitlements: {
+      tier: Tier;
+      entitlements: { name: string; maxParallelTasks: number; maxMonthlyRequests: number | null; features: string[] };
+      usage: { monthlyRequests: number; activeParallelTasks: number; totalRequests: number };
+      limits: { monthlyRequestsRemaining: number | null; parallelTasksRemaining: number };
+    } | null;
+    subscription: { status: string; currentPeriodEnd: string; cancelAtPeriodEnd: boolean; price: number } | null;
+  }>({ entitlements: null, subscription: null });
 
   useEffect(() => {
     fetch(`/api/console/admin/organizations/${id}`)
       .then((res) => res.json())
       .then(setData)
       .finally(() => setLoading(false));
+
+    // Fetch billing data
+    fetch(`/api/console/billing/status?orgId=${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBillingData({
+          entitlements: data.entitlements ?? null,
+          subscription: data.subscription ?? null,
+        });
+      })
+      .catch(() => {});
   }, [id]);
 
   async function handleSave(e: React.FormEvent<HTMLFormElement>) {
@@ -484,6 +504,76 @@ export default function OrganizationDetailPage() {
                   )}
                 </div>
               )}
+            </div>
+          )}
+        </div>
+
+        {/* Billing */}
+        <div className="bg-dark rounded-lg border border-dark-border p-6 space-y-4">
+          <h2 className="text-foreground font-medium">Billing & Entitlements</h2>
+
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-muted">Current Tier</span>
+              <p className="text-foreground font-medium capitalize">{org.tier}</p>
+            </div>
+            <div>
+              <span className="text-muted">Tier Price</span>
+              <p className="text-foreground font-medium">
+                {org.tier_price ? `$${org.tier_price}/mo` : "N/A"}
+              </p>
+            </div>
+            <div>
+              <span className="text-muted">Stripe Customer</span>
+              {org.stripe_customer_id ? (
+                <p className="text-foreground font-mono text-xs truncate">
+                  <a
+                    href={`https://dashboard.stripe.com/customers/${org.stripe_customer_id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-orange hover:underline"
+                  >
+                    {org.stripe_customer_id}
+                  </a>
+                </p>
+              ) : (
+                <p className="text-muted italic">Not linked</p>
+              )}
+            </div>
+            {billingData.subscription && (
+              <div>
+                <span className="text-muted">Subscription Status</span>
+                <p className="text-foreground capitalize">{billingData.subscription.status}</p>
+              </div>
+            )}
+          </div>
+
+          {billingData.entitlements && (
+            <div className="border-t border-dark-border pt-4 space-y-3">
+              <h3 className="text-foreground text-sm font-medium">Current Period Usage</h3>
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-muted text-xs">Monthly Requests</span>
+                  <p className="text-foreground font-medium">
+                    {billingData.entitlements.usage.monthlyRequests}
+                    {billingData.entitlements.entitlements.maxMonthlyRequests !== null
+                      ? ` / ${billingData.entitlements.entitlements.maxMonthlyRequests}`
+                      : " (unlimited)"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted text-xs">Active Tasks</span>
+                  <p className="text-foreground font-medium">
+                    {billingData.entitlements.usage.activeParallelTasks} / {billingData.entitlements.entitlements.maxParallelTasks}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-muted text-xs">Total Requests</span>
+                  <p className="text-foreground font-medium">
+                    {billingData.entitlements.usage.totalRequests}
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
