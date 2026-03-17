@@ -9,6 +9,7 @@ import {
   buildMemoryLogContext,
   buildSimilarTasksContext,
 } from "@/lib/ai/context";
+import { startStreamRunLog, completeRunLog, failRunLog } from "@/lib/ai/with-logging";
 import type { Organization } from "@/lib/console/types";
 
 export async function POST(req: Request) {
@@ -92,6 +93,14 @@ export async function POST(req: Request) {
       // RAG is non-critical, continue without it
     }
 
+    // Start run log for streaming flow
+    const runLogId = await startStreamRunLog({
+      orgId: request.organization_id,
+      requestId: request_id,
+      flow: "clarify",
+      inputSummary: `Clarifying: ${request.description.slice(0, 200)}`,
+    });
+
     // Generate clarifying questions (streaming)
     const { stream, getResult } = await generateClarifyingQuestions(
       request.description,
@@ -112,8 +121,13 @@ export async function POST(req: Request) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", request_id);
+
+        await completeRunLog(runLogId, {
+          outputSummary: `Generated ${clarificationData.questions.length} clarifying questions`,
+        });
       } catch (err) {
         console.error("Failed to save clarification data:", err);
+        await failRunLog(runLogId, err instanceof Error ? err.message : "Failed to save clarification data");
       }
     });
 

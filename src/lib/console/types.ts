@@ -1,3 +1,24 @@
+export type AgentFlowType = 'dossier' | 'style_guide' | 'clarify' | 'construct' | 'suggestions' | 'scrape';
+export type RunLogStatus = 'started' | 'completed' | 'failed' | 'cancelled';
+
+export interface AgentRunLog {
+  id: string;
+  organization_id: string | null;
+  request_id: string | null;
+  flow: AgentFlowType;
+  status: RunLogStatus;
+  input_summary: string | null;
+  output_summary: string | null;
+  tokens_input: number;
+  tokens_output: number;
+  duration_ms: number;
+  error_message: string | null;
+  metadata: Record<string, unknown>;
+  linear_task_id: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
 export type UserRole = "client" | "admin";
 
 export type Tier = "copper" | "steel" | "titanium" | "tungsten";

@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/console/admin-helpers";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { scrapeUrl } from "@/lib/ai/scraper";
+import { scrapeWithFirecrawl } from "@/lib/scraping/firecrawl";
 import { generateBusinessDossier, generateStyleGuide } from "@/lib/ai/claude";
+import { withRunLogging } from "@/lib/ai/with-logging";
 
 export async function POST(
   req: Request,
@@ -32,17 +33,22 @@ export async function POST(
       })
       .eq("id", id);
 
-    // Scrape the URL
-    const scrapeResult = await scrapeUrl(url);
+    // Scrape the URL (with run logging)
+    const scrapeResult = await withRunLogging(
+      { orgId: id, flow: "scrape", inputSummary: `Scraping ${url}` },
+      () => scrapeWithFirecrawl(url)
+    );
 
-    // Generate business dossier
-    const dossier = await generateBusinessDossier(scrapeResult.text, url);
+    // Generate business dossier (with run logging)
+    const dossier = await withRunLogging(
+      { orgId: id, flow: "dossier", inputSummary: `Generating dossier from ${url}` },
+      () => generateBusinessDossier(scrapeResult.text, url)
+    );
 
-    // Generate style guide using dossier as additional context
-    const styleGuide = await generateStyleGuide(
-      scrapeResult.rawHtml,
-      url,
-      JSON.stringify(dossier)
+    // Generate style guide using dossier as additional context (with run logging)
+    const styleGuide = await withRunLogging(
+      { orgId: id, flow: "style_guide", inputSummary: `Generating style guide from ${url}` },
+      () => generateStyleGuide(scrapeResult.rawHtml, url, JSON.stringify(dossier))
     );
 
     // Save results
