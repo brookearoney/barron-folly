@@ -1,3 +1,50 @@
+export type AgentGroup = 'research' | 'content' | 'frontend' | 'integration' | 'data' | 'infra' | 'security' | 'qa' | 'ops';
+export type QueueStatus = 'queued' | 'assigned' | 'running' | 'blocked' | 'completed' | 'failed' | 'cancelled';
+
+export interface OrchestratorTask {
+  id: string;
+  organization_id: string;
+  request_id: string | null;
+  linear_issue_id: string | null;
+  linear_issue_key: string | null;
+  title: string;
+  description: string | null;
+  category: string | null;
+  tier: Tier;
+  priority: number;
+  sla_deadline: string | null;
+  agent_group: AgentGroup | null;
+  risk_level: RiskLevel;
+  status: QueueStatus;
+  assigned_at: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+  blocked_at: string | null;
+  blocked_reason: string | null;
+  attempt_count: number;
+  max_attempts: number;
+  last_error: string | null;
+  result_summary: string | null;
+  result_artifacts: Record<string, unknown>;
+  requires_approval: boolean;
+  approval_id: string | null;
+  approved: boolean | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface QueueStats {
+  total: number;
+  queued: number;
+  running: number;
+  blocked: number;
+  completed: number;
+  failed: number;
+  avgWaitTimeMs: number;
+  avgProcessTimeMs: number;
+}
+
 export type UserRole = "client" | "admin";
 
 export type Tier = "copper" | "steel" | "titanium" | "tungsten";
