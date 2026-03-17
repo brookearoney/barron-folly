@@ -12,6 +12,7 @@ import {
 } from "@/lib/ai/context";
 import { linearRequest } from "@/lib/linear/client";
 import { CREATE_ISSUE, CREATE_ISSUE_RELATION } from "@/lib/linear/queries";
+import { startStreamRunLog, completeRunLog, failRunLog } from "@/lib/ai/with-logging";
 import type { Organization, AiClarificationData, MemoryLogEntry } from "@/lib/console/types";
 
 export async function POST(req: Request) {
@@ -99,6 +100,14 @@ export async function POST(req: Request) {
     }
 
     const originalRequest = request.description;
+
+    // Start run log for streaming flow
+    const runLogId = await startStreamRunLog({
+      orgId: request.organization_id,
+      requestId: request_id,
+      flow: "construct",
+      inputSummary: `Constructing tasks for: ${request.description.slice(0, 200)}`,
+    });
 
     // Generate task plan (streaming)
     const { stream, getResult } = await constructTaskPlan(
@@ -288,6 +297,15 @@ export async function POST(req: Request) {
             session_summary: taskPlan.session_summary,
           },
         });
+
+        // Complete the run log
+        await completeRunLog(runLogId, {
+          outputSummary: `Constructed ${taskPlan.tasks.length} tasks, created ${linearIssueIds.length} Linear issues`,
+          metadata: {
+            task_count: taskPlan.tasks.length,
+            linear_issue_count: linearIssueIds.length,
+          },
+        });
       } catch (err) {
         console.error("Post-construction processing error:", err);
 
@@ -299,6 +317,8 @@ export async function POST(req: Request) {
             updated_at: new Date().toISOString(),
           })
           .eq("id", request_id);
+
+        await failRunLog(runLogId, err instanceof Error ? err.message : "Post-construction processing failed");
       }
     });
 

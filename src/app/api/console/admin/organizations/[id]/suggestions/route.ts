@@ -7,6 +7,7 @@ import {
   buildMemoryLogContext,
   buildTechStackContext,
 } from "@/lib/ai/context";
+import { withRunLogging } from "@/lib/ai/with-logging";
 import type { Organization } from "@/lib/console/types";
 
 // GET: List suggestions for an org
@@ -83,8 +84,11 @@ export async function POST(
     const memoryLog = buildMemoryLogContext(typedOrg.memory_log || []);
     const techStack = buildTechStackContext(typedOrg);
 
-    // Generate suggestions via Claude
-    const result = await generateSuggestions(orgDossier, memoryLog, techStack);
+    // Generate suggestions via Claude (with run logging)
+    const result = await withRunLogging(
+      { orgId: id, flow: "suggestions", inputSummary: `Generating suggestions for ${typedOrg.name}` },
+      () => generateSuggestions(orgDossier, memoryLog, techStack)
+    );
 
     // Insert suggestions into database
     const insertData = result.recommendations.map((rec) => ({
