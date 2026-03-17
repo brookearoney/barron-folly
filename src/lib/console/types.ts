@@ -218,6 +218,10 @@ export interface AiTaskPlan {
   tasks: AiPlannedTask[];
 }
 
+export type SuggestionSource = 'ai' | 'admin' | 'system' | 'trend';
+export type SuggestionPriority = 'low' | 'medium' | 'high';
+export type SuggestionStatus = 'active' | 'dismissed' | 'requested' | 'implemented';
+
 export interface OrgSuggestion {
   id: string;
   organization_id: string;
@@ -226,10 +230,40 @@ export interface OrgSuggestion {
   category: string | null;
   rationale: string | null;
   estimated_effort: string | null;
-  status: "active" | "dismissed" | "requested";
+  priority: SuggestionPriority;
+  status: SuggestionStatus;
   request_id: string | null;
+  source: SuggestionSource;
+  confidence: number;
+  tags: string[];
+  expires_at: string | null;
+  dismissed_reason: string | null;
+  metadata: Record<string, unknown>;
   created_at: string;
   updated_at: string;
+}
+
+export interface SuggestionCandidate {
+  title: string;
+  description: string;
+  category: RequestCategory | null;
+  rationale: string;
+  estimated_effort: string;
+  priority: SuggestionPriority;
+  confidence: number;
+  source: SuggestionSource;
+  tags: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface SuggestionMetrics {
+  totalGenerated: number;
+  acceptedCount: number;
+  dismissedCount: number;
+  acceptanceRate: number;
+  avgConfidence: number;
+  topCategories: Array<{ category: string; count: number }>;
+  avgTimeToAction: number;
 }
 
 export interface Organization {
@@ -662,3 +696,129 @@ export interface SystemHealth {
 // ─── Design Artifact Pipeline (Phase 4.4) ───────────────────────────────
 
 export type { ArtifactType, ArtifactStatus, ArtifactFormat, Artifact, ArtifactDiff, QualityGateResult, QualityCheck, DesignToken } from '@/lib/artifacts/types';
+
+// ─── RAG + Memory (Phase 5.1) ───────────────────────────────────────────
+
+export interface RAGResult {
+  requestId: string;
+  content: string;
+  similarity: number;
+  metadata: Record<string, unknown>;
+  reranked?: boolean;
+  rerankScore?: number;
+}
+
+export interface MemoryStats {
+  totalEntries: number;
+  oldestEntry: string | null;
+  newestEntry: string | null;
+  topTags: Array<{ tag: string; count: number }>;
+  avgEntriesPerMonth: number;
+}
+
+export interface EmbeddingStats {
+  totalRequests: number;
+  embeddedRequests: number;
+  coveragePercent: number;
+  avgEmbeddingAge: number; // days
+  oldestEmbedding: string | null;
+}
+
+// ─── Prompt Optimization (Phase 5.3) ────────────────────────────────────
+
+export type PromptFlowType = AgentFlowType;
+
+export interface PromptVersion {
+  id: string;
+  flow: PromptFlowType;
+  version: number;
+  name: string;
+  system_prompt: string;
+  user_prompt_template: string;
+  model: string;
+  temperature: number;
+  max_tokens: number;
+  is_active: boolean;
+  is_baseline: boolean;
+  metadata: Record<string, unknown>;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PromptVariable {
+  name: string;
+  description: string;
+  required: boolean;
+}
+
+export interface PromptPerformanceRecord {
+  id: string;
+  prompt_version_id: string;
+  flow: PromptFlowType;
+  run_log_id: string | null;
+  organization_id: string;
+  tokens_input: number;
+  tokens_output: number;
+  total_tokens: number;
+  cost_usd: number;
+  duration_ms: number;
+  success: boolean;
+  error_message: string | null;
+  quality_score: number | null;
+  quality_source: 'auto' | 'admin' | 'client' | null;
+  metadata: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface PromptPerformanceStats {
+  promptVersionId: string;
+  flow: PromptFlowType;
+  version: number;
+  name: string;
+  totalRuns: number;
+  successRate: number;
+  avgTokensInput: number;
+  avgTokensOutput: number;
+  avgTotalTokens: number;
+  avgCost: number;
+  totalCost: number;
+  avgDuration: number;
+  avgQualityScore: number | null;
+  p50Duration: number;
+  p95Duration: number;
+}
+
+export type ABTestStatus = 'draft' | 'running' | 'paused' | 'completed';
+
+export interface ABTest {
+  id: string;
+  flow: PromptFlowType;
+  name: string;
+  description: string;
+  variant_a_id: string;
+  variant_b_id: string;
+  split_percentage: number;
+  status: ABTestStatus;
+  min_sample_size: number;
+  start_date: string | null;
+  end_date: string | null;
+  winner_id: string | null;
+  conclusion: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ABTestResults {
+  test: ABTest;
+  variantA: PromptPerformanceStats;
+  variantB: PromptPerformanceStats;
+  sampleSizeReached: boolean;
+  statisticallySignificant: boolean;
+  recommendation: string;
+}
+
+export interface EvalCriteria {
+  name: string;
+  description: string;
+  weight: number;
+}

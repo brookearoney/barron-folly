@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 
-// GET: List active suggestions for the user's org
-export async function GET() {
+// GET: List suggestions for the user's org (optionally filter by status)
+export async function GET(req: Request) {
   try {
     const supabase = await createServerClient();
     const {
@@ -22,12 +22,21 @@ export async function GET() {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    const { data: suggestions, error } = await supabase
+    // Check for status filter in query params
+    const url = new URL(req.url);
+    const statusFilter = url.searchParams.get("status");
+
+    let query = supabase
       .from("org_suggestions")
       .select("*")
       .eq("organization_id", profile.organization_id)
-      .eq("status", "active")
       .order("created_at", { ascending: false });
+
+    if (statusFilter) {
+      query = query.eq("status", statusFilter);
+    }
+
+    const { data: suggestions, error } = await query;
 
     if (error) throw error;
 
