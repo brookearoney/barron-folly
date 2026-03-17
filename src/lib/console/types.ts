@@ -190,6 +190,8 @@ export interface AiPlannedTask {
   estimate: number;
   labels: string[];
   dependencies: string[];
+  is_epic?: boolean;
+  subtasks?: AiPlannedTask[];
 }
 
 export interface AiTaskPlan {
