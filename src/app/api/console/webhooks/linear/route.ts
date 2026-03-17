@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { LINEAR_STATE_TO_STATUS, STATUS_LABELS } from "@/lib/console/constants";
 import { sendOrgNotificationEmails } from "@/lib/email/notify";
+import { sendApprovalPacket, sendErrorAlert, sendStatusUpdate } from "@/lib/slack/messages";
 import type { NotificationType } from "@/lib/console/types";
 import crypto from "crypto";
 
@@ -131,6 +132,20 @@ export async function POST(req: Request) {
             body: statusNotifBody,
             request_id: request.id,
             new_status: newStatus,
+          }).catch(() => {});
+
+          // Send Slack status update (fire-and-forget)
+          const { data: statusOrg } = await supabase
+            .from("organizations")
+            .select("name")
+            .eq("id", request.organization_id)
+            .single();
+
+          sendStatusUpdate({
+            requestId: request.id,
+            orgName: statusOrg?.name || "Unknown",
+            status: toLabel,
+            title: request.title,
           }).catch(() => {});
         }
       }
@@ -266,6 +281,27 @@ export async function POST(req: Request) {
           body: approvalNotifBody,
           reference_id: approval?.id || null,
         }).catch(() => {});
+
+        // Send Slack approval packet (fire-and-forget)
+        if (approval?.id) {
+          const { data: approvalOrg } = await supabase
+            .from("organizations")
+            .select("name")
+            .eq("id", request.organization_id)
+            .single();
+
+          sendApprovalPacket({
+            id: approval.id,
+            title: approvalTitle,
+            summary: parsed.summary || body,
+            impact: parsed.impact || null,
+            risk_level: riskLevel,
+            rollback_plan: parsed.rollback_plan || null,
+            artifacts_url: parsed.artifacts_url || parsed.artifacts || null,
+            request_id: request.id,
+            org_name: approvalOrg?.name || "Unknown",
+          }).catch(() => {});
+        }
       }
       // Regular comment
       else {
@@ -294,6 +330,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Webhook error:", error);
+
+    // Send error alert to Slack (fire-and-forget)
+    sendErrorAlert({
+      flow: "linear-webhook",
+      orgName: "Unknown",
+      message: error instanceof Error ? error.message : String(error),
+      timestamp: new Date().toISOString(),
+    }).catch(() => {});
+
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }
