@@ -187,6 +187,16 @@ export default function OrganizationDetailPage() {
       </div>
 
       <div className="space-y-8">
+        {/* Quick links */}
+        <div className="flex gap-3">
+          <Link
+            href={`/console/admin/organizations/${id}/policies`}
+            className="bg-dark hover:bg-dark-border text-foreground text-sm px-4 py-2.5 rounded-lg border border-dark-border transition-colors"
+          >
+            Edit Policy & Risk Rules
+          </Link>
+        </div>
+
         {/* Edit form */}
         <form onSubmit={handleSave} className="bg-dark rounded-lg border border-dark-border p-6 space-y-5">
           <h2 className="text-foreground font-medium">Organization Details</h2>

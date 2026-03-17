@@ -12,6 +12,7 @@ import {
 } from "@/lib/ai/context";
 import { linearRequest } from "@/lib/linear/client";
 import { CREATE_ISSUE, CREATE_ISSUE_RELATION } from "@/lib/linear/queries";
+import { enforcePolicy } from "@/lib/console/policy-enforcement";
 import type { Organization, AiClarificationData, MemoryLogEntry } from "@/lib/console/types";
 
 export async function POST(req: Request) {
@@ -113,6 +114,46 @@ export async function POST(req: Request) {
     // Process results after stream completes
     getResult().then(async (taskPlan) => {
       try {
+        // ── Policy enforcement gate ──────────────────────────────
+        const clarData2 = request.ai_clarification_data as AiClarificationData;
+        const requestCategory = taskPlan.request_category || request.category;
+        const complexity = clarData2?.complexity || "moderate";
+
+        const enforcement = await enforcePolicy(request.organization_id, {
+          category: requestCategory,
+          riskLevel: "medium", // will be refined by assessRisk internally
+          environment: "staging",
+          description: request.description,
+          complexity,
+        });
+
+        // If blocked by policy, mark as pending approval and stop
+        if (!enforcement.proceed) {
+          await admin
+            .from("requests")
+            .update({
+              ai_phase: "constructed",
+              status: "submitted",
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", request_id);
+
+          await admin.from("activity_log").insert({
+            request_id: request_id,
+            organization_id: request.organization_id,
+            actor_id: null,
+            action: "policy_blocked",
+            details: {
+              risk_assessment: enforcement.riskAssessment,
+              block_reason: enforcement.riskAssessment.block_reason,
+            },
+          });
+          return;
+        }
+
+        // If requires approval, create tasks but mark as pending_approval
+        const pendingApproval = enforcement.requiresApproval;
+
         const teamId = org.linear_team_id || process.env.LINEAR_TEAM_ID;
         const projectId = org.linear_project_id || process.env.LINEAR_PROJECT_ID;
         const linearIssueIds: string[] = [];
@@ -126,7 +167,7 @@ export async function POST(req: Request) {
 
         const aiTitle = taskPlan.request_title || request.title;
 
-        if (teamId && process.env.LINEAR_API_KEY && taskPlan.tasks.length > 0) {
+        if (teamId && process.env.LINEAR_API_KEY && taskPlan.tasks.length > 0 && !pendingApproval) {
           for (const task of taskPlan.tasks) {
             try {
               const input: Record<string, unknown> = {
@@ -208,6 +249,11 @@ export async function POST(req: Request) {
           updated_at: new Date().toISOString(),
         };
 
+        // If pending approval, set status to submitted so it awaits human review
+        if (pendingApproval) {
+          updateData.status = "submitted";
+        }
+
         // Apply AI-generated request metadata
         if (taskPlan.request_title) {
           updateData.title = taskPlan.request_title;
@@ -281,11 +327,13 @@ export async function POST(req: Request) {
           request_id: request_id,
           organization_id: request.organization_id,
           actor_id: null,
-          action: "ai_tasks_constructed",
+          action: pendingApproval ? "ai_tasks_pending_approval" : "ai_tasks_constructed",
           details: {
             task_count: taskPlan.tasks.length,
             linear_issue_ids: linearIssueIds,
             session_summary: taskPlan.session_summary,
+            risk_assessment: enforcement.riskAssessment,
+            pending_approval: pendingApproval,
           },
         });
       } catch (err) {

@@ -240,6 +240,35 @@ export interface Approval {
   request?: Request;
 }
 
+export interface ClientPolicy {
+  id: string;
+  organization_id: string;
+  allowed_categories: RequestCategory[];
+  blocked_categories: RequestCategory[];
+  allowed_environments: string[];
+  risk_level: RiskLevel;
+  regulated: boolean;
+  requires_human_approval_above: RiskLevel;
+  auto_approve_categories: RequestCategory[];
+  max_concurrent_agent_tasks: number;
+  autopilot_enabled: boolean;
+  autopilot_categories: RequestCategory[];
+  code_conventions: Record<string, unknown>;
+  do_not_do: string[];
+  prod_change_blackout_hours: { start: number; end: number } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RiskAssessment {
+  score: number; // 0-100
+  level: RiskLevel;
+  factors: string[];
+  requires_approval: boolean;
+  blocked: boolean;
+  block_reason?: string;
+}
+
 export interface ActivityLog {
   id: string;
   request_id: string | null;
