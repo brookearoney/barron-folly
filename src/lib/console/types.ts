@@ -303,6 +303,22 @@ export interface ActivityLog {
 
 export type NotificationType = "clarification" | "approval" | "status_change" | "comment" | "completion";
 
+export interface NotificationPreferences {
+  id: string;
+  profile_id: string;
+  email_enabled: boolean;
+  slack_enabled: boolean;
+  in_app_enabled: boolean;
+  type_overrides: Record<NotificationType, { email?: boolean; slack?: boolean; in_app?: boolean }>;
+  digest_enabled: boolean;
+  digest_frequency: "hourly" | "daily" | "weekly";
+  digest_last_sent: string | null;
+  quiet_hours_start: number | null;
+  quiet_hours_end: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Notification {
   id: string;
   organization_id: string;
