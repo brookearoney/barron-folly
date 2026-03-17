@@ -14,6 +14,8 @@ import { linearRequest } from "@/lib/linear/client";
 import { CREATE_ISSUE, CREATE_ISSUE_RELATION } from "@/lib/linear/queries";
 import { enforcePolicy } from "@/lib/console/policy-enforcement";
 import { startStreamRunLog, completeRunLog, failRunLog } from "@/lib/ai/with-logging";
+import { enqueueTask } from "@/lib/console/orchestrator";
+import { routeToAgentGroup } from "@/lib/console/agent-router";
 import type { Organization, AiClarificationData, MemoryLogEntry } from "@/lib/console/types";
 
 export async function POST(req: Request) {
@@ -354,6 +356,31 @@ export async function POST(req: Request) {
             linear_issue_count: linearIssueIds.length,
           },
         });
+
+        // Enqueue tasks into the orchestrator queue
+        const resolvedCategory = taskPlan.request_category || request.category;
+        for (const task of taskPlan.tasks) {
+          const issueId = titleToIssueId[task.title] || null;
+          try {
+            await enqueueTask({
+              organizationId: request.organization_id,
+              requestId: request_id,
+              linearIssueId: issueId ?? undefined,
+              title: task.title,
+              description: task.description,
+              category: resolvedCategory,
+              agentGroup: routeToAgentGroup(resolvedCategory, task.description),
+              riskLevel: task.priority === "urgent" || task.priority === "high" ? "high" : task.priority === "medium" ? "medium" : "low",
+              metadata: {
+                labels: task.labels,
+                estimate: task.estimate,
+                dependencies: task.dependencies,
+              },
+            });
+          } catch (enqueueErr) {
+            console.error("Failed to enqueue task (non-fatal):", task.title, enqueueErr);
+          }
+        }
       } catch (err) {
         console.error("Post-construction processing error:", err);
 
