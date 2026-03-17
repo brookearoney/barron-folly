@@ -34,7 +34,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "9 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/claude-code-remote-control-vs-cloud.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-remote-control-vs-cloud.png",
     sections: [
       {
         content:
@@ -53,7 +53,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "Key Differences at a Glance",
         content:
-          '<img src="/images/blog/claude-code-remote-control-vs-cloud-inline.png" alt="A smartphone displaying code in a dark environment with amber glow, connected to a laptop in the background — representing Claude Code Remote Control and Cloud workflows" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" />The core distinction is simple: <strong>Remote Control extends your local machine to other devices. Cloud replaces the need for a local machine entirely.</strong> With Remote Control, code execution happens on your hardware. Your filesystem, your MCP servers, your local tools — all available. With Cloud, execution happens on Anthropic\'s infrastructure. Your repository gets cloned from GitHub into a sandboxed VM. <strong>Remote Control is synchronous and interactive.</strong> You\'re steering a live session in real time from your phone or browser. <strong>Cloud is asynchronous.</strong> You submit a task and Claude runs it in the background — you can close the tab and come back later. Remote Control requires your machine to stay powered on and connected to the internet. If it goes offline for more than about ten minutes, the session times out. Cloud has no such constraint — tasks run independently of any device you own. Remote Control works with any repository on your local machine. Cloud currently requires <strong>GitHub only</strong> — no GitLab, Bitbucket, or local-only repos. Remote Control supports one active remote session per process. Cloud lets you <strong>run multiple tasks in parallel</strong> across different repositories simultaneously.',
+          '<img src="https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-remote-control-vs-cloud-inline.png" alt="A smartphone displaying code in a dark environment with amber glow, connected to a laptop in the background — representing Claude Code Remote Control and Cloud workflows" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" />The core distinction is simple: <strong>Remote Control extends your local machine to other devices. Cloud replaces the need for a local machine entirely.</strong> With Remote Control, code execution happens on your hardware. Your filesystem, your MCP servers, your local tools — all available. With Cloud, execution happens on Anthropic\'s infrastructure. Your repository gets cloned from GitHub into a sandboxed VM. <strong>Remote Control is synchronous and interactive.</strong> You\'re steering a live session in real time from your phone or browser. <strong>Cloud is asynchronous.</strong> You submit a task and Claude runs it in the background — you can close the tab and come back later. Remote Control requires your machine to stay powered on and connected to the internet. If it goes offline for more than about ten minutes, the session times out. Cloud has no such constraint — tasks run independently of any device you own. Remote Control works with any repository on your local machine. Cloud currently requires <strong>GitHub only</strong> — no GitLab, Bitbucket, or local-only repos. Remote Control supports one active remote session per process. Cloud lets you <strong>run multiple tasks in parallel</strong> across different repositories simultaneously.',
       },
       {
         heading: "Requirements Comparison",
@@ -118,7 +118,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "9 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/claude-code-model-guide.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-model-guide.png",
     sections: [
       {
         content:
@@ -142,7 +142,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "Essential Claude Code Features for New Users",
         content:
-          '<img src="/images/blog/claude-code-model-guide-inline.png" alt="A sleek monitor displaying code in a dark room with amber glow — representing the Claude Code development experience" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" />Beyond model selection, Claude Code includes features that compound your effectiveness once you learn to use them. <strong>Plan Mode</strong> is one of the most important features for new users. When you enter Plan Mode, Claude analyzes the problem, outlines a step-by-step approach, shows its reasoning, and waits for your approval before executing. This is critical for complex tasks where you want visibility into the approach before code gets written. <strong>CLAUDE.md</strong> is a markdown file at your project root that tells Claude Code how your project works — think of it as onboarding documentation for your AI agent. It should include your project structure, coding conventions, testing patterns, and deployment rules. Run <strong>/init</strong> to generate a starter version, then refine it as your project evolves. <strong>/clear</strong> resets your conversation context without losing your CLAUDE.md configuration. Use it often — every time you switch tasks, clear the context so you\'re not wasting tokens on irrelevant history. <strong>Subagents</strong> allow Claude Code to spawn parallel workers for independent tasks, dramatically accelerating multi-file operations. And <strong>memory</strong> lets Claude automatically record and recall important patterns across sessions, building institutional knowledge over time. These aren\'t convenience features. They\'re <a href="/blog/from-backlog-to-deployment-how-autonomous-execution-works" class="text-[#FF8400] hover:underline">workflow infrastructure</a> that turns a capable AI model into a predictable execution system.',
+          '<img src="https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-model-guide-inline.png" alt="A sleek monitor displaying code in a dark room with amber glow — representing the Claude Code development experience" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" />Beyond model selection, Claude Code includes features that compound your effectiveness once you learn to use them. <strong>Plan Mode</strong> is one of the most important features for new users. When you enter Plan Mode, Claude analyzes the problem, outlines a step-by-step approach, shows its reasoning, and waits for your approval before executing. This is critical for complex tasks where you want visibility into the approach before code gets written. <strong>CLAUDE.md</strong> is a markdown file at your project root that tells Claude Code how your project works — think of it as onboarding documentation for your AI agent. It should include your project structure, coding conventions, testing patterns, and deployment rules. Run <strong>/init</strong> to generate a starter version, then refine it as your project evolves. <strong>/clear</strong> resets your conversation context without losing your CLAUDE.md configuration. Use it often — every time you switch tasks, clear the context so you\'re not wasting tokens on irrelevant history. <strong>Subagents</strong> allow Claude Code to spawn parallel workers for independent tasks, dramatically accelerating multi-file operations. And <strong>memory</strong> lets Claude automatically record and recall important patterns across sessions, building institutional knowledge over time. These aren\'t convenience features. They\'re <a href="/blog/from-backlog-to-deployment-how-autonomous-execution-works" class="text-[#FF8400] hover:underline">workflow infrastructure</a> that turns a capable AI model into a predictable execution system.',
       },
       {
         heading: "Model Selection in Agentic Workflows",
@@ -189,7 +189,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "7 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/agentic-product-agency.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/agentic-product-agency.png",
     sections: [
       {
         content:
@@ -252,7 +252,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "6 min read",
     featured: false,
     author: "Barron & Folly",
-    heroImage: "/images/blog/subscription-development.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/subscription-development.png",
     sections: [
       {
         content:
@@ -315,7 +315,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "8 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/ai-agents-replacing-teams.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/ai-agents-replacing-teams.png",
     sections: [
       {
         content:
@@ -378,7 +378,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "6 min read",
     featured: false,
     author: "Barron & Folly",
-    heroImage: "/images/blog/fragmented-infrastructure.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/fragmented-infrastructure.png",
     sections: [
       {
         content:
@@ -441,7 +441,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "7 min read",
     featured: false,
     author: "Barron & Folly",
-    heroImage: "/images/blog/design-systems.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/design-systems.png",
     sections: [
       {
         content:
@@ -504,7 +504,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "8 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/backlog-to-deployment.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/backlog-to-deployment.png",
     sections: [
       {
         content:
@@ -577,7 +577,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "7 min read",
     featured: false,
     author: "Barron & Folly",
-    heroImage: "/images/blog/building-internal-tools.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/building-internal-tools.png",
     sections: [
       {
         content:
@@ -641,7 +641,7 @@ export const blogPosts: BlogPost[] = [
     readTime: "9 min read",
     featured: true,
     author: "Barron & Folly",
-    heroImage: "/images/blog/claude-code-agent-teams.png",
+    heroImage: "https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-agent-teams.png",
     sections: [
       {
         content:
@@ -655,7 +655,7 @@ export const blogPosts: BlogPost[] = [
       {
         heading: "How Agent Teams Differ from Traditional Subagents",
         content:
-          '<img src="/images/blog/claude-code-agent-teams-inline.png" alt="A robotic AI agent typing code on a keyboard — representing Claude Code autonomous coding execution" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" /><p>If you\'ve used Claude Code before, you\'re probably familiar with <a href="/blog/claude-code-model-guide-opus-sonnet-haiku">subagents</a> — the lightweight worker sessions that Claude Code spawns to handle focused tasks in parallel.</p><p>Subagents are useful, but they have a fundamental limitation: <strong>they can only report results back to the parent agent.</strong> They can\'t communicate with each other, share discoveries mid-task, or coordinate without the main agent acting as intermediary.</p><p>Think of subagents as <strong>contractors</strong> who each do their job and submit a final report. Agent Teams are a <strong>coordinated squad</strong> that talks to each other in real time.</p><h3>The Key Differences</h3><ul><li><strong>Context:</strong> Subagents share the caller\'s context and return summarized results. Agent Teams members each have fully independent context windows.</li><li><strong>Communication:</strong> Subagents report back to the parent only. Agent Teams members message each other directly.</li><li><strong>Coordination:</strong> Subagents rely on the parent to manage everything. Agent Teams use a shared task list with self-coordination and dependency tracking.</li><li><strong>Best for:</strong> Subagents excel at focused tasks where only the result matters. Agent Teams handle complex work requiring discussion and collaboration.</li><li><strong>Token cost:</strong> Subagents are cheaper since results get summarized back. Agent Teams use more tokens because each teammate is a full Claude instance.</li></ul><blockquote>Use subagents when you need quick workers that report back. Use Agent Teams when the task demands that multiple agents share findings, challenge each other\'s assumptions, and coordinate autonomously.</blockquote>',
+          '<img src="https://rofbocfazvvmmapfobsn.supabase.co/storage/v1/object/public/blog-images/claude-code-agent-teams-inline.png" alt="A robotic AI agent typing code on a keyboard — representing Claude Code autonomous coding execution" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" /><p>If you\'ve used Claude Code before, you\'re probably familiar with <a href="/blog/claude-code-model-guide-opus-sonnet-haiku">subagents</a> — the lightweight worker sessions that Claude Code spawns to handle focused tasks in parallel.</p><p>Subagents are useful, but they have a fundamental limitation: <strong>they can only report results back to the parent agent.</strong> They can\'t communicate with each other, share discoveries mid-task, or coordinate without the main agent acting as intermediary.</p><p>Think of subagents as <strong>contractors</strong> who each do their job and submit a final report. Agent Teams are a <strong>coordinated squad</strong> that talks to each other in real time.</p><h3>The Key Differences</h3><ul><li><strong>Context:</strong> Subagents share the caller\'s context and return summarized results. Agent Teams members each have fully independent context windows.</li><li><strong>Communication:</strong> Subagents report back to the parent only. Agent Teams members message each other directly.</li><li><strong>Coordination:</strong> Subagents rely on the parent to manage everything. Agent Teams use a shared task list with self-coordination and dependency tracking.</li><li><strong>Best for:</strong> Subagents excel at focused tasks where only the result matters. Agent Teams handle complex work requiring discussion and collaboration.</li><li><strong>Token cost:</strong> Subagents are cheaper since results get summarized back. Agent Teams use more tokens because each teammate is a full Claude instance.</li></ul><blockquote>Use subagents when you need quick workers that report back. Use Agent Teams when the task demands that multiple agents share findings, challenge each other\'s assumptions, and coordinate autonomously.</blockquote>',
       },
       {
         heading: "How to Enable and Set Up Agent Teams",
