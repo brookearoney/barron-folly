@@ -385,6 +385,68 @@ export interface UsageRecord {
   updated_at: string;
 }
 
+// ─── Autonomy Engine Types ────────────────────────────────────────────────
+
+export type AutonomyLevel = "suggest" | "auto_draft" | "auto_execute" | "full_auto";
+
+export interface AutonomyDecision {
+  level: AutonomyLevel;
+  confidence: number; // 0-1
+  reasoning: string[];
+  requiresApproval: boolean;
+  approvalType?: ApprovalType;
+  escalationNeeded: boolean;
+  escalationReason?: string;
+  restrictions: string[]; // things the agent must NOT do
+  allowedTools: string[]; // tool IDs the agent can use
+}
+
+export interface ConfidenceFactors {
+  historicalSuccessRate: number; // 0-1, past task success in this category for this org
+  taskSimilarity: number; // 0-1, how similar to previously successful tasks
+  riskScore: number; // 0-100 from risk scoring
+  tierTrust: number; // 0-1, based on tier level
+  categoryFamiliarity: number; // 0-1, how many tasks in this category we've done
+  policyAlignment: number; // 0-1, how well task fits within policy bounds
+}
+
+export type EscalationTrigger =
+  | "confidence_drop"
+  | "error_threshold"
+  | "policy_violation"
+  | "timeout"
+  | "resource_limit"
+  | "anomaly_detected"
+  | "client_escalation"
+  | "dependency_blocked";
+
+export interface EscalationEvent {
+  id: string;
+  task_id: string;
+  organization_id: string;
+  trigger: EscalationTrigger;
+  previous_level: AutonomyLevel;
+  new_level: AutonomyLevel;
+  details: string;
+  resolved: boolean;
+  resolved_by: string | null;
+  resolved_at: string | null;
+  created_at: string;
+}
+
+export interface AutonomyOverride {
+  id: string;
+  organization_id: string;
+  scope: "org" | "category" | "task";
+  scope_value: string | null;
+  max_autonomy_level: AutonomyLevel;
+  reason: string;
+  created_by: string;
+  expires_at: string | null;
+  active: boolean;
+  created_at: string;
+}
+
 export type DeployEnvironment = "preview" | "staging" | "production";
 export type DeployStatus = "pending" | "building" | "ready" | "deployed" | "failed" | "rolled_back";
 export type QAStatus = "pending" | "passed" | "failed" | "skipped";
@@ -448,3 +510,155 @@ export interface Notification {
   created_at: string;
   request?: Pick<Request, "id" | "title" | "linear_issue_key" | "status">;
 }
+
+// ─── Tool Runner Framework (Phase 4.1) ─────────────────────────────────
+
+export type ToolCategory = 'read' | 'write' | 'execute' | 'deploy' | 'communicate' | 'analyze';
+export type ToolRiskTier = 'safe' | 'guarded' | 'elevated' | 'critical';
+
+export interface AgentTool {
+  id: string;
+  name: string;
+  description: string;
+  category: ToolCategory;
+  riskTier: ToolRiskTier;
+  requiredApproval: boolean;
+  allowedAgentGroups: AgentGroup[];
+  allowedRiskLevels: RiskLevel[];
+  rateLimits?: { maxPerHour: number; maxPerDay: number };
+  timeout_ms: number;
+}
+
+export interface ToolExecutionContext {
+  taskId: string;
+  orgId: string;
+  agentGroup: AgentGroup;
+  riskLevel: RiskLevel;
+  tier: Tier;
+  traceId: string;
+}
+
+export interface ToolExecutionResult {
+  success: boolean;
+  toolId: string;
+  output: unknown;
+  duration_ms: number;
+  tokensUsed?: number;
+  error?: string;
+  requiresEscalation?: boolean;
+}
+
+export interface GroupCapabilityProfile {
+  group: AgentGroup;
+  defaultTools: string[];
+  riskLevelTools: Record<RiskLevel, string[]>;
+  maxConcurrentTools: number;
+  requiresHumanReview: RiskLevel;
+  canEscalateTo: AgentGroup[];
+}
+
+export interface SandboxConfig {
+  maxExecutionTime_ms: number;
+  maxMemoryMB: number;
+  allowedEnvironments: string[];
+  networkAccess: boolean;
+  fileSystemAccess: 'none' | 'read' | 'readwrite';
+}
+
+export interface ToolExecutionRecord {
+  id: string;
+  task_id: string;
+  organization_id: string;
+  tool_id: string;
+  agent_group: AgentGroup;
+  risk_level: RiskLevel;
+  tier: Tier;
+  trace_id: string;
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'denied';
+  input_params: Record<string, unknown>;
+  output: unknown;
+  duration_ms: number;
+  tokens_used: number;
+  error: string | null;
+  requires_escalation: boolean;
+  sandbox_config: SandboxConfig | null;
+  attempt_number: number;
+  created_at: string;
+  completed_at: string | null;
+}
+
+// ─── Observability (Phase 4.3) ──────────────────────────────────────────
+
+export interface SpanEvent {
+  name: string;
+  timestamp: string;
+  attributes?: Record<string, unknown>;
+}
+
+export interface TraceSpan {
+  id: string;
+  traceId: string;
+  parentSpanId: string | null;
+  name: string;
+  service: string;
+  operation: string;
+  status: 'active' | 'completed' | 'error';
+  startTime: string;
+  endTime: string | null;
+  duration_ms: number | null;
+  attributes: Record<string, unknown>;
+  events: SpanEvent[];
+  error?: { message: string; stack?: string; code?: string };
+}
+
+export interface TraceContext {
+  traceId: string;
+  spanId: string;
+  parentSpanId?: string;
+}
+
+export type AuditAction =
+  | 'task.created' | 'task.assigned' | 'task.started' | 'task.completed' | 'task.failed' | 'task.blocked'
+  | 'tool.accessed' | 'tool.executed' | 'tool.denied'
+  | 'policy.checked' | 'policy.enforced' | 'policy.blocked'
+  | 'approval.requested' | 'approval.granted' | 'approval.denied'
+  | 'autonomy.decided' | 'autonomy.escalated' | 'autonomy.overridden'
+  | 'deployment.initiated' | 'deployment.promoted' | 'deployment.rolled_back'
+  | 'data.read' | 'data.written' | 'data.deleted';
+
+export interface AuditEntry {
+  id: string;
+  traceId: string | null;
+  spanId: string | null;
+  taskId: string | null;
+  orgId: string;
+  actorType: 'user' | 'agent' | 'system' | 'cron';
+  actorId: string | null;
+  action: AuditAction;
+  resource: string;
+  details: Record<string, unknown>;
+  riskLevel: RiskLevel | null;
+  ip_address: string | null;
+  created_at: string;
+}
+
+export interface HealthCheck {
+  service: string;
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  latency_ms: number;
+  lastChecked: string;
+  details?: Record<string, unknown>;
+}
+
+export interface SystemHealth {
+  overall: 'healthy' | 'degraded' | 'unhealthy';
+  services: HealthCheck[];
+  activeTraces: number;
+  queueDepth: number;
+  errorRate: number;
+  avgLatency_ms: number;
+}
+
+// ─── Design Artifact Pipeline (Phase 4.4) ───────────────────────────────
+
+export type { ArtifactType, ArtifactStatus, ArtifactFormat, Artifact, ArtifactDiff, QualityGateResult, QualityCheck, DesignToken } from '@/lib/artifacts/types';
