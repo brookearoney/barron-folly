@@ -185,7 +185,18 @@ Return this exact JSON:
       "priority": "urgent" | "high" | "medium" | "low",
       "estimate": number,
       "labels": string[],
-      "dependencies": string[]
+      "dependencies": string[],
+      "is_epic": boolean,
+      "subtasks": [
+        {
+          "title": string,
+          "description": string,
+          "priority": "urgent" | "high" | "medium" | "low",
+          "estimate": number,
+          "labels": string[],
+          "dependencies": string[]
+        }
+      ]
     }
   ]
 }
@@ -193,7 +204,15 @@ Return this exact JSON:
 Guidelines for request-level fields:
 - request_title: A clear, concise title (max ~80 chars) summarizing the overall request. Write it like a ticket title — specific and actionable.
 - request_category: Choose the single best-fit category based on the work described. "web_platform" = websites/web apps, "automation" = workflows/scripts, "design_system" = UI kits/component libraries, "integration" = third-party API connections, "internal_tool" = dashboards/admin tools, "seo" = search optimization, "content" = copywriting/media, "brand" = identity/logo/guidelines, "ai_agent" = AI-powered features, "other" = anything else.
-- request_priority: Determine urgency from the user's language, deadlines mentioned, and business impact. Default to "medium" if unclear.`;
+- request_priority: Determine urgency from the user's language, deadlines mentioned, and business impact. Default to "medium" if unclear.
+
+Guidelines for task hierarchy:
+- For complex requests, organize into Epics (major deliverables) with subtasks (agent-level steps).
+- Set "is_epic" to true for high-level deliverable tasks that contain subtasks.
+- Set "is_epic" to false for simple tasks with no subtasks, and set "subtasks" to an empty array [].
+- Subtasks inherit the parent's labels by default. Only override if the subtask needs different labels.
+- Dependencies in subtasks can reference other subtask titles within the same epic, or titles from other top-level tasks.
+- Keep subtask granularity at the agent-executable level — each subtask should be completable by a single agent in one session.`;
 }
 
 // ─── Flow 4: Proactive Suggestions ──────────────────────────────────────

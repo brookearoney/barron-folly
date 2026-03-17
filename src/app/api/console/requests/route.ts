@@ -4,6 +4,7 @@ import { linearRequest } from "@/lib/linear/client";
 import { CREATE_ISSUE } from "@/lib/linear/queries";
 import { checkRequestEntitlement, checkCategoryEntitlement } from "@/lib/console/entitlements";
 import { trackRequestUsage } from "@/lib/console/usage";
+import { checkForDuplicates } from "@/lib/console/dedup";
 
 // GET /api/console/requests — list requests for user's org
 export async function GET(request: NextRequest) {
@@ -115,6 +116,33 @@ export async function POST(req: Request) {
       }
     }
 
+    // Check for duplicate/similar requests before creating
+    let duplicateWarning: {
+      hasDuplicate: boolean;
+      similarRequests: Array<{
+        id: string;
+        title: string;
+        status: string;
+        similarity: number;
+        created_at: string;
+      }>;
+    } | null = null;
+
+    try {
+      const dedupResult = await checkForDuplicates({
+        orgId: profile.organization_id,
+        title: title || description.slice(0, 80),
+        description,
+      });
+
+      if (dedupResult.similarRequests.length > 0) {
+        duplicateWarning = dedupResult;
+      }
+    } catch (dedupErr) {
+      // Dedup is non-critical — proceed with request creation
+      console.error("Dedup check error (non-fatal):", dedupErr);
+    }
+
     // Auto-generate a title from the description if not provided
     const requestTitle = title || description.slice(0, 80).trim() + (description.length > 80 ? "..." : "");
 
@@ -200,7 +228,11 @@ export async function POST(req: Request) {
       details: { title, category, priority: priority || "medium" },
     });
 
-    return NextResponse.json({ request, ai_enabled: isAiEnabled }, { status: 201 });
+    return NextResponse.json({
+      request,
+      ai_enabled: isAiEnabled,
+      ...(duplicateWarning ? { warning: "Similar open requests found", duplicates: duplicateWarning } : {}),
+    }, { status: 201 });
   } catch (error) {
     console.error("Create request error:", error);
     return NextResponse.json(

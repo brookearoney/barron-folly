@@ -13,11 +13,36 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-gray-500/20 text-gray-400",
 };
 
+const SLA_COLORS: Record<string, string> = {
+  on_track: "bg-green-500/20 text-green-400",
+  at_risk: "bg-amber-500/20 text-amber-400",
+  breached: "bg-red-500/20 text-red-400",
+};
+
 const RISK_COLORS: Record<string, string> = {
   low: "text-green-400",
   medium: "text-amber-400",
   high: "text-red-400",
 };
+
+type SLAStatus = "on_track" | "at_risk" | "breached";
+
+function getSLAStatus(task: OrchestratorTask): SLAStatus | null {
+  if (!task.sla_deadline) return null;
+  if (["completed", "cancelled"].includes(task.status)) return null;
+
+  const now = Date.now();
+  const deadlineMs = new Date(task.sla_deadline).getTime();
+  const createdMs = new Date(task.created_at).getTime();
+  const totalWindowMs = deadlineMs - createdMs;
+  const remainingMs = deadlineMs - now;
+
+  if (remainingMs <= 0) return "breached";
+  const elapsedMs = now - createdMs;
+  const percentElapsed = totalWindowMs > 0 ? (elapsedMs / totalWindowMs) * 100 : 100;
+  if (percentElapsed >= 75) return "at_risk";
+  return "on_track";
+}
 
 const AGENT_GROUPS: AgentGroup[] = [
   "research", "content", "frontend", "integration", "data", "infra", "security", "qa", "ops",
@@ -57,6 +82,7 @@ export default function AdminQueuePage() {
   const [filterStatus, setFilterStatus] = useState<string>("");
   const [filterAgent, setFilterAgent] = useState<string>("");
   const [filterRisk, setFilterRisk] = useState<string>("");
+  const [filterSLA, setFilterSLA] = useState<string>("");
 
   const fetchTasks = useCallback(async () => {
     try {
@@ -72,13 +98,16 @@ export default function AdminQueuePage() {
       if (filterRisk) {
         filtered = filtered.filter((t) => t.risk_level === filterRisk);
       }
+      if (filterSLA) {
+        filtered = filtered.filter((t) => getSLAStatus(t) === filterSLA);
+      }
 
       setTasks(filtered);
       setTotal(data.total);
     } catch (err) {
       console.error("Fetch tasks error:", err);
     }
-  }, [page, filterStatus, filterAgent, filterRisk]);
+  }, [page, filterStatus, filterAgent, filterRisk, filterSLA]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -164,8 +193,16 @@ export default function AdminQueuePage() {
       </div>
 
       {/* Stats bar */}
-      {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-7 gap-3 mb-6">
+      {stats && (() => {
+        // Calculate SLA compliance from loaded tasks
+        const activeTasks = tasks.filter((t) => !["completed", "cancelled"].includes(t.status) && t.sla_deadline);
+        const breachedTasks = activeTasks.filter((t) => getSLAStatus(t) === "breached");
+        const slaComplianceRate = activeTasks.length > 0
+          ? Math.round(((activeTasks.length - breachedTasks.length) / activeTasks.length) * 100)
+          : 100;
+
+        return (
+        <div className="grid grid-cols-2 lg:grid-cols-8 gap-3 mb-6">
           {[
             { label: "Total", value: stats.total, color: "text-foreground" },
             { label: "Queued", value: stats.queued, color: "text-blue-400" },
@@ -174,6 +211,7 @@ export default function AdminQueuePage() {
             { label: "Completed", value: stats.completed, color: "text-green-400" },
             { label: "Failed", value: stats.failed, color: stats.failed > 0 ? "text-red-400" : "text-foreground" },
             { label: "Avg wait", value: formatDuration(stats.avgWaitTimeMs), color: "text-foreground" },
+            { label: "SLA compliance", value: `${slaComplianceRate}%`, color: slaComplianceRate >= 90 ? "text-green-400" : slaComplianceRate >= 70 ? "text-amber-400" : "text-red-400" },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -186,7 +224,8 @@ export default function AdminQueuePage() {
             </div>
           ))}
         </div>
-      )}
+        );
+      })()}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3 mb-4">
@@ -227,9 +266,20 @@ export default function AdminQueuePage() {
           <option value="high">High</option>
         </select>
 
-        {(filterStatus || filterAgent || filterRisk) && (
+        <select
+          value={filterSLA}
+          onChange={(e) => { setFilterSLA(e.target.value); setPage(1); }}
+          className="bg-dark border border-dark-border text-foreground text-sm px-3 py-2 rounded-lg"
+        >
+          <option value="">All SLA statuses</option>
+          <option value="on_track">On Track</option>
+          <option value="at_risk">At Risk</option>
+          <option value="breached">Breached</option>
+        </select>
+
+        {(filterStatus || filterAgent || filterRisk || filterSLA) && (
           <button
-            onClick={() => { setFilterStatus(""); setFilterAgent(""); setFilterRisk(""); setPage(1); }}
+            onClick={() => { setFilterStatus(""); setFilterAgent(""); setFilterRisk(""); setFilterSLA(""); setPage(1); }}
             className="text-orange text-sm hover:underline"
           >
             Clear filters
@@ -249,6 +299,7 @@ export default function AdminQueuePage() {
                 <th className="text-left px-4 py-3">Agent</th>
                 <th className="text-left px-4 py-3">Status</th>
                 <th className="text-left px-4 py-3">Risk</th>
+                <th className="text-left px-4 py-3">SLA</th>
                 <th className="text-left px-4 py-3">Wait</th>
                 <th className="text-left px-4 py-3">Actions</th>
               </tr>
@@ -256,7 +307,7 @@ export default function AdminQueuePage() {
             <tbody className="divide-y divide-dark-border">
               {tasks.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-muted">
+                  <td colSpan={9} className="px-4 py-8 text-center text-muted">
                     {loading ? "Loading..." : "No tasks in queue"}
                   </td>
                 </tr>
@@ -332,6 +383,18 @@ export default function AdminQueuePage() {
                         <span className={`text-xs font-medium capitalize ${RISK_COLORS[task.risk_level] ?? ""}`}>
                           {task.risk_level}
                         </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        {(() => {
+                          const sla = getSLAStatus(task);
+                          if (!sla) return <span className="text-muted text-xs">--</span>;
+                          const label = sla === "on_track" ? "On Track" : sla === "at_risk" ? "At Risk" : "Breached";
+                          return (
+                            <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${SLA_COLORS[sla]}`}>
+                              {label}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="px-4 py-3 text-muted text-xs whitespace-nowrap">
                         {timeAgo(task.created_at)}

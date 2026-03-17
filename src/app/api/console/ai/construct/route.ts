@@ -11,12 +11,12 @@ import {
   buildQAThread,
 } from "@/lib/ai/context";
 import { linearRequest } from "@/lib/linear/client";
-import { CREATE_ISSUE, CREATE_ISSUE_RELATION } from "@/lib/linear/queries";
+import { CREATE_ISSUE, CREATE_ISSUE_RELATION, CREATE_SUB_ISSUE } from "@/lib/linear/queries";
 import { enforcePolicy } from "@/lib/console/policy-enforcement";
 import { startStreamRunLog, completeRunLog, failRunLog } from "@/lib/ai/with-logging";
 import { enqueueTask } from "@/lib/console/orchestrator";
 import { routeToAgentGroup } from "@/lib/console/agent-router";
-import type { Organization, AiClarificationData, MemoryLogEntry } from "@/lib/console/types";
+import type { Organization, AiClarificationData, AiPlannedTask, MemoryLogEntry } from "@/lib/console/types";
 
 export async function POST(req: Request) {
   try {
@@ -179,24 +179,29 @@ export async function POST(req: Request) {
         const aiTitle = taskPlan.request_title || request.title;
 
         if (teamId && process.env.LINEAR_API_KEY && taskPlan.tasks.length > 0 && !pendingApproval) {
+          // Helper to build Linear issue description
+          const buildIssueDesc = (task: AiPlannedTask, isSubtask = false) => [
+            `**Original Request:** ${aiTitle}`,
+            `**Priority:** ${task.priority}`,
+            `**Estimate:** ${task.estimate} point(s)`,
+            `**Labels:** ${task.labels.join(", ")}`,
+            ...(isSubtask ? [`**Type:** Subtask`] : task.is_epic ? [`**Type:** Epic`] : []),
+            "",
+            "---",
+            "",
+            task.description,
+            "",
+            "---",
+            `*AI-generated from request #${request.request_number}*`,
+          ].join("\n");
+
           for (const task of taskPlan.tasks) {
             try {
+              // Create the parent/top-level issue
               const input: Record<string, unknown> = {
                 teamId,
                 title: `[${org.name}] ${task.title}`,
-                description: [
-                  `**Original Request:** ${aiTitle}`,
-                  `**Priority:** ${task.priority}`,
-                  `**Estimate:** ${task.estimate} point(s)`,
-                  `**Labels:** ${task.labels.join(", ")}`,
-                  "",
-                  "---",
-                  "",
-                  task.description,
-                  "",
-                  "---",
-                  `*AI-generated from request #${request.request_number}*`,
-                ].join("\n"),
+                description: buildIssueDesc(task),
               };
 
               if (projectId) input.projectId = projectId;
@@ -217,14 +222,54 @@ export async function POST(req: Request) {
                   firstIssueKey = issue.identifier;
                   firstIssueUrl = issue.url;
                 }
+
+                // Create subtask issues with parentId referencing the parent issue
+                if (task.subtasks?.length) {
+                  for (const subtask of task.subtasks) {
+                    try {
+                      const subInput: Record<string, unknown> = {
+                        teamId,
+                        title: `[${org.name}] ${subtask.title}`,
+                        description: buildIssueDesc(subtask, true),
+                        parentId: issue.id,
+                      };
+
+                      if (projectId) subInput.projectId = projectId;
+
+                      const subResult = await linearRequest<{
+                        issueCreate: {
+                          success: boolean;
+                          issue: { id: string; identifier: string; url: string };
+                        };
+                      }>(CREATE_SUB_ISSUE, { input: subInput });
+
+                      if (subResult.issueCreate?.success) {
+                        const subIssue = subResult.issueCreate.issue;
+                        linearIssueIds.push(subIssue.id);
+                        titleToIssueId[subtask.title] = subIssue.id;
+                      }
+                    } catch (err) {
+                      console.error("Failed to create Linear sub-issue:", subtask.title, err);
+                    }
+                  }
+                }
               }
             } catch (err) {
               console.error("Failed to create Linear issue for task:", task.title, err);
             }
           }
 
-          // Create dependency relations (type: "blocks")
+          // Collect all tasks (including subtasks) for dependency resolution
+          const allTasks: AiPlannedTask[] = [];
           for (const task of taskPlan.tasks) {
+            allTasks.push(task);
+            if (task.subtasks?.length) {
+              allTasks.push(...task.subtasks);
+            }
+          }
+
+          // Create dependency relations (type: "blocks")
+          for (const task of allTasks) {
             if (!task.dependencies?.length) continue;
             const dependentIssueId = titleToIssueId[task.title];
             if (!dependentIssueId) continue;
@@ -358,9 +403,13 @@ export async function POST(req: Request) {
         });
 
         // Enqueue tasks into the orchestrator queue
+        // For epics with subtasks, enqueue the subtasks individually (not the parent epic)
+        // For simple tasks (no subtasks), enqueue them directly
         const resolvedCategory = taskPlan.request_category || request.category;
-        for (const task of taskPlan.tasks) {
+
+        const enqueueSingleTask = async (task: AiPlannedTask, parentTitle?: string) => {
           const issueId = titleToIssueId[task.title] || null;
+          const riskLevel = task.priority === "urgent" || task.priority === "high" ? "high" as const : task.priority === "medium" ? "medium" as const : "low" as const;
           try {
             await enqueueTask({
               organizationId: request.organization_id,
@@ -370,15 +419,29 @@ export async function POST(req: Request) {
               description: task.description,
               category: resolvedCategory,
               agentGroup: routeToAgentGroup(resolvedCategory, task.description),
-              riskLevel: task.priority === "urgent" || task.priority === "high" ? "high" : task.priority === "medium" ? "medium" : "low",
+              riskLevel,
               metadata: {
                 labels: task.labels,
                 estimate: task.estimate,
                 dependencies: task.dependencies,
+                priority: task.priority,
+                ...(parentTitle ? { parent_epic: parentTitle } : {}),
               },
             });
           } catch (enqueueErr) {
             console.error("Failed to enqueue task (non-fatal):", task.title, enqueueErr);
+          }
+        };
+
+        for (const task of taskPlan.tasks) {
+          if (task.is_epic && task.subtasks?.length) {
+            // Enqueue subtasks individually, not the parent epic
+            for (const subtask of task.subtasks) {
+              await enqueueSingleTask(subtask, task.title);
+            }
+          } else {
+            // Simple task — enqueue directly
+            await enqueueSingleTask(task);
           }
         }
       } catch (err) {

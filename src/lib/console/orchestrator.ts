@@ -1,6 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { calculatePriority } from "./priority";
 import { routeToAgentGroup } from "./agent-router";
+import { calculateSLADeadline } from "./sla";
 import type {
   AgentGroup,
   QueueStatus,
@@ -10,14 +11,6 @@ import type {
   QueueStats,
   Organization,
 } from "./types";
-
-/** Default SLA windows by tier (in hours) */
-const TIER_SLA_HOURS: Record<Tier, number> = {
-  tungsten: 4,
-  titanium: 12,
-  steel: 24,
-  copper: 72,
-};
 
 /** Max concurrent active tasks per tier */
 const TIER_CONCURRENCY: Record<Tier, number> = {
@@ -65,10 +58,15 @@ export async function enqueueTask(params: {
 
   const riskLevel = params.riskLevel ?? "low";
 
-  // Calculate SLA deadline
+  // Calculate SLA deadline using tier + priority-aware SLA config
   const now = new Date();
-  const slaHours = TIER_SLA_HOURS[tier] ?? 72;
-  const slaDeadline = new Date(now.getTime() + slaHours * 60 * 60 * 1000).toISOString();
+  const taskPriority = params.metadata?.priority as string | undefined;
+  const slaDeadline = calculateSLADeadline({
+    tier,
+    priority: taskPriority ?? "medium",
+    createdAt: now.toISOString(),
+    type: "resolution",
+  }).toISOString();
 
   // Calculate priority
   const priority = calculatePriority({
