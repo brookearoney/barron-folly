@@ -24,6 +24,90 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "claude-code-remote-control-vs-cloud",
+    title:
+      "Claude Code Remote Control vs Cloud: What They Do, How They Differ, and When to Use Each",
+    excerpt:
+      "Claude Code now runs beyond your terminal. Remote Control lets you steer local sessions from any device. Cloud runs tasks on Anthropic's infrastructure without a machine running at all. Here's how they work, what they require, and which one fits your workflow.",
+    category: "Technology",
+    date: "2026-03-17",
+    readTime: "9 min read",
+    featured: true,
+    author: "Barron & Folly",
+    heroImage: "/images/blog/claude-code-remote-control-vs-cloud.png",
+    sections: [
+      {
+        content:
+          'Claude Code started as a terminal-native coding agent. You install it, run <strong>claude</strong> in your project directory, and it reads, writes, executes, and iterates across your entire codebase. That core loop hasn\'t changed — but two new capabilities have expanded where and how that loop runs. <strong>Remote Control</strong> lets you access a Claude Code session running on your local machine from any browser or mobile device. <strong>Claude Code on the Web</strong> (commonly called "Cloud") runs sessions entirely on Anthropic-managed infrastructure — no local machine required. Both extend Claude Code beyond the terminal. But they solve fundamentally different problems, have different requirements, and fit different parts of your <a href="/services/agentic-execution" class="text-[#FF8400] hover:underline">development workflow</a>. Understanding the distinction is the difference between using Claude Code effectively and fighting your own setup.',
+      },
+      {
+        heading: "Claude Code Remote Control: Your Local Machine, Accessible Anywhere",
+        content:
+          'Remote Control connects a Claude Code session running on your computer to <strong>claude.ai/code</strong> or the Claude mobile app. The key word is <em>your computer</em>. Claude is still running locally — reading your files, using your MCP servers, accessing your local tools and environment. Remote Control simply gives you a way to interact with that session from another device. <strong>How it works:</strong> You start a Remote Control session on your machine. The local process registers with the Anthropic API and polls for incoming connections over outbound HTTPS. When you connect from your phone, tablet, or another browser, messages route through the Anthropic API back to your local session. All traffic is encrypted over TLS. No inbound ports are opened on your machine. <strong>Three ways to start it:</strong> Run <code>claude remote-control</code> for a dedicated server process. Run <code>claude --remote-control "Project Name"</code> for a normal interactive session that\'s also remotely accessible. Or type <code>/remote-control My Project</code> inside an existing session to make it available on the fly.',
+      },
+      {
+        heading: "Claude Code on the Web: Cloud-Native Execution Without a Local Machine",
+        content:
+          'Claude Code on the Web — currently in <strong>research preview</strong> — runs sessions entirely on Anthropic-managed cloud infrastructure. You visit claude.ai/code, connect your GitHub account, describe what you need, and Claude clones your repository into a secure virtual machine, analyzes the code, makes changes, runs tests, and pushes results to a branch ready for a pull request. Your laptop doesn\'t need to be open. Your terminal doesn\'t need to be running. The session executes asynchronously on Anthropic\'s servers. <strong>The environment is pre-configured</strong> with toolchains for Python, Node.js, Ruby, PHP, Java, Go, Rust, C++, PostgreSQL, Redis, and more. You can customize it further with setup scripts, environment variables, and network access rules. Sensitive credentials like git tokens and signing keys never enter the sandbox — authentication runs through a secure proxy with scoped credentials.',
+      },
+      {
+        heading: "Key Differences at a Glance",
+        content:
+          '<img src="/images/blog/claude-code-remote-control-vs-cloud-inline.png" alt="A smartphone displaying code in a dark environment with amber glow, connected to a laptop in the background — representing Claude Code Remote Control and Cloud workflows" class="w-full rounded-xl mb-8 border border-[#2A2A26]/30" />The core distinction is simple: <strong>Remote Control extends your local machine to other devices. Cloud replaces the need for a local machine entirely.</strong> With Remote Control, code execution happens on your hardware. Your filesystem, your MCP servers, your local tools — all available. With Cloud, execution happens on Anthropic\'s infrastructure. Your repository gets cloned from GitHub into a sandboxed VM. <strong>Remote Control is synchronous and interactive.</strong> You\'re steering a live session in real time from your phone or browser. <strong>Cloud is asynchronous.</strong> You submit a task and Claude runs it in the background — you can close the tab and come back later. Remote Control requires your machine to stay powered on and connected to the internet. If it goes offline for more than about ten minutes, the session times out. Cloud has no such constraint — tasks run independently of any device you own. Remote Control works with any repository on your local machine. Cloud currently requires <strong>GitHub only</strong> — no GitLab, Bitbucket, or local-only repos. Remote Control supports one active remote session per process. Cloud lets you <strong>run multiple tasks in parallel</strong> across different repositories simultaneously.',
+      },
+      {
+        heading: "Requirements Comparison",
+        content:
+          '<strong>Remote Control requirements:</strong><ul><li>Claude Code v2.1.51 or later installed locally</li><li>Pro, Max, Team, or Enterprise subscription</li><li>Authenticated via <code>claude /login</code></li><li>Workspace trust accepted (run <code>claude</code> in the project directory once)</li><li>Machine must stay powered on and connected</li><li>Team/Enterprise admins must enable Claude Code in admin settings</li></ul><strong>Cloud requirements:</strong><ul><li>No local installation needed</li><li>Pro, Max, Team, or Enterprise subscription</li><li>GitHub account connected with the Claude GitHub app installed on your repositories</li><li>Repository hosted on GitHub (GitLab and other platforms not yet supported)</li></ul>The barrier to entry for Cloud is lower — you don\'t need Claude Code installed locally at all. For Remote Control, you need a fully configured local environment. The tradeoff is that Remote Control gives you access to everything on your machine, while Cloud only sees what\'s in your GitHub repository.',
+      },
+      {
+        heading: "When to Use Remote Control",
+        content:
+          'Remote Control is the right choice when your local environment matters. If you\'re mid-session on a complex feature and need to step away from your desk, Remote Control lets you keep steering from your phone. If your project depends on local MCP servers, custom tooling, or environment-specific configuration that can\'t be replicated in a generic cloud VM, Remote Control preserves access to all of it. It\'s also the right choice when you\'re working with uncommitted changes, local branches, or repositories that aren\'t on GitHub. Remote Control doesn\'t care where your code is hosted — it runs on your machine and accesses whatever your machine can access. <strong>Best for:</strong> continuing active local work from another device, monitoring long-running tasks, projects with local-only dependencies, and workflows that depend on your specific <a href="/services/systems-architecture" class="text-[#FF8400] hover:underline">development environment</a>.',
+      },
+      {
+        heading: "When to Use Cloud",
+        content:
+          'Cloud is the right choice when you want to fire and forget. You have a bug to fix, a feature to scaffold, or a test suite to write — and you don\'t want to sit at your terminal watching it happen. Submit the task, let Claude run it in the background, and review the branch when it\'s done. Cloud also excels at <strong>parallel execution</strong>. Need three bugs fixed across two repositories? Kick off all three tasks simultaneously. Each runs in its own sandboxed environment. No context conflicts. No waiting for one to finish before starting the next. It\'s also the best option when you don\'t have the repository cloned locally. Cloud pulls directly from GitHub, so you can work on codebases you\'ve never touched on your current machine. <strong>Best for:</strong> async task execution, parallel bug fixes, working from mobile, repositories not cloned locally, and teams that want to <a href="/blog/from-backlog-to-deployment-how-autonomous-execution-works" class="text-[#FF8400] hover:underline">maximize throughput</a> without blocking individual developer machines.',
+      },
+      {
+        heading: "Moving Between Remote Control and Cloud",
+        content:
+          'These features aren\'t mutually exclusive — they\'re designed to work together. From your terminal, you can kick off a Cloud session with <code>claude --remote "Task description"</code>. This sends the task to Anthropic\'s cloud infrastructure while your local session stays free for other work. Going the other direction, you can pull a Cloud session back to your terminal with <code>/teleport</code> or <code>claude --teleport</code>. This transfers the web session into your local environment so you can continue with full access to your machine\'s tools and filesystem. The requirement for teleporting is a clean git state on the correct repository, authenticated to the same account. The pattern for <a href="/blog/claude-code-agent-teams-multi-agent-development" class="text-[#FF8400] hover:underline">high-output teams</a> is clear: use Cloud to parallelize defined tasks across repositories, use Remote Control to stay connected to complex local work, and teleport between them as context demands.',
+      },
+      {
+        heading: "Choosing the Right Mode for Your Workflow",
+        content:
+          'The decision tree is straightforward. <strong>Do you need your local environment?</strong> Use Remote Control. <strong>Do you need async, parallel, or fire-and-forget execution?</strong> Use Cloud. <strong>Are you mid-session and stepping away?</strong> Remote Control. <strong>Starting fresh on a GitHub repo?</strong> Cloud. <strong>Local-only repo or uncommitted work?</strong> Remote Control. <strong>Multiple tasks across multiple repos?</strong> Cloud. Most teams will use both. Remote Control keeps you connected to active work. Cloud offloads defined tasks to run in the background. Together, they turn Claude Code from a terminal tool into a <a href="/blog/what-is-an-agentic-product-agency" class="text-[#FF8400] hover:underline">distributed execution system</a> that runs wherever your work needs to happen — on your machine, in the cloud, or from the phone in your pocket. <a href="/contact" class="text-[#FF8400] hover:underline">Need help building workflows around these capabilities?</a> That\'s exactly what we do.',
+      },
+    ],
+    relatedSlugs: [
+      "claude-code-model-guide-opus-sonnet-haiku",
+      "claude-code-agent-teams-multi-agent-development",
+      "from-backlog-to-deployment-how-autonomous-execution-works",
+    ],
+    seo: {
+      title:
+        "Claude Code Remote Control vs Cloud: Differences, Requirements & Use Cases | Barron & Folly",
+      description:
+        "Learn the differences between Claude Code Remote Control and Claude Code on the Web (Cloud). Compare requirements, use cases, and when to use each for maximum development efficiency.",
+      keywords: [
+        "Claude Code Remote Control",
+        "Claude Code Cloud",
+        "Claude Code on the Web",
+        "Claude Code remote sessions",
+        "Claude Code vs Cloud",
+        "remote development tools",
+        "AI coding in the cloud",
+        "Claude Code requirements",
+        "async AI coding",
+        "Claude Code teleport",
+        "agentic development workflow",
+        "Claude Code guide",
+      ],
+    },
+  },
+  {
     slug: "claude-code-model-guide-opus-sonnet-haiku",
     title:
       "Claude Code and AI Model Selection: A Practical Guide to Opus, Sonnet, and Haiku",
