@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { syncCommentToLinear } from "@/lib/linear/sync";
+import { advanceApprovalChain } from "@/lib/console/approval-chains";
+import { dispatchNotification } from "@/lib/console/notification-dispatcher";
 import type { ApprovalDecision } from "@/lib/console/types";
 
 export async function GET(
@@ -104,8 +106,8 @@ export async function PATCH(
     const request = approval.request as { id: string; organization_id: string; linear_issue_id: string | null } | null;
     if (request?.linear_issue_id && process.env.LINEAR_API_KEY) {
       const emoji =
-        decision === "approved" ? "✅" :
-        decision === "denied" ? "❌" : "🔄";
+        decision === "approved" ? "\u2705" :
+        decision === "denied" ? "\u274C" : "\uD83D\uDD04";
 
       const commentBody = [
         `**${emoji} Client ${decision === "revision_requested" ? "requested revisions" : decision}**`,
@@ -133,6 +135,66 @@ export async function PATCH(
             .eq("id", dep.id);
         }
       }
+
+      // Advance approval chain if this is part of one
+      if ((approval.total_steps || 1) > 1) {
+        try {
+          const { nextStep, chainComplete } = await advanceApprovalChain(id);
+
+          if (chainComplete && request) {
+            // All steps approved -- update the request status
+            await supabase
+              .from("requests")
+              .update({ status: "approved", updated_at: new Date().toISOString() })
+              .eq("id", request.id);
+
+            await dispatchNotification({
+              organizationId: approval.organization_id,
+              type: "approval",
+              title: `Approval chain complete: ${approval.title}`,
+              body: "All approval steps have been completed.",
+              requestId: request.id,
+              referenceId: id,
+            });
+          } else if (nextStep) {
+            // Notification already sent by advanceApprovalChain
+          }
+        } catch (chainErr) {
+          console.error("Chain advancement error (non-fatal):", chainErr);
+        }
+      }
+    }
+
+    // When denied, block the chain and notify
+    if (decision === "denied" && (approval.total_steps || 1) > 1) {
+      await dispatchNotification({
+        organizationId: approval.organization_id,
+        type: "approval",
+        title: `Approval denied: ${approval.title}`,
+        body: `Step ${approval.step_number} of ${approval.total_steps} was denied. The approval chain is blocked.${decision_notes ? ` Reason: ${decision_notes}` : ""}`,
+        requestId: request?.id,
+        referenceId: id,
+      });
+    }
+
+    // When revision_requested, create a revision request record
+    if (decision === "revision_requested" && request) {
+      await supabase.from("revision_requests").insert({
+        approval_id: id,
+        request_id: request.id,
+        organization_id: approval.organization_id,
+        requested_by: user.id,
+        revision_notes: decision_notes || "Revisions requested",
+      });
+
+      await dispatchNotification({
+        organizationId: approval.organization_id,
+        type: "approval",
+        title: `Revisions requested: ${approval.title}`,
+        body: decision_notes || "Revisions have been requested.",
+        requestId: request.id,
+        referenceId: id,
+      });
     }
 
     // Log activity

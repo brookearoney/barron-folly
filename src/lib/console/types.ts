@@ -101,6 +101,21 @@ export type ApprovalDecision = "approved" | "denied" | "revision_requested";
 
 export type RiskLevel = "low" | "medium" | "high";
 
+export type ApprovalType = 'standard' | 'client_preview' | 'architecture' | 'production_deploy' | 'revision';
+
+export interface RevisionRequest {
+  id: string;
+  approval_id: string;
+  request_id: string;
+  organization_id: string;
+  requested_by: string | null;
+  revision_notes: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'cancelled';
+  child_request_id: string | null;
+  created_at: string;
+  completed_at: string | null;
+}
+
 export type AiPhase = "none" | "clarifying" | "clarified" | "constructing" | "constructed" | "failed";
 
 export type AiOnboardingStatus = "pending" | "processing" | "completed" | "failed";
@@ -307,6 +322,12 @@ export interface Approval {
   decided_by: string | null;
   created_at: string;
   decided_at: string | null;
+  step_number?: number;
+  total_steps?: number;
+  parent_approval_id?: string | null;
+  approval_type?: ApprovalType;
+  expires_at?: string | null;
+  auto_approve_at?: string | null;
   request?: Request;
 }
 
