@@ -14,8 +14,43 @@ import {
 
 const MODEL = "claude-sonnet-4-20250514";
 
+/**
+ * Max characters of scraped content to send to Claude.
+ * At ~4 chars/token, 15k chars ≈ 3,750 tokens — safe margin under 30k TPM limit.
+ */
+const MAX_SCRAPED_CHARS = 15_000;
+
+export function truncateForClaude(text: string, limit = MAX_SCRAPED_CHARS): string {
+  if (text.length <= limit) return text;
+  return text.slice(0, limit) + "\n\n[Content truncated for analysis — showing first ~15,000 characters]";
+}
+
 function getClient(): Anthropic {
   return new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+}
+
+/**
+ * Retry wrapper for Claude API calls with exponential backoff on 429 rate limits.
+ */
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (err: unknown) {
+      const isRateLimit =
+        err instanceof Error &&
+        (err.message.includes("rate_limit") ||
+          err.message.includes("429") ||
+          (err as { status?: number }).status === 429);
+
+      if (!isRateLimit || attempt === maxRetries) throw err;
+
+      const backoffMs = Math.min(2000 * Math.pow(2, attempt), 60_000);
+      console.warn(`Claude rate limit hit, retrying in ${backoffMs}ms (attempt ${attempt + 1}/${maxRetries})`);
+      await new Promise((r) => setTimeout(r, backoffMs));
+    }
+  }
+  throw new Error("Unreachable");
 }
 
 /**
@@ -46,14 +81,18 @@ export async function generateBusinessDossier(
   url: string
 ): Promise<BusinessDossier> {
   const client = getClient();
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 4096,
-    system: DOSSIER_SYSTEM_PROMPT,
-    messages: [
-      { role: "user", content: buildDossierUserMessage(url, scrapedText) },
-    ],
-  });
+  const trimmed = truncateForClaude(scrapedText);
+
+  const response = await withRetry(() =>
+    client.messages.create({
+      model: MODEL,
+      max_tokens: 4096,
+      system: DOSSIER_SYSTEM_PROMPT,
+      messages: [
+        { role: "user", content: buildDossierUserMessage(url, trimmed) },
+      ],
+    })
+  );
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
   return JSON.parse(extractJSON(text)) as BusinessDossier;
@@ -67,17 +106,21 @@ export async function generateStyleGuide(
   dossierJson: string
 ): Promise<StyleGuide> {
   const client = getClient();
-  const response = await client.messages.create({
-    model: MODEL,
-    max_tokens: 4096,
-    system: STYLE_GUIDE_SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user",
-        content: buildStyleGuideUserMessage(url, scrapedText, dossierJson),
-      },
-    ],
-  });
+  const trimmed = truncateForClaude(scrapedText);
+
+  const response = await withRetry(() =>
+    client.messages.create({
+      model: MODEL,
+      max_tokens: 4096,
+      system: STYLE_GUIDE_SYSTEM_PROMPT,
+      messages: [
+        {
+          role: "user",
+          content: buildStyleGuideUserMessage(url, trimmed, dossierJson),
+        },
+      ],
+    })
+  );
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
   return JSON.parse(extractJSON(text)) as StyleGuide;

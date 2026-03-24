@@ -45,10 +45,13 @@ export async function POST(
       () => generateBusinessDossier(scrapeResult.text, url)
     );
 
+    // Brief pause between calls to respect rate limits (30k TPM tier)
+    await new Promise((r) => setTimeout(r, 3000));
+
     // Generate style guide using dossier as additional context (with run logging)
     const styleGuide = await withRunLogging(
       { orgId: id, flow: "style_guide", inputSummary: `Generating style guide from ${url}` },
-      () => generateStyleGuide(scrapeResult.rawHtml, url, JSON.stringify(dossier))
+      () => generateStyleGuide(scrapeResult.text, url, JSON.stringify(dossier))
     );
 
     // Save results
