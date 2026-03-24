@@ -8,14 +8,15 @@ import { createAdminClient } from "@/lib/supabase/admin";
  */
 export async function syncCommentToLinear(
   issueId: string,
-  body: string
+  body: string,
+  apiKey?: string | null
 ): Promise<{ synced: boolean }> {
   try {
-    await linearRequest(ADD_COMMENT, { issueId, body });
+    await linearRequest(ADD_COMMENT, { issueId, body }, apiKey);
     return { synced: true };
   } catch (err) {
     console.error("Linear sync failed, queueing for retry:", err);
-    await queueSyncOperation("add_comment", { issueId, body });
+    await queueSyncOperation("add_comment", { issueId, body, apiKey });
     return { synced: false };
   }
 }
@@ -71,8 +72,8 @@ export async function processSyncQueue(): Promise<{
 
     try {
       if (item.operation === "add_comment") {
-        const { issueId, body } = item.payload as { issueId: string; body: string };
-        await linearRequest(ADD_COMMENT, { issueId, body });
+        const { issueId, body, apiKey } = item.payload as { issueId: string; body: string; apiKey?: string | null };
+        await linearRequest(ADD_COMMENT, { issueId, body }, apiKey);
       } else {
         throw new Error(`Unknown sync operation: ${item.operation}`);
       }

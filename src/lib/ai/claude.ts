@@ -56,7 +56,7 @@ export async function generateBusinessDossier(
   });
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
-  return JSON.parse(text) as BusinessDossier;
+  return JSON.parse(extractJSON(text)) as BusinessDossier;
 }
 
 // ─── Flow 1b: Generate Style Guide (non-streaming) ─────────────────────
@@ -80,7 +80,7 @@ export async function generateStyleGuide(
   });
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
-  return JSON.parse(text) as StyleGuide;
+  return JSON.parse(extractJSON(text)) as StyleGuide;
 }
 
 // ─── Flow 2: Generate Clarifying Questions (streaming) ──────────────────
@@ -261,5 +261,5 @@ export async function generateSuggestions(
   });
 
   const text = response.content[0].type === "text" ? response.content[0].text : "";
-  return JSON.parse(text);
+  return JSON.parse(extractJSON(text));
 }

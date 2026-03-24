@@ -57,8 +57,15 @@ export async function PATCH(
     // Post answer as comment on Linear issue (with automatic retry on failure)
     const request = clarification.request as { linear_issue_id: string | null; id: string; organization_id: string } | null;
     if (request?.linear_issue_id && process.env.LINEAR_API_KEY) {
+      // Fetch org-level Linear API key if available
+      const { data: org } = await supabase
+        .from("organizations")
+        .select("linear_api_key")
+        .eq("id", request.organization_id)
+        .single();
+
       const commentBody = `**[CLIENT RESPONSE]** from ${profile.full_name}:\n\n> ${clarification.question}\n\n${answer}`;
-      await syncCommentToLinear(request.linear_issue_id, commentBody);
+      await syncCommentToLinear(request.linear_issue_id, commentBody, org?.linear_api_key);
     }
 
     // Log activity

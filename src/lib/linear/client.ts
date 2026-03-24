@@ -2,13 +2,15 @@ const LINEAR_API_URL = "https://api.linear.app/graphql";
 
 export async function linearRequest<T = unknown>(
   query: string,
-  variables: Record<string, unknown> = {}
+  variables: Record<string, unknown> = {},
+  apiKey?: string | null
 ): Promise<T> {
+  const key = apiKey || process.env.LINEAR_API_KEY!;
   const res = await fetch(LINEAR_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.LINEAR_API_KEY!,
+      Authorization: key,
     },
     body: JSON.stringify({ query, variables }),
   });
@@ -35,7 +37,8 @@ export async function linearRequest<T = unknown>(
  */
 export async function createLinearTeam(
   name: string,
-  key?: string
+  key?: string,
+  apiKey?: string | null
 ): Promise<{ id: string; key: string }> {
   // Linear team keys: 1-5 uppercase chars, must be unique.
   // Auto-generate from name if not provided.
@@ -64,7 +67,8 @@ export async function createLinearTeam(
         name,
         key: teamKey,
       },
-    }
+    },
+    apiKey
   );
 
   if (!data.teamCreate.success) {
@@ -80,7 +84,8 @@ export async function createLinearTeam(
  */
 export async function createLinearProject(
   name: string,
-  teamIds: string[]
+  teamIds: string[],
+  apiKey?: string | null
 ): Promise<{ id: string }> {
   const data = await linearRequest<{
     projectCreate: {
@@ -99,7 +104,8 @@ export async function createLinearProject(
         name,
         teamIds,
       },
-    }
+    },
+    apiKey
   );
 
   if (!data.projectCreate.success) {
@@ -113,12 +119,15 @@ export async function createLinearProject(
  * Create both a Linear team and project for a new client organization.
  * Returns the team and project IDs to store in the organizations table.
  */
-export async function createLinearTeamAndProject(orgName: string): Promise<{
+export async function createLinearTeamAndProject(
+  orgName: string,
+  apiKey?: string | null
+): Promise<{
   teamId: string;
   projectId: string;
 }> {
-  const team = await createLinearTeam(orgName);
-  const project = await createLinearProject(orgName, [team.id]);
+  const team = await createLinearTeam(orgName, undefined, apiKey);
+  const project = await createLinearProject(orgName, [team.id], apiKey);
 
   return {
     teamId: team.id,

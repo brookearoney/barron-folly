@@ -275,6 +275,7 @@ export interface Organization {
   stripe_customer_id: string | null;
   linear_team_id: string | null;
   linear_project_id: string | null;
+  linear_api_key: string | null;
   max_concurrent_requests: number;
   website_url: string | null;
   business_dossier: BusinessDossier | null;

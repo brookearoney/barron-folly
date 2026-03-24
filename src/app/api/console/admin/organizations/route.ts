@@ -79,6 +79,7 @@ export async function POST(req: Request) {
       tier,
       tier_price,
       max_concurrent_requests,
+      linear_api_key,
     } = await req.json();
 
     if (!name || !slug || !tier) {
@@ -92,9 +93,10 @@ export async function POST(req: Request) {
     let linearTeamId: string | null = null;
     let linearProjectId: string | null = null;
 
-    if (process.env.LINEAR_API_KEY) {
+    const effectiveLinearKey = linear_api_key || process.env.LINEAR_API_KEY;
+    if (effectiveLinearKey) {
       try {
-        const linear = await createLinearTeamAndProject(name);
+        const linear = await createLinearTeamAndProject(name, linear_api_key || null);
         linearTeamId = linear.teamId;
         linearProjectId = linear.projectId;
       } catch (linearError) {
@@ -112,6 +114,7 @@ export async function POST(req: Request) {
         tier_price: tier_price || 0,
         linear_team_id: linearTeamId,
         linear_project_id: linearProjectId,
+        linear_api_key: linear_api_key || null,
         max_concurrent_requests: max_concurrent_requests || 2,
       })
       .select()

@@ -69,7 +69,7 @@ export async function PATCH(
     // Only allow specific fields to be updated
     const allowedFields = [
       "name", "slug", "tier", "tier_price",
-      "linear_team_id", "linear_project_id",
+      "linear_team_id", "linear_project_id", "linear_api_key",
       "max_concurrent_requests", "stripe_customer_id",
       "website_url", "business_dossier", "style_guide",
       "memory_log", "ai_onboarding_status",

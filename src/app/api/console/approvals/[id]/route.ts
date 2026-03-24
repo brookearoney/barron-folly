@@ -104,7 +104,14 @@ export async function PATCH(
 
     // Sync to Linear (with automatic retry on failure)
     const request = approval.request as { id: string; organization_id: string; linear_issue_id: string | null } | null;
-    if (request?.linear_issue_id && process.env.LINEAR_API_KEY) {
+    if (request?.linear_issue_id && (process.env.LINEAR_API_KEY)) {
+      // Fetch org-level Linear API key if available
+      const { data: org } = await supabase
+        .from("organizations")
+        .select("linear_api_key")
+        .eq("id", request.organization_id)
+        .single();
+
       const emoji =
         decision === "approved" ? "\u2705" :
         decision === "denied" ? "\u274C" : "\uD83D\uDD04";
@@ -117,7 +124,7 @@ export async function PATCH(
         .filter(Boolean)
         .join("\n");
 
-      await syncCommentToLinear(request.linear_issue_id, commentBody);
+      await syncCommentToLinear(request.linear_issue_id, commentBody, org?.linear_api_key);
     }
 
     // When approved, update any associated deployments

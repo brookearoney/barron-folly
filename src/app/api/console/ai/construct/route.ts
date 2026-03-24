@@ -167,6 +167,7 @@ export async function POST(req: Request) {
 
         const teamId = org.linear_team_id || process.env.LINEAR_TEAM_ID;
         const projectId = org.linear_project_id || process.env.LINEAR_PROJECT_ID;
+        const linearApiKey = org.linear_api_key || null;
         const linearIssueIds: string[] = [];
         let firstIssueId: string | null = null;
         let firstIssueKey: string | null = null;
@@ -178,7 +179,7 @@ export async function POST(req: Request) {
 
         const aiTitle = taskPlan.request_title || request.title;
 
-        if (teamId && process.env.LINEAR_API_KEY && taskPlan.tasks.length > 0 && !pendingApproval) {
+        if (teamId && (linearApiKey || process.env.LINEAR_API_KEY) && taskPlan.tasks.length > 0 && !pendingApproval) {
           // Helper to build Linear issue description
           const buildIssueDesc = (task: AiPlannedTask, isSubtask = false) => [
             `**Original Request:** ${aiTitle}`,
@@ -211,7 +212,7 @@ export async function POST(req: Request) {
                   success: boolean;
                   issue: { id: string; identifier: string; url: string };
                 };
-              }>(CREATE_ISSUE, { input });
+              }>(CREATE_ISSUE, { input }, linearApiKey);
 
               if (result.issueCreate?.success) {
                 const issue = result.issueCreate.issue;
@@ -241,7 +242,7 @@ export async function POST(req: Request) {
                           success: boolean;
                           issue: { id: string; identifier: string; url: string };
                         };
-                      }>(CREATE_SUB_ISSUE, { input: subInput });
+                      }>(CREATE_SUB_ISSUE, { input: subInput }, linearApiKey);
 
                       if (subResult.issueCreate?.success) {
                         const subIssue = subResult.issueCreate.issue;
@@ -288,7 +289,7 @@ export async function POST(req: Request) {
                   issueId: dependentIssueId,
                   relatedIssueId: blockingIssueId,
                   type: "blocks",
-                });
+                }, linearApiKey);
               } catch (err) {
                 console.error(
                   `Failed to create dependency: "${depTitle}" blocks "${task.title}"`,

@@ -81,7 +81,7 @@ export async function POST(req: Request) {
 
     const { data: org } = await supabase
       .from("organizations")
-      .select("linear_team_id, linear_project_id, name, business_dossier")
+      .select("linear_team_id, linear_project_id, linear_api_key, name, business_dossier")
       .eq("id", profile.organization_id)
       .single();
 
@@ -167,7 +167,8 @@ export async function POST(req: Request) {
     // Skip Linear issue creation for AI-enabled orgs — tasks will be created after AI clarification
     // Create Linear issue only if org has Linear configured and is NOT AI-enabled
     const teamId = org?.linear_team_id || process.env.LINEAR_TEAM_ID;
-    if (!isAiEnabled && teamId && process.env.LINEAR_API_KEY) {
+    const linearApiKey = org?.linear_api_key || null;
+    if (!isAiEnabled && teamId && (linearApiKey || process.env.LINEAR_API_KEY)) {
       try {
         const linearDesc = [
           `**Client:** ${org?.name || "Unknown"}`,
@@ -194,7 +195,7 @@ export async function POST(req: Request) {
             success: boolean;
             issue: { id: string; identifier: string; url: string };
           };
-        }>(CREATE_ISSUE, { input });
+        }>(CREATE_ISSUE, { input }, linearApiKey);
 
         if (result.issueCreate?.success) {
           const issue = result.issueCreate.issue;

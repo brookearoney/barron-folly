@@ -145,6 +145,40 @@ export const workFaqs: FaqItem[] = [
   },
 ];
 
+/* ─── Industries ─── */
+export const industryFaqs: FaqItem[] = [
+  {
+    question: "Do you only work with PE-backed roll-ups?",
+    answer:
+      "No — but roll-ups are our sweet spot. Any multi-location service business dealing with integration complexity, brand fragmentation, or operational chaos is a fit. That said, PE-backed portfolios see the fastest ROI because we compress integration timelines that directly impact EBITDA multiples.",
+  },
+  {
+    question: "How is this different from just buying ServiceTitan or Aspire?",
+    answer:
+      "ServiceTitan, Aspire, FieldRoutes, and similar tools manage individual location workflows — scheduling, dispatch, invoicing. They don't solve the portfolio-level integration problem: unified data across brands, standardized processes, cross-brand visibility, and brand infrastructure. We build the connective tissue these tools were never designed for — often at a fraction of the per-user licensing cost.",
+  },
+  {
+    question: "How fast can you integrate a new acquisition?",
+    answer:
+      "Most acquisitions can be onboarded onto your standardized systems within 2-4 weeks using our AI-powered execution model. Traditional consultancies quote 3-6 months for the same work. We compress timelines because AI agents handle the heavy lifting while senior oversight ensures nothing breaks.",
+  },
+  {
+    question: "What if each portfolio company uses different software?",
+    answer:
+      "That's exactly the problem we solve. We build an integration and data layer that sits above your existing tools — unifying data from ServiceTitan, Housecall Pro, spreadsheets, and everything in between. You don't have to rip and replace on day one. We normalize the chaos first, then standardize over time.",
+  },
+  {
+    question: "Do you replace our existing field service software?",
+    answer:
+      "Not necessarily. We can build on top of your existing tools or deploy replacements — it depends on your situation. The goal is unified operations and visibility, not software loyalty. If your current tools work at the location level, we build the portfolio layer above them.",
+  },
+  {
+    question: "What does PE-native reporting mean?",
+    answer:
+      "We build dashboards and reporting infrastructure designed for how PE sponsors actually consume data — portfolio-level KPIs, brand-level drill-downs, cohort analysis, board-ready exports, and the metrics that move valuation multiples. Not just operational reports that field managers use.",
+  },
+];
+
 /* ─── All categories for the main FAQ page ─── */
 export const faqCategories: FaqCategory[] = [
   {
@@ -176,6 +210,12 @@ export const faqCategories: FaqCategory[] = [
     slug: "portfolio",
     description: "Our work and project process.",
     faqs: workFaqs,
+  },
+  {
+    title: "Industries",
+    slug: "industries",
+    description: "How we work with PE-backed roll-ups.",
+    faqs: industryFaqs,
   },
 ];
 
